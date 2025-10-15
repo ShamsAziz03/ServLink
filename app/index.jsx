@@ -4,7 +4,7 @@ const index = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}> test </Text>
-      <Text> shams aziz</Text>
+      <Text style={{ fontSize: 15 }}> shams aziz</Text>
     </View>
   );
 };
@@ -13,11 +13,12 @@ export default index;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 30,
   },
 });
