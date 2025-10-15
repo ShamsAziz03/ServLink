@@ -125,27 +125,6 @@ It serves **three main user types:**
 
 ---
 
-## 🧑‍🏫 **Academic Information**
-
-**Project Title:** ServLink — Smart Service Connection App  
-**Project Type:** Software (Full Stack Application)  
-**Academic Year:** 2025 / 2026  
-**Department:** Computer Engineering  
-**Supervisor:** Dr. Manar Qamhieh  
-
-**Developed by:**  
-👩‍💻 **Rand Nehad Nofal**  
-👩‍💻 **Shams Imad Abd Al-Aziz**
-
----
-
-## 🪪 **License**
-
-This project is **academic and open-source for learning purposes.**  
-Feel free to fork, modify, and reuse — just **credit the original authors**.
-
----
-
 ## ❤️ **Final Note**
 
 > **ServLink** isn’t just an app — it’s a bridge between people who *need help* and those who *can provide it.*  
