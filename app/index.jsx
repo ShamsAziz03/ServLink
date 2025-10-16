@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
+  },//rand
   title: {
     fontWeight: "bold",
     fontSize: 30,
