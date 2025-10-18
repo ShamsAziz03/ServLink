@@ -6,6 +6,7 @@ const index = () => {
     <View style={styles.container}>
       <Text style={styles.title}> test </Text>
       <Text style={{ fontSize: 15 }}> shams aziz</Text>
+      <Link href="/home">Go to Home</Link>
       <Link href="/about">Go to About</Link>
     </View>
   );
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },//rand
+  }, //rand
   title: {
     fontWeight: "bold",
     fontSize: 30,
