@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
 const index = () => {
@@ -5,6 +6,7 @@ const index = () => {
     <View style={styles.container}>
       <Text style={styles.title}> test </Text>
       <Text style={{ fontSize: 15 }}> shams aziz</Text>
+      <Link href="/about">Go to About</Link>
     </View>
   );
 };
