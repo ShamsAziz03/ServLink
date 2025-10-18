@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 const About = () => {
   return (
     <View>
-      <Text>About</Text>
+      <Text style={{ paddingTop: 50 }}>About</Text>
       <Link href="/">Go to Home</Link>
     </View>
   );
