@@ -53,7 +53,7 @@ const DashboardLayout = () => {
             <Octicons
               size={24}
               name={"tasklist"}
-              color={focused ? "#320540ff" : "#6a5970ff"}
+              color={focused ? "#320540ff" : "#6e5f74ff"}
             />
           ),
         }}
