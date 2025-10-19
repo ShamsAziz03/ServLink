@@ -7,7 +7,7 @@ const DashboardLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#d2bcd9ff",
+          backgroundColor: "#bb9dc4ff",
           paddingTop: 10,
           hight: 90,
         },
