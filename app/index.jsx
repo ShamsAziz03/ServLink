@@ -8,6 +8,7 @@ const index = () => {
       <Text style={{ fontSize: 15 }}> shams aziz</Text>
       <Link href="/home">Go to Home</Link>
       <Link href="/about">Go to About</Link>
+       <Link href="/login">Go to Login</Link>
     </View>
   );
 };

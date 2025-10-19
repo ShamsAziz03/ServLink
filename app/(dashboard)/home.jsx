@@ -10,6 +10,7 @@ const home = () => {
       </Link>
       <Text style={{ paddingTop: 40 }}>home</Text>
       <Link href="/">index page </Link>
+      
     </View>
   );
 };
