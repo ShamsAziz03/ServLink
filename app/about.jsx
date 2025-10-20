@@ -5,42 +5,285 @@ import Carousel from "react-native-reanimated-carousel";
 
 const About = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const width = Dimensions.get("window").width;
-
   const list = [
-    { id: 1, title: "Learn React Native", desc: "Build apps with ease." },
-    { id: 2, title: "Master Reanimated", desc: "Add smooth animations." },
-    { id: 3, title: "Use Expo Router", desc: "Navigate like a pro." },
-    { id: 4, title: "Optimize UI", desc: "Design responsive layouts." },
-    { id: 5, title: "Deploy Fast", desc: "Publish your app efficiently." },
-  ];
+    {
+      id: 1,
+      view: (
+        <View>
+          {/* to put circles */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 220,
+                height: 220,
+                borderRadius: 120,
+              },
+              {
+                top: 10,
+                right: 250,
+                backgroundColor: "rgba(171, 102, 186, 0.3)",
+              },
+            ]}
+          />
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+              },
+              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+            ]}
+          />
+          {/* now texts */}
 
-  return (
-    <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 50 }}>
-      {/* <View>
+          <Text
+            style={{
+              color: "#2f154aff",
+              fontSize: 30,
+              paddingBottom: 10,
+              fontFamily: "Inter-Black",
+            }}
+          >
+            Trusted help, when and how you need it.
+          </Text>
+          <Text
+            style={{
+              color: "#3b2d4bff",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            ServLink connects you with trusted local professionals for every
+            task — home, tech, care, or more. Book in minutes, chat directly,
+            and get things done quickly and confidently.
+          </Text>
+
+          {/* now login-signup button */}
+          <View
+            style={{
+              alignItems: "center",
+              margin: 30,
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  fontFamily: "Inter-Black",
+                }}
+              >
+                Join Us Now
+              </Text>
+            </Link>
+          </View>
+        </View>
+      ),
+    },
+    {
+      id: 2,
+      view: (
+        <View>
+          {/* to put circles */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 220,
+                height: 220,
+                borderRadius: 120,
+              },
+              {
+                top: 10,
+                right: 250,
+                backgroundColor: "rgba(171, 102, 186, 0.3)",
+              },
+            ]}
+          />
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+              },
+              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+            ]}
+          />
+          {/* now texts */}
+
+          <Text
+            style={{
+              color: "#2f154aff",
+              fontSize: 30,
+              paddingBottom: 10,
+              fontFamily: "Inter-Black",
+            }}
+          >
+            Trusted help, when and how you need it.
+          </Text>
+          <Text
+            style={{
+              color: "#3b2d4bff",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            ServLink connects you with trusted local professionals for every
+            task — home, tech, care, or more. Book in minutes, chat directly,
+            and get things done quickly and confidently.
+          </Text>
+
+          {/* now login-signup button */}
+          <View
+            style={{
+              alignItems: "center",
+              margin: 30,
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  fontFamily: "Inter-Black",
+                }}
+              >
+                Join Us Now
+              </Text>
+            </Link>
+          </View>
+        </View>
+      ),
+    },
+    {
+      id: 3,
+      view: (
+        <View>
+          {/* to put circles */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 220,
+                height: 220,
+                borderRadius: 120,
+              },
+              {
+                top: 10,
+                right: 250,
+                backgroundColor: "rgba(171, 102, 186, 0.3)",
+              },
+            ]}
+          />
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+              },
+              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+            ]}
+          />
+          {/* now texts */}
+
+          <Text
+            style={{
+              color: "#2f154aff",
+              fontSize: 30,
+              paddingBottom: 10,
+              fontFamily: "Inter-Black",
+            }}
+          >
+            Trusted help, when and how you need it.
+          </Text>
+          <Text
+            style={{
+              color: "#3b2d4bff",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            ServLink connects you with trusted local professionals for every
+            task — home, tech, care, or more. Book in minutes, chat directly,
+            and get things done quickly and confidently.
+          </Text>
+
+          {/* now login-signup button */}
+          <View
+            style={{
+              alignItems: "center",
+              margin: 30,
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  fontFamily: "Inter-Black",
+                }}
+              >
+                Join Us Now
+              </Text>
+            </Link>
+          </View>
+        </View>
+      ),
+    },
+  ];
+  {
+    /* <View>
         <Text style={{ paddingTop: 50, fontSize: 24, fontWeight: "bold" }}>
           About
         </Text>
         <Link href="/" style={{ color: "blue", marginVertical: 10 }}>
           Go to Home
         </Link>
-      </View> */}
-
+      </View> */
+  }
+  return (
+    <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 50 }}>
       <Carousel
         width={width}
         height={width / 2}
         data={list}
         autoPlay={true}
         pagingEnabled={true}
-        scrollAnimationDuration={1500}
+        scrollAnimationDuration={2500}
         onSnapToItem={(index) => setCurrentIndex(index)}
-        renderItem={({ item }) => (
-          <View style={styles.CarouselItem}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.desc}>{item.desc}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => item.view}
       />
 
       <View style={styles.dotsContainer}>
@@ -61,24 +304,6 @@ const About = () => {
 export default About;
 
 const styles = StyleSheet.create({
-  CarouselItem: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 16,
-    marginHorizontal: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  desc: {
-    fontSize: 16,
-    color: "#666",
-    marginTop: 6,
-  },
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",

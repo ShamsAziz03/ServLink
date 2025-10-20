@@ -45,85 +45,86 @@ const home = () => {
         }}
       >
         <ScrollView>
-          {/* to put circles */}
-          <View
-            style={[
-              {
-                position: "absolute",
-                width: 220,
-                height: 220,
-                borderRadius: 120,
-              },
-              {
-                top: 10,
-                right: 250,
-                backgroundColor: "rgba(171, 102, 186, 0.3)",
-              },
-            ]}
-          />
-          <View
-            style={[
-              {
-                position: "absolute",
-                width: 120,
-                height: 120,
-                borderRadius: 60,
-              },
-              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
-            ]}
-          />
-          {/* now texts */}
+          <View>
+            {/* to put circles */}
+            <View
+              style={[
+                {
+                  position: "absolute",
+                  width: 220,
+                  height: 220,
+                  borderRadius: 120,
+                },
+                {
+                  top: 10,
+                  right: 250,
+                  backgroundColor: "rgba(171, 102, 186, 0.3)",
+                },
+              ]}
+            />
+            <View
+              style={[
+                {
+                  position: "absolute",
+                  width: 120,
+                  height: 120,
+                  borderRadius: 60,
+                },
+                { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+              ]}
+            />
+            {/* now texts */}
 
-          <Text
-            style={{
-              color: "#2f154aff",
-              fontSize: 30,
-              paddingBottom: 10,
-              fontFamily: "Inter-Black",
-            }}
-          >
-            Trusted help, when and how you need it.
-          </Text>
-          <Text
-            style={{
-              color: "#3b2d4bff",
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            ServLink connects you with trusted local professionals for every
-            task — home, tech, care, or more. Book in minutes, chat directly,
-            and get things done quickly and confidently.
-          </Text>
-
-          {/* now login-signup button */}
-          <View
-            style={{
-              alignItems: "center",
-              margin: 30,
-            }}
-          >
-            <Link
-              href="/login"
+            <Text
               style={{
-                marginTop: 20,
-                backgroundColor: "#750d83ff",
-                padding: 10,
-                borderRadius: 10,
+                color: "#2f154aff",
+                fontSize: 30,
+                paddingBottom: 10,
+                fontFamily: "Inter-Black",
               }}
             >
-              <Text
+              Trusted help, when and how you need it.
+            </Text>
+            <Text
+              style={{
+                color: "#3b2d4bff",
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              ServLink connects you with trusted local professionals for every
+              task — home, tech, care, or more. Book in minutes, chat directly,
+              and get things done quickly and confidently.
+            </Text>
+
+            {/* now login-signup button */}
+            <View
+              style={{
+                alignItems: "center",
+                margin: 30,
+              }}
+            >
+              <Link
+                href="/login"
                 style={{
-                  color: "#e4e0e6ff",
-                  fontSize: 20,
-                  fontFamily: "Inter-Black",
+                  marginTop: 20,
+                  backgroundColor: "#750d83ff",
+                  padding: 10,
+                  borderRadius: 10,
                 }}
               >
-                Join Us Now
-              </Text>
-            </Link>
+                <Text
+                  style={{
+                    color: "#e4e0e6ff",
+                    fontSize: 20,
+                    fontFamily: "Inter-Black",
+                  }}
+                >
+                  Join Us Now
+                </Text>
+              </Link>
+            </View>
           </View>
-
           <Text style={{ fontSize: 42 }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
