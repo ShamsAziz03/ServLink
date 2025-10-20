@@ -23,31 +23,57 @@ const home = () => {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" style={{ paddingTop: 30, paddingLeft: 10 }}>
-          <Foundation name="list" size={40} color="#57096fff" />
+        <Link href="/" style={{ paddingTop: 40, paddingLeft: 10 }}>
+          <Ionicons name="notifications" size={35} color="#57096fff" />
         </Link>
-        <Image
-          source={Logo}
-          style={{ width: 260, height: 80, marginTop: 15 }}
-        />
+        <Image source={Logo} style={{ marginTop: 25 }} />
         <Ionicons
           name="search"
-          size={40}
+          size={35}
           color="#57096fff"
-          style={{ marginTop: 35, paddingRight: 15 }}
+          style={{ marginTop: 40, paddingRight: 15 }}
         />
       </View>
 
-      {/* the second view  backgroundColor: "#f7eaf9ff"*/}
+      {/* the second view */}
       <View
         style={{
           flex: 6,
-          backgroundColor: "darkorange",
-          padding: 15,
+          backgroundColor: "#f7eaf9ff",
+          padding: 10,
           paddingTop: 40,
         }}
       >
         <ScrollView>
+          {/* to put circles */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 220,
+                height: 220,
+                borderRadius: 120,
+              },
+              {
+                top: 10,
+                right: 250,
+                backgroundColor: "rgba(171, 102, 186, 0.3)",
+              },
+            ]}
+          />
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+              },
+              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+            ]}
+          />
+          {/* now texts */}
+
           <Text
             style={{
               color: "#2f154aff",
@@ -62,7 +88,6 @@ const home = () => {
             style={{
               color: "#3b2d4bff",
               fontSize: 20,
-              paddingBottom: 10,
               fontWeight: "bold",
             }}
           >
@@ -70,6 +95,34 @@ const home = () => {
             task — home, tech, care, or more. Book in minutes, chat directly,
             and get things done quickly and confidently.
           </Text>
+
+          {/* now login-signup button */}
+          <View
+            style={{
+              alignItems: "center",
+              margin: 30,
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  fontFamily: "Inter-Black",
+                }}
+              >
+                Join Us Now
+              </Text>
+            </Link>
+          </View>
 
           <Text style={{ fontSize: 42 }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
