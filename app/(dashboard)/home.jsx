@@ -1,11 +1,135 @@
-import { View, Text, ScrollView, Image } from "react-native";
 import { Link } from "expo-router";
 import { Foundation, Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Logo from "../../assets/logo.png";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+} from "react-native";
+
+import React, { useState } from "react";
+import Carousel from "react-native-reanimated-carousel";
 
 const home = () => {
   const insets = useSafeAreaInsets();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const width = Dimensions.get("window").width;
+  const list = [
+    {
+      id: 1,
+      view: (
+        <View style={{ padding: 20 }}>
+          {/* to put circles */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 220,
+                height: 220,
+                borderRadius: 120,
+              },
+              {
+                top: 10,
+                right: 250,
+                backgroundColor: "rgba(171, 102, 186, 0.3)",
+              },
+            ]}
+          />
+          <View
+            style={[
+              {
+                position: "absolute",
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+              },
+              { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
+            ]}
+          />
+          {/* now texts */}
+
+          <Text
+            style={{
+              color: "#2f154aff",
+              fontSize: 30,
+              paddingBottom: 10,
+              fontFamily: "Inter-Black",
+            }}
+          >
+            Trusted help, when and how you need it.
+          </Text>
+          <Text
+            style={{
+              color: "#3b2d4bff",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            ServLink connects you with trusted local professionals for every
+            task — home, tech, care, or more. Book in minutes, chat directly,
+            and get things done quickly and confidently.
+          </Text>
+        </View>
+      ),
+    },
+    {
+      id: 2,
+      view: (
+        <View style={styles.slide}>
+          <Image
+            source={require("../../assets/pic1.png")}
+            style={styles.image}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Quick Help at Your Doorstep</Text>
+          <Text style={styles.desc}>
+            From cleaning to tech repair — find trusted experts nearby in
+            minutes.
+          </Text>
+        </View>
+      ),
+    },
+    {
+      id: 3,
+      view: (
+        <View style={styles.slide}>
+          <Image
+            source={require("../../assets/pic2.png")}
+            style={styles.image}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Reliable Professionals</Text>
+          <Text style={styles.desc}>
+            Every worker is verified, reviewed, and ready to get the job done.
+          </Text>
+        </View>
+      ),
+    },
+  ];
+  const categories = [
+    { name: "Hanyman", img: require("../../assets/handyman.png") },
+    { name: "Agriculture", img: require("../../assets/agriculture.png") },
+    { name: "Cleaning", img: require("../../assets/cleaning.png") },
+    {
+      name: "Furniture Moving",
+      img: require("../../assets/furnituremoving.png"),
+    },
+    { name: "Childcare", img: require("../../assets/childcare.png") },
+    { name: "Pet Care", img: require("../../assets/petcare.png") },
+    {
+      name: "IT / Computer Services",
+      img: require("../../assets/itservices.png"),
+    },
+    {
+      name: "Private Lessons",
+      img: require("../../assets/privatelessons.png"),
+    },
+  ];
+
   return (
     <View
       style={{
@@ -14,7 +138,7 @@ const home = () => {
         paddingTop: insets.top,
       }}
     >
-      {/* the first view */}
+      {/* the first view - header */}
       <View
         style={{
           flex: 1,
@@ -35,96 +159,99 @@ const home = () => {
         />
       </View>
 
-      {/* the second view */}
+      {/* the second view - full page  */}
       <View
         style={{
           flex: 6,
           backgroundColor: "#f7eaf9ff",
           padding: 10,
-          paddingTop: 40,
+          paddingTop: 15,
         }}
       >
         <ScrollView>
-          <View>
-            {/* to put circles */}
-            <View
-              style={[
-                {
-                  position: "absolute",
-                  width: 220,
-                  height: 220,
-                  borderRadius: 120,
-                },
-                {
-                  top: 10,
-                  right: 250,
-                  backgroundColor: "rgba(171, 102, 186, 0.3)",
-                },
-              ]}
+          {/* view for image slider */}
+          <View
+            style={{ flex: 1, backgroundColor: "#f7eaf9ff", paddingTop: 20 }}
+          >
+            <Carousel
+              width={width}
+              height={300}
+              data={list}
+              autoPlay={true}
+              pagingEnabled={true}
+              scrollAnimationDuration={2500}
+              onSnapToItem={(index) => setCurrentIndex(index)}
+              renderItem={({ item }) => item.view}
             />
-            <View
-              style={[
-                {
-                  position: "absolute",
-                  width: 120,
-                  height: 120,
-                  borderRadius: 60,
-                },
-                { top: 10, left: 320, backgroundColor: "rgba(58, 6, 81, 0.4)" },
-              ]}
-            />
-            {/* now texts */}
 
-            <Text
-              style={{
-                color: "#2f154aff",
-                fontSize: 30,
-                paddingBottom: 10,
-                fontFamily: "Inter-Black",
-              }}
-            >
-              Trusted help, when and how you need it.
-            </Text>
-            <Text
-              style={{
-                color: "#3b2d4bff",
-                fontSize: 20,
-                fontWeight: "bold",
-              }}
-            >
-              ServLink connects you with trusted local professionals for every
-              task — home, tech, care, or more. Book in minutes, chat directly,
-              and get things done quickly and confidently.
-            </Text>
-
-            {/* now login-signup button */}
-            <View
-              style={{
-                alignItems: "center",
-                margin: 30,
-              }}
-            >
-              <Link
-                href="/login"
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Join Us Now
-                </Text>
-              </Link>
+            <View style={styles.dotsContainer}>
+              {list.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.dot,
+                    currentIndex === index ? styles.activeDot : null,
+                  ]}
+                />
+              ))}
             </View>
           </View>
+
+          {/* view for login-signup button */}
+          <View
+            style={{
+              alignItems: "center",
+              margin: 20,
+              marginBottom: 40,
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  fontFamily: "Inter-Black",
+                }}
+              >
+                Join Us Now
+              </Text>
+            </Link>
+          </View>
+
+          {/* view for catigories */}
+          <Text style={[styles.title, { textAlign: "left" }]}>
+            SREVICE CATEGORIES
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={{
+              gap: 30,
+              padding: 30,
+              paddingHorizontal: 10,
+            }}
+          >
+            {categories.map((category, index) => (
+              <View key={index}>
+                <Text>{category.name}</Text>
+                <Image
+                  source={category.img}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* other page content */}
           <Text style={{ fontSize: 42 }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -134,6 +261,8 @@ const home = () => {
             pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
             culpa qui officia deserunt mollit anim id est laborum.
           </Text>
+
+          {/*  */}
         </ScrollView>
       </View>
     </View>
@@ -141,3 +270,46 @@ const home = () => {
 };
 
 export default home;
+
+const styles = StyleSheet.create({
+  slide: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  image: {
+    width: "90%",
+    height: 200,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#3b2d4bff",
+    textAlign: "center",
+  },
+  desc: {
+    fontSize: 16,
+    color: "#6a5c7b",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#c287c8ff",
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: "#37043aff",
+    width: 10,
+    height: 10,
+  },
+  categoryBox: {},
+});
