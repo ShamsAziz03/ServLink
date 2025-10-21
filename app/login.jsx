@@ -78,7 +78,8 @@ export default function App() {
 
   return (
     <LinearGradient 
-  colors={["#630436", "#8b2b82", "#c287c8"]} 
+  colors={["#e0c3f2ff", "#b57edcff","#750d83ff",]}
+
   style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
@@ -270,7 +271,12 @@ const styles = StyleSheet.create({
   title: { textAlign: "center", fontSize: 22, fontWeight: "bold", marginBottom: 15, color: "#6a5c7b" },
   subtitle: { marginTop: 10, fontWeight: "600", fontSize: 16, color: "#6a5c7b" },
   input: { marginVertical: 8, backgroundColor: "#ede9fe" }, // خلفية فاتحة للنصوص
-  button: { marginTop: 15, backgroundColor: "#37043a", borderRadius: 15, paddingVertical: 5 },
+ button: { 
+  marginTop: 15, 
+  backgroundColor: "#5c0f5f", // لون أفتح شوي للزر
+  borderRadius: 15, 
+  paddingVertical: 5 
+},
   uploadButton: { marginTop: 10, backgroundColor: "#6a5c7b", borderRadius: 10 },
   switchText: { textAlign: "center", marginTop: 10, color: "#6a5c7b" },
   forgotText: { textAlign: "right", color: "#c287c8", marginVertical: 5, textDecorationLine: "underline", fontWeight: "500" },
@@ -300,12 +306,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   interestCardSelected: {
-    borderColor: "#37043a",
-    backgroundColor: "#37043a", // اختيار غامق
-    shadowColor: "#37043a",
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
+  borderColor: "#5c0f5f",
+  backgroundColor: "#5c0f5f", // أفتح شوي من السابق
+  shadowColor: "#5c0f5f",
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+},
+
   interestImage: { width: 45, height: 45, marginBottom: 5 },
   interestText: { fontSize: 15, color: "#6a5c7b", fontWeight: "600" },
   interestTextSelected: { color: "#fff" },
