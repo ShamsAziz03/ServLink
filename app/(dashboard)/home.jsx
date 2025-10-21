@@ -292,7 +292,7 @@ const home = () => {
 
           {/* view for suggested for u */}
           <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
-            What's in your mind?
+            Suggested for you
           </Text>
           <ScrollView
             horizontal
