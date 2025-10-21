@@ -228,7 +228,71 @@ const home = () => {
 
           {/* view for catigories */}
           <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
-            SREVICE CATEGORIES
+            What's in your mind?
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={{
+              gap: 30,
+              padding: 30,
+              paddingHorizontal: 10,
+            }}
+          >
+            {categories.map((category, index) => (
+              <View
+                key={index}
+                style={{
+                  alignItems: "center",
+                  backgroundColor: "#f3e8f7ff",
+                  padding: 20,
+                  borderRadius: 10,
+                  shadowColor: "#593962ff",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 16,
+                  elevation: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 24,
+                    textAlign: "center",
+                    color: "#4d045d88",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {category.name}
+                </Text>
+                <Image source={category.img} resizeMode="contain" />
+                <Link
+                  href="/login"
+                  style={{
+                    marginTop: 20,
+                    padding: 5,
+                    backgroundColor: "#750d83ff",
+                    borderRadius: 10,
+                    textAlign: "center",
+                    width: width / 4,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#e4e0e6ff",
+                      fontSize: 16,
+                      fontFamily: "Inter-Black",
+                    }}
+                  >
+                    Book
+                  </Text>
+                </Link>
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* view for suggested for u */}
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
+            Suggested for you
           </Text>
           <ScrollView
             horizontal
