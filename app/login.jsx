@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { TextInput, Button, Text, Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
@@ -12,7 +18,13 @@ export default function App() {
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState("");
 
-  const interests = ["Cleaning", "Painting", "Gardening", "Decoration", "Child Care"];
+  const interests = [
+    "Cleaning",
+    "Painting",
+    "Gardening",
+    "Decoration",
+    "Child Care",
+  ];
 
   const toggleCheckbox = (item) => {
     setCheckedItems((prev) =>
@@ -21,7 +33,8 @@ export default function App() {
   };
 
   const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       alert("Permission to access gallery is required!");
       return;
@@ -51,7 +64,10 @@ export default function App() {
   };
 
   return (
-    <LinearGradient colors={["#d8b4fe", "#a78bfa", "#7c3aed"]} style={styles.container}>
+    <LinearGradient
+      colors={["#d8b4fe", "#a78bfa", "#594182ff"]}
+      style={styles.container}
+    >
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
           <Image
@@ -60,9 +76,10 @@ export default function App() {
             }}
             style={styles.logo}
           />
-          
 
-          <Text style={styles.title}>{isSignup ? "Create Account" : "Welcome Back!"}</Text>
+          <Text style={styles.title}>
+            {isSignup ? "Create Account" : "Welcome Back!"}
+          </Text>
 
           {isSignup && (
             <TextInput
@@ -127,9 +144,11 @@ export default function App() {
                 {interests.map((item) => (
                   <View key={item} style={styles.checkboxRow}>
                     <Checkbox
-                      status={checkedItems.includes(item) ? "checked" : "unchecked"}
+                      status={
+                        checkedItems.includes(item) ? "checked" : "unchecked"
+                      }
                       onPress={() => toggleCheckbox(item)}
-                      color="#7c3aed"
+                      color="#614c86ff"
                     />
                     <Text>{item}</Text>
                   </View>
@@ -145,14 +164,18 @@ export default function App() {
                 <Checkbox
                   status={isProvider ? "checked" : "unchecked"}
                   onPress={() => setIsProvider(!isProvider)}
-                  color="#7c3aed"
+                  color="#59467aff"
                 />
                 <Text style={styles.providerText}>I’m a Service Provider</Text>
               </View>
 
               {isProvider && (
                 <>
-                  <TextInput label="Service Type" mode="outlined" style={styles.input} />
+                  <TextInput
+                    label="Service Type"
+                    mode="outlined"
+                    style={styles.input}
+                  />
                   <TextInput
                     label="Hourly Rate ($)"
                     mode="outlined"
@@ -186,7 +209,11 @@ export default function App() {
 
                   <View style={styles.imageContainer}>
                     {images.map((uri, index) => (
-                      <Image key={index} source={{ uri }} style={styles.imagePreview} />
+                      <Image
+                        key={index}
+                        source={{ uri }}
+                        style={styles.imagePreview}
+                      />
                     ))}
                   </View>
                 </>
@@ -224,26 +251,52 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 25,
     padding: 25,
-    shadowColor: "#6b21a8",
+    shadowColor: "#5a2d80ff",
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 7,
   },
   logo: { width: 90, height: 90, alignSelf: "center", marginBottom: 15 },
-  title: { textAlign: "center", fontSize: 22, fontWeight: "bold", marginBottom: 15, color: "#5b21b6" },
-  subtitle: { marginTop: 10, fontWeight: "600", fontSize: 16, color: "#4c1d95" },
+  title: {
+    textAlign: "center",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#543980ff",
+  },
+  subtitle: {
+    marginTop: 10,
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#3e2367ff",
+  },
   input: { marginVertical: 8 },
-  button: { marginTop: 15, backgroundColor: "#7c3aed", borderRadius: 15, paddingVertical: 5 },
+  button: {
+    marginTop: 15,
+    backgroundColor: "#5e497eff",
+    borderRadius: 15,
+    paddingVertical: 5,
+  },
   uploadButton: { marginTop: 10, backgroundColor: "#a78bfa", borderRadius: 10 },
-  switchText: { textAlign: "center", marginTop: 10, color: "#5b21b6" },
-  forgotText: { textAlign: "right", color: "#7c3aed", marginVertical: 5, textDecorationLine: "underline", fontWeight: "500" },
+  switchText: { textAlign: "center", marginTop: 10, color: "#603f97ff" },
+  forgotText: {
+    textAlign: "right",
+    color: "#694c9bff",
+    marginVertical: 5,
+    textDecorationLine: "underline",
+    fontWeight: "500",
+  },
   checkboxContainer: { flexDirection: "row", flexWrap: "wrap" },
   checkboxRow: { flexDirection: "row", alignItems: "center", width: "50%" },
   divider: { height: 1, backgroundColor: "#ddd", marginVertical: 15 },
-  providerTitle: { fontSize: 16, fontWeight: "600", color: "#5b21b6", marginBottom: 5 },
+  providerTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#5b21b6",
+    marginBottom: 5,
+  },
   providerRow: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   providerText: { color: "#5b21b6", fontWeight: "500" },
   imageContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 10 },
   imagePreview: { width: 90, height: 90, borderRadius: 10, margin: 5 },
-
 });
