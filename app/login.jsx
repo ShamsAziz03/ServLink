@@ -310,3 +310,4 @@ const styles = StyleSheet.create({
   interestText: { fontSize: 15, color: "#6a5c7b", fontWeight: "600" },
   interestTextSelected: { color: "#fff" },
 });
+///hello
