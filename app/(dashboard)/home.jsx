@@ -244,9 +244,14 @@ const home = () => {
                 key={index}
                 style={{
                   alignItems: "center",
-                  backgroundColor: "#e4dce7ff",
+                  backgroundColor: "#f3e8f7ff",
                   padding: 20,
                   borderRadius: 10,
+                  shadowColor: "#593962ff",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 16,
+                  elevation: 15,
                 }}
               >
                 <Text
