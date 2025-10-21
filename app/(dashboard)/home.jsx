@@ -111,7 +111,7 @@ const home = () => {
     },
   ];
   const categories = [
-    { name: "Hanyman", img: require("../../assets/handyman.png") },
+    { name: "Handyman", img: require("../../assets/handyman.png") },
     { name: "Agriculture", img: require("../../assets/agriculture.png") },
     { name: "Cleaning", img: require("../../assets/cleaning.png") },
     {
@@ -227,7 +227,7 @@ const home = () => {
           </View>
 
           {/* view for catigories */}
-          <Text style={[styles.title, { textAlign: "left" }]}>
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
             SREVICE CATEGORIES
           </Text>
           <ScrollView
@@ -240,13 +240,52 @@ const home = () => {
             }}
           >
             {categories.map((category, index) => (
-              <View key={index}>
-                <Text>{category.name}</Text>
-                <Image
-                  source={category.img}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+              <View
+                key={index}
+                style={{
+                  alignItems: "center",
+                  backgroundColor: "#f3e8f7ff",
+                  padding: 20,
+                  borderRadius: 10,
+                  shadowColor: "#593962ff",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 16,
+                  elevation: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 24,
+                    textAlign: "center",
+                    color: "#4d045d88",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {category.name}
+                </Text>
+                <Image source={category.img} resizeMode="contain" />
+                <Link
+                  href="/login"
+                  style={{
+                    marginTop: 20,
+                    padding: 5,
+                    backgroundColor: "#750d83ff",
+                    borderRadius: 10,
+                    textAlign: "center",
+                    width: width / 4,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#e4e0e6ff",
+                      fontSize: 16,
+                      fontFamily: "Inter-Black",
+                    }}
+                  >
+                    Book
+                  </Text>
+                </Link>
               </View>
             ))}
           </ScrollView>
