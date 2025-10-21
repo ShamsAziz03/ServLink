@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { TextInput, Button, Text, Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
@@ -19,7 +13,6 @@ export default function App() {
   const [location, setLocation] = useState("");
 
   const interests = [
-<<<<<<< HEAD
   {
     name: "Cleaning",
     icon: "https://cdn-icons-png.flaticon.com/128/994/994928.png", 
@@ -46,14 +39,6 @@ export default function App() {
   },
 ];
 
-=======
-    "Cleaning",
-    "Painting",
-    "Gardening",
-    "Decoration",
-    "Child Care",
-  ];
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
 
   const toggleCheckbox = (item) => {
     setCheckedItems((prev) =>
@@ -62,8 +47,7 @@ export default function App() {
   };
 
   const pickImage = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       alert("Permission to access gallery is required!");
       return;
@@ -93,16 +77,9 @@ export default function App() {
   };
 
   return (
-<<<<<<< HEAD
     <LinearGradient 
   colors={["#630436", "#8b2b82", "#c287c8"]} 
   style={styles.container}>
-=======
-    <LinearGradient
-      colors={["#d8b4fe", "#a78bfa", "#594182ff"]}
-      style={styles.container}
-    >
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
           <Image
@@ -111,14 +88,9 @@ export default function App() {
             }}
             style={styles.logo}
           />
-<<<<<<< HEAD
 
-=======
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
 
-          <Text style={styles.title}>
-            {isSignup ? "Create Account" : "Welcome Back!"}
-          </Text>
+          <Text style={styles.title}>{isSignup ? "Create Account" : "Welcome Back!"}</Text>
 
           {isSignup && (
             <TextInput
@@ -181,7 +153,6 @@ export default function App() {
               <Text style={styles.subtitle}>Select Your Interests</Text>
               <View style={styles.interestsContainer}>
                 {interests.map((item) => (
-<<<<<<< HEAD
                   <TouchableOpacity
                     key={item.name}
                     style={[
@@ -200,18 +171,6 @@ export default function App() {
                       {item.name}
                     </Text>
                   </TouchableOpacity>
-=======
-                  <View key={item} style={styles.checkboxRow}>
-                    <Checkbox
-                      status={
-                        checkedItems.includes(item) ? "checked" : "unchecked"
-                      }
-                      onPress={() => toggleCheckbox(item)}
-                      color="#614c86ff"
-                    />
-                    <Text>{item}</Text>
-                  </View>
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
                 ))}
               </View>
 
@@ -224,18 +183,14 @@ export default function App() {
                 <Checkbox
                   status={isProvider ? "checked" : "unchecked"}
                   onPress={() => setIsProvider(!isProvider)}
-                  color="#59467aff"
+                  color="#7c3aed"
                 />
                 <Text style={styles.providerText}>I’m a Service Provider</Text>
               </View>
 
               {isProvider && (
                 <>
-                  <TextInput
-                    label="Service Type"
-                    mode="outlined"
-                    style={styles.input}
-                  />
+                  <TextInput label="Service Type" mode="outlined" style={styles.input} />
                   <TextInput
                     label="Hourly Rate ($)"
                     mode="outlined"
@@ -269,11 +224,7 @@ export default function App() {
 
                   <View style={styles.imageContainer}>
                     {images.map((uri, index) => (
-                      <Image
-                        key={index}
-                        source={{ uri }}
-                        style={styles.imagePreview}
-                      />
+                      <Image key={index} source={{ uri }} style={styles.imagePreview} />
                     ))}
                   </View>
                 </>
@@ -310,17 +261,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f0fa", // خلفية فاتحة
     borderRadius: 25,
     padding: 25,
-<<<<<<< HEAD
     shadowColor: "#37043a", // ظل بنفسجي غامق
-=======
-    shadowColor: "#5a2d80ff",
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 7,
   },
   logo: { width: 90, height: 90, alignSelf: "center", marginBottom: 15 },
-<<<<<<< HEAD
   title: { textAlign: "center", fontSize: 22, fontWeight: "bold", marginBottom: 15, color: "#6a5c7b" },
   subtitle: { marginTop: 10, fontWeight: "600", fontSize: 16, color: "#6a5c7b" },
   input: { marginVertical: 8, backgroundColor: "#ede9fe" }, // خلفية فاتحة للنصوص
@@ -332,51 +278,10 @@ const styles = StyleSheet.create({
   checkboxRow: { flexDirection: "row", alignItems: "center", width: "50%" },
   divider: { height: 1, backgroundColor: "#c287c8", marginVertical: 15 },
   providerTitle: { fontSize: 16, fontWeight: "600", color: "#6a5c7b", marginBottom: 5 },
-=======
-  title: {
-    textAlign: "center",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#543980ff",
-  },
-  subtitle: {
-    marginTop: 10,
-    fontWeight: "600",
-    fontSize: 16,
-    color: "#3e2367ff",
-  },
-  input: { marginVertical: 8 },
-  button: {
-    marginTop: 15,
-    backgroundColor: "#5e497eff",
-    borderRadius: 15,
-    paddingVertical: 5,
-  },
-  uploadButton: { marginTop: 10, backgroundColor: "#a78bfa", borderRadius: 10 },
-  switchText: { textAlign: "center", marginTop: 10, color: "#603f97ff" },
-  forgotText: {
-    textAlign: "right",
-    color: "#694c9bff",
-    marginVertical: 5,
-    textDecorationLine: "underline",
-    fontWeight: "500",
-  },
-  checkboxContainer: { flexDirection: "row", flexWrap: "wrap" },
-  checkboxRow: { flexDirection: "row", alignItems: "center", width: "50%" },
-  divider: { height: 1, backgroundColor: "#ddd", marginVertical: 15 },
-  providerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#5b21b6",
-    marginBottom: 5,
-  },
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
   providerRow: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   providerText: { color: "#6a5c7b", fontWeight: "500" },
   imageContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 10 },
   imagePreview: { width: 90, height: 90, borderRadius: 10, margin: 5 },
-<<<<<<< HEAD
   interestsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -404,6 +309,4 @@ const styles = StyleSheet.create({
   interestImage: { width: 45, height: 45, marginBottom: 5 },
   interestText: { fontSize: 15, color: "#6a5c7b", fontWeight: "600" },
   interestTextSelected: { color: "#fff" },
-=======
->>>>>>> 9a93a39464844268687819cc97d2dd291a545ede
 });
