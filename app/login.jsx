@@ -184,7 +184,7 @@ export default function App() {
                 <Checkbox
                   status={isProvider ? "checked" : "unchecked"}
                   onPress={() => setIsProvider(!isProvider)}
-                  color="#7c3aed"
+                  color="#750d83ff"
                 />
                 <Text style={styles.providerText}>I’m a Service Provider</Text>
               </View>
@@ -259,10 +259,10 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingBottom: 100 },
   card: {
     width: "90%",
-    backgroundColor: "#f5f0fa", // خلفية فاتحة
+    backgroundColor: "#f5f0fa", 
     borderRadius: 25,
     padding: 25,
-    shadowColor: "#37043a", // ظل بنفسجي غامق
+    shadowColor: "#37043a", 
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 7,
@@ -270,14 +270,14 @@ const styles = StyleSheet.create({
   logo: { width: 90, height: 90, alignSelf: "center", marginBottom: 15 },
   title: { textAlign: "center", fontSize: 22, fontWeight: "bold", marginBottom: 15, color: "#6a5c7b" },
   subtitle: { marginTop: 10, fontWeight: "600", fontSize: 16, color: "#6a5c7b" },
-  input: { marginVertical: 8, backgroundColor: "#ede9fe" }, // خلفية فاتحة للنصوص
+  input: { marginVertical: 8, backgroundColor: "#ede9fe" },  
  button: { 
   marginTop: 15, 
-  backgroundColor: "#5c0f5f", // لون أفتح شوي للزر
+  backgroundColor: "#750d83ff",   
   borderRadius: 15, 
   paddingVertical: 5 
 },
-  uploadButton: { marginTop: 10, backgroundColor: "#6a5c7b", borderRadius: 10 },
+  uploadButton: { marginTop: 10, backgroundColor: "#78688fff", borderRadius: 10 },
   switchText: { textAlign: "center", marginTop: 10, color: "#6a5c7b" },
   forgotText: { textAlign: "right", color: "#c287c8", marginVertical: 5, textDecorationLine: "underline", fontWeight: "500" },
   checkboxContainer: { flexDirection: "row", flexWrap: "wrap" },
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: "#c287c8", marginVertical: 15 },
   providerTitle: { fontSize: 16, fontWeight: "600", color: "#6a5c7b", marginBottom: 5 },
   providerRow: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  providerText: { color: "#6a5c7b", fontWeight: "500" },
+  providerText: { color: "#750d83ff", fontWeight: "500" },
   imageContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 10 },
   imagePreview: { width: 90, height: 90, borderRadius: 10, margin: 5 },
   interestsContainer: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   },
   interestCard: {
     width: "47%",
-    backgroundColor: "#ede9fe", // صندوق الاهتمامات فاتح
+    backgroundColor: "#ede9fe",  
     borderRadius: 15,
     alignItems: "center",
     paddingVertical: 12,
@@ -306,9 +306,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   interestCardSelected: {
-  borderColor: "#5c0f5f",
-  backgroundColor: "#5c0f5f", // أفتح شوي من السابق
-  shadowColor: "#5c0f5f",
+  borderColor: "#750d83ff",
+  backgroundColor: "#750d83ff",    
+  shadowColor: "#750d83ff",
   shadowOpacity: 0.3,
   shadowRadius: 5,
 },
