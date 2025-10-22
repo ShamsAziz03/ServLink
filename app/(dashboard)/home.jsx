@@ -9,10 +9,23 @@ import {
   View,
   Image,
   ScrollView,
+  Pressable,
 } from "react-native";
 
 import React, { useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
+
+function getStars(rating) {
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    if (rating - 1 < i) {
+      stars.push(<Text style={{ fontSize: 27, color: "#000000ff" }}>☆</Text>);
+    } else {
+      stars.push(<Text style={{ fontSize: 27, color: "#dee90dff" }}>★</Text>);
+    }
+  }
+  return stars;
+}
 
 const home = () => {
   const insets = useSafeAreaInsets();
@@ -111,25 +124,127 @@ const home = () => {
     },
   ];
   const categories = [
-    { name: "Handyman", img: require("../../assets/handyman.png") },
-    { name: "Agriculture", img: require("../../assets/agriculture.png") },
-    { name: "Cleaning", img: require("../../assets/cleaning.png") },
+    { id: 1, name: "Handyman", img: require("../../assets/handyman.png") },
     {
+      id: 2,
+      name: "Agriculture",
+      img: require("../../assets/agriculture.png"),
+    },
+    { id: 3, name: "Cleaning", img: require("../../assets/cleaning.png") },
+    {
+      id: 4,
       name: "Furniture Moving",
       img: require("../../assets/furnituremoving.png"),
     },
-    { name: "Childcare", img: require("../../assets/childcare.png") },
-    { name: "Pet Care", img: require("../../assets/petcare.png") },
+    { id: 5, name: "Childcare", img: require("../../assets/childcare.png") },
+    { id: 6, name: "Pet Care", img: require("../../assets/petcare.png") },
     {
+      id: 7,
       name: "IT / Computer Services",
       img: require("../../assets/itservices.png"),
     },
     {
+      id: 8,
       name: "Private Lessons",
       img: require("../../assets/privatelessons.png"),
     },
   ];
+  const suggested = [
+    {
+      id: 1,
+      title: "Assemble furniture",
+      category: "Handyman",
+      img: require("../../assets/Assemble_and_install_furniture2.jpg"),
+      price: 50,
+    },
+    {
+      id: 2,
+      title: "Baby Sitting",
+      category: "Children",
+      img: require("../../assets/Babysitting.jpg"),
+      price: 20,
+    },
+    {
+      id: 3,
+      title: "Helping disabled at home",
+      category: "Home Help",
+      img: require("../../assets/Helping_elderly_disabled_at_home.jpg"),
+      price: 70,
+    },
+    {
+      id: 4,
+      title: "Full Furniture Relocation",
+      category: "Furniture Moving Services",
+      img: require("../../assets/Full_furniture_relocation.jpg"),
+      price: 50,
+    },
+  ];
 
+  const mostBooked = [
+    {
+      id: 1,
+      title: "Installing Electrical Sockets",
+      category: "Handyman",
+      img: require("../../assets/Installing_electrical_sockets.jpg"),
+      price: 30,
+    },
+    {
+      id: 2,
+      title: "Pipe Work (Plumbing)",
+      category: "Handyman",
+      img: require("../../assets/pipe_work (plumbing).jpg"),
+      price: 40,
+    },
+    {
+      id: 3,
+      title: "Academic tutoring (math/science)",
+      category: "Private Lessons",
+      img: require("../../assets/private_language_lessons.jpg"),
+      price: 70,
+    },
+    {
+      id: 4,
+      title: "Tree Trimming",
+      category: "Gardening",
+      img: require("../../assets/Tree_trimming.jpg"),
+      price: 50,
+    },
+  ];
+
+  const topProviders = [
+    {
+      id: 1,
+      name: "Omar Khaled",
+      serviceName: "Installing Electrical Sockets",
+      img: require("../../assets/topProviders/icon1.jpg"),
+      price: 30,
+      rating: 4,
+    },
+    {
+      id: 2,
+      name: "Fadi Rami",
+      serviceName: "Pipe Work (Plumbing)",
+      img: require("../../assets/topProviders/icon2.jpg"),
+      price: 40,
+      rating: 5,
+    },
+    {
+      id: 3,
+      name: "Sara Haddad",
+      serviceName: "Academic tutoring (math/science)",
+      img: require("../../assets/topProviders/icon3.jpg"),
+      price: 30,
+      rating: 4,
+    },
+    {
+      id: 4,
+      name: "Ziad Fares",
+      serviceName: "Tree Trimming",
+      img: require("../../assets/topProviders/icon4.jpg"),
+      price: 40,
+      rating: 3,
+    },
+  ];
   return (
     <View
       style={{
@@ -228,7 +343,7 @@ const home = () => {
 
           {/* view for catigories */}
           <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
-            What's in your mind?
+            Service Categories
           </Text>
           <ScrollView
             horizontal
@@ -239,9 +354,9 @@ const home = () => {
               paddingHorizontal: 10,
             }}
           >
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <View
-                key={index}
+                key={category.id}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
@@ -249,9 +364,9 @@ const home = () => {
                   borderRadius: 10,
                   shadowColor: "#593962ff",
                   shadowOffset: { width: 0, height: 12 },
-                  shadowOpacity: 0.8,
+                  shadowOpacity: 0.6,
                   shadowRadius: 16,
-                  elevation: 15,
+                  elevation: 10,
                 }}
               >
                 <Text
@@ -291,24 +406,194 @@ const home = () => {
           </ScrollView>
 
           {/* view for suggested for u */}
-          <Text style={[styles.title, { textAlign: "left", paddingTop: 30 }]}>
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 60 }]}>
             Suggested for you
           </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={{
-              gap: 30,
-              padding: 30,
-              paddingHorizontal: 10,
+              gap: 40,
+              padding: 40,
+              paddingHorizontal: 30,
             }}
           >
-            {categories.map((category, index) => (
+            {suggested.map((suggest) => (
+              <Pressable
+                key={suggest.id}
+                onPress={() => {
+                  console.log("test");
+                }}
+              >
+                <View
+                  key={suggest.id}
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: "#f4e4feff",
+                    padding: 20,
+                    borderRadius: 10,
+                    shadowColor: "#593962ff",
+                    shadowOffset: { width: 0, height: 12 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 16,
+                    elevation: 15,
+                  }}
+                >
+                  <Image source={suggest.img} resizeMode="contain" />
+
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      width: 250,
+                      height: 200,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        textAlign: "center",
+                        color: "#17041c88",
+                        fontWeight: "bold",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {suggest.title}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        textAlign: "center",
+                        color: "#5b106b88",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {suggest.category}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 19,
+                        textAlign: "center",
+                        color: "#65347088",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {"Projects Starting at : " + suggest.price + " $"}
+                    </Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          {/* view for most booked services */}
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 60 }]}>
+            Most Booked Services
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={{
+              gap: 40,
+              padding: 40,
+              paddingHorizontal: 30,
+            }}
+          >
+            {mostBooked.map((book) => (
+              <Pressable
+                key={book.id}
+                onPress={() => {
+                  console.log("test");
+                }}
+              >
+                <View
+                  key={book.id}
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: "#f4e4feff",
+                    padding: 20,
+                    borderRadius: 10,
+                    shadowColor: "#593962ff",
+                    shadowOffset: { width: 0, height: 12 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 16,
+                    elevation: 15,
+                  }}
+                >
+                  <Image source={book.img} resizeMode="contain" />
+
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      width: 250,
+                      height: 200,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        textAlign: "center",
+                        color: "#17041c88",
+                        fontWeight: "bold",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {book.title}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        textAlign: "center",
+                        color: "#5b106b88",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {book.category}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 19,
+                        textAlign: "center",
+                        color: "#65347088",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {"Projects Starting at : " + book.price + " $"}
+                    </Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          {/* view for top rated providers */}
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 60 }]}>
+            Top Rated Providers
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={{
+              gap: 40,
+              padding: 40,
+              paddingHorizontal: 30,
+            }}
+          >
+            {topProviders.map((provider) => (
               <View
-                key={index}
+                key={provider.id}
                 style={{
                   alignItems: "center",
-                  backgroundColor: "#f3e8f7ff",
+                  backgroundColor: "#f4e4feff",
                   padding: 20,
                   borderRadius: 10,
                   shadowColor: "#593962ff",
@@ -318,54 +603,142 @@ const home = () => {
                   elevation: 15,
                 }}
               >
-                <Text
+                <Image
+                  source={provider.img}
+                  resizeMode="contain"
+                  style={{ borderRadius: 100, width: 200, height: 150 }}
+                />
+
+                <View
                   style={{
-                    fontSize: 24,
-                    textAlign: "center",
-                    color: "#4d045d88",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {category.name}
-                </Text>
-                <Image source={category.img} resizeMode="contain" />
-                <Link
-                  href="/login"
-                  style={{
-                    marginTop: 20,
-                    padding: 5,
-                    backgroundColor: "#750d83ff",
-                    borderRadius: 10,
-                    textAlign: "center",
-                    width: width / 4,
+                    flex: 1,
+                    justifyContent: "center",
+                    width: 250,
+                    height: 230,
+                    alignItems: "center",
                   }}
                 >
                   <Text
                     style={{
-                      color: "#e4e0e6ff",
-                      fontSize: 16,
-                      fontFamily: "Inter-Black",
+                      fontSize: 24,
+                      textAlign: "center",
+                      color: "#17041c88",
+                      fontWeight: "bold",
+                      flexWrap: "wrap",
                     }}
                   >
-                    Book
+                    {provider.name}
                   </Text>
-                </Link>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      textAlign: "center",
+                      color: "#5b106b88",
+                      fontWeight: "bold",
+                      paddingTop: 10,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {provider.serviceName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 19,
+                      textAlign: "center",
+                      color: "#5b106b88",
+                      fontWeight: "bold",
+                      paddingTop: 10,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {"PRICE: " + provider.price + " $"}
+                  </Text>
+                  <View
+                    style={{
+                      paddingTop: 10,
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    {getStars(provider.rating)}
+                  </View>
+                  <Link
+                    href="/"
+                    style={{
+                      marginTop: 10,
+                      backgroundColor: "#750d83ff",
+                      borderRadius: 10,
+                      textAlign: "center",
+                      width: width / 4,
+                      padding: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#ffffffff",
+                        fontWeight: "bold",
+                        size: 16,
+                      }}
+                    >
+                      Book
+                    </Text>
+                  </Link>
+                </View>
               </View>
             ))}
           </ScrollView>
 
-          {/* other page content */}
-          <Text style={{ fontSize: 42 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+          {/* view for sales */}
+          <Text style={[styles.title, { textAlign: "left", paddingTop: 60 }]}>
+            Offers & Discount
           </Text>
 
-          {/*  */}
+          {/* our social media  */}
+          <View style={{ paddingTop: 40, paddingBottom: 10 }}>
+            <Text
+              style={{
+                color: "#3b2d4bff",
+                fontSize: 24,
+                textAlign: "center",
+                paddingTop: 10,
+              }}
+            >
+              FOLLOW US ON
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                margin: 20,
+                justifyContent: "space-evenly",
+              }}
+            >
+              <Link href="https://www.instagram.com/">
+                <Ionicons name="logo-instagram" size={35} color="#57096fff" />
+              </Link>
+              <Link href="https://www.youtube.com/">
+                <Ionicons name="logo-youtube" size={35} color="#57096fff" />
+              </Link>
+              <Link href="https://www.facebook.com/">
+                <Ionicons name="logo-facebook" size={35} color="#57096fff" />
+              </Link>
+              <Link href="https://www.linkedin.com/">
+                <Ionicons name="logo-linkedin" size={35} color="#57096fff" />
+              </Link>
+            </View>
+            <Text
+              style={{
+                color: "#3b2d4bff",
+                fontSize: 15,
+                textAlign: "center",
+                paddingBottom: 10,
+              }}
+            >
+              © 2025 SevLink. All rights reserved
+            </Text>
+          </View>
+          {/* end of page */}
         </ScrollView>
       </View>
     </View>

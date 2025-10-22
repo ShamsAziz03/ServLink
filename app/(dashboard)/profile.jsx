@@ -10,6 +10,10 @@ const profile = () => {
         <Foundation name="list" size={40} color="black" />
       </Link>
       <Text style={{ paddingTop: 50 }}>profile</Text>
+      <Text style={{ paddingTop: 50 }}>go to popular questions page </Text>
+      <Text style={{ paddingTop: 50 }}>go to about us page</Text>
+      {/* popular questions */}
+      {/* about us  */}
     </View>
   );
 };
