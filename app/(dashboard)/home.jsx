@@ -20,9 +20,17 @@ function getStars(rating) {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     if (rating - 1 < i) {
-      stars.push(<Text style={{ fontSize: 27, color: "#000000ff" }}>☆</Text>);
+      stars.push(
+        <Text key={i} style={{ fontSize: 27, color: "#000000ff" }}>
+          ☆
+        </Text>
+      );
     } else {
-      stars.push(<Text style={{ fontSize: 27, color: "#dee90dff" }}>★</Text>);
+      stars.push(
+        <Text key={i} style={{ fontSize: 27, color: "#dee90dff" }}>
+          ★
+        </Text>
+      );
     }
   }
   return stars;
@@ -398,7 +406,7 @@ const home = () => {
                   style={{
                     marginTop: 20,
                     padding: 5,
-                    backgroundColor: "#750d83ff",
+                    backgroundColor: "#893696ff",
                     borderRadius: 10,
                     textAlign: "center",
                     width: width / 4,
@@ -587,7 +595,7 @@ const home = () => {
                     href="/"
                     style={{
                       marginTop: 10,
-                      backgroundColor: "#750d83ff",
+                      backgroundColor: "#893696ff",
                       borderRadius: 10,
                       textAlign: "center",
                       width: width / 4,
@@ -718,7 +726,7 @@ const home = () => {
                     href="/"
                     style={{
                       marginTop: 10,
-                      backgroundColor: "#750d83ff",
+                      backgroundColor: "#893696ff",
                       borderRadius: 10,
                       textAlign: "center",
                       width: width / 4,
