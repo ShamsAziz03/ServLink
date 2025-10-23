@@ -11,8 +11,7 @@ import {
   Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -53,30 +52,27 @@ export default function FAQScreen() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenIndex(openIndex === index ? null : index);
   };
-   const router = useRouter();
-
+const router = useRouter();
   return (
     <LinearGradient
       colors={["#e0c3f2ff", "#b57edcff", "#f5e1ffff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
-  <View style={styles.header}>
-    
-    <Text style={styles.title}>Frequently Asked Questions </Text>
-    <Image
-      source={{ uri: "https://cdn-icons-png.flaticon.com/128/11732/11732731.png" }}
-      style={{ width: 28, height: 28, marginRight: 10 ,marginTop:-25 }}
-      resizeMode="contain"
-    />
-  </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Frequently Asked Questions </Text>
+          <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/128/11732/11732731.png",
+            }}
+            style={{ width: 28, height: 28, marginRight: 10, marginTop: -25 }}
+            resizeMode="contain"
+          />
+        </View>
         {faqs.map((item, index) => (
           <TouchableOpacity
             key={index}
-            style={[
-              styles.card,
-              openIndex === index && styles.cardOpen,
-            ]}
+            style={[styles.card, openIndex === index && styles.cardOpen]}
             onPress={() => toggleFAQ(index)}
             activeOpacity={0.8}
           >
@@ -89,8 +85,8 @@ export default function FAQScreen() {
               >
                 {item.question}
               </Text>
-              <AntDesign
-                name="caretdown"
+              <Feather
+                name="chevrons-down"
                 size={20}
                 color={openIndex === index ? "#37043a" : "#6a5c7b"}
                 style={{
@@ -115,7 +111,7 @@ export default function FAQScreen() {
 
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() =>  router.push("/contact")}
+             onPress={() => router.push("/contact")}
           >
             <LinearGradient
               colors={["#b57edcff", "#750d83ff", "#750d83ff"]}
@@ -201,11 +197,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   header: {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: 20,
-   marginTop: 20,
-},
-
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+    marginTop: 20,
+  },
 });

@@ -14,14 +14,23 @@ import {
 
 import React, { useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
+import Card from "../../components/card";
 
 function getStars(rating) {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     if (rating - 1 < i) {
-      stars.push(<Text style={{ fontSize: 27, color: "#000000ff" }}>☆</Text>);
+      stars.push(
+        <Text key={i} style={{ fontSize: 27, color: "#000000ff" }}>
+          ☆
+        </Text>
+      );
     } else {
-      stars.push(<Text style={{ fontSize: 27, color: "#dee90dff" }}>★</Text>);
+      stars.push(
+        <Text key={i} style={{ fontSize: 27, color: "#dee90dff" }}>
+          ★
+        </Text>
+      );
     }
   }
   return stars;
@@ -83,8 +92,7 @@ const home = () => {
             }}
           >
             ServLink connects you with trusted local professionals for every
-            task — home, tech, care, or more. Book in minutes, chat directly,
-            and get things done quickly and confidently.
+            task. Book in minutes, chat directly, and get things done.
           </Text>
         </View>
       ),
@@ -245,6 +253,33 @@ const home = () => {
       rating: 3,
     },
   ];
+  const offers = [
+    {
+      id: 1,
+      title: "Home Cleaning Discount",
+      provider: "Omar Khaled",
+      img: require("../../assets/discounts/20_sale.jpg"),
+      oldPrice: 60,
+      newPrice: 12,
+    },
+    {
+      id: 2,
+      title: "Furniture Assembly Offer",
+      provider: "Samer Ahmad",
+      img: require("../../assets/discounts/50_sale.jpg"),
+      oldPrice: 80,
+      newPrice: 40,
+    },
+    {
+      id: 3,
+      title: "Gardening & Lawn Care Deal",
+      provider: "Sara Zahi",
+      img: require("../../assets/discounts/30_sale.jpg"),
+      oldPrice: 100,
+      newPrice: 70,
+    },
+  ];
+
   return (
     <View
       style={{
@@ -254,24 +289,10 @@ const home = () => {
       }}
     >
       {/* the first view - header */}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#f7eaf9ff",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Link href="/" style={{ paddingTop: 40, paddingLeft: 10 }}>
-          <Ionicons name="notifications" size={35} color="#57096fff" />
-        </Link>
-        <Image source={Logo} style={{ marginTop: 25 }} />
-        <Ionicons
-          name="search"
-          size={35}
-          color="#57096fff"
-          style={{ marginTop: 40, paddingRight: 15 }}
-        />
+      <View style={styles.header}>
+        <Ionicons name="notifications" size={30} color="#601d77ff" />
+        <Image source={Logo} style={styles.logo} resizeMode="contain" />
+        <Ionicons name="search" size={30} color="#601d77ff" />
       </View>
 
       {/* the second view - full page  */}
@@ -283,7 +304,7 @@ const home = () => {
           paddingTop: 15,
         }}
       >
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
           {/* view for image slider */}
           <View
             style={{ flex: 1, backgroundColor: "#f7eaf9ff", paddingTop: 20 }}
@@ -385,7 +406,7 @@ const home = () => {
                   style={{
                     marginTop: 20,
                     padding: 5,
-                    backgroundColor: "#750d83ff",
+                    backgroundColor: "#893696ff",
                     borderRadius: 10,
                     textAlign: "center",
                     width: width / 4,
@@ -425,67 +446,13 @@ const home = () => {
                   console.log("test");
                 }}
               >
-                <View
-                  key={suggest.id}
-                  style={{
-                    alignItems: "center",
-                    backgroundColor: "#f4e4feff",
-                    padding: 20,
-                    borderRadius: 10,
-                    shadowColor: "#593962ff",
-                    shadowOffset: { width: 0, height: 12 },
-                    shadowOpacity: 0.8,
-                    shadowRadius: 16,
-                    elevation: 15,
-                  }}
-                >
-                  <Image source={suggest.img} resizeMode="contain" />
-
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      width: 250,
-                      height: 200,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        textAlign: "center",
-                        color: "#17041c88",
-                        fontWeight: "bold",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {suggest.title}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        textAlign: "center",
-                        color: "#5b106b88",
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {suggest.category}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 19,
-                        textAlign: "center",
-                        color: "#65347088",
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {"Projects Starting at : " + suggest.price + " $"}
-                    </Text>
-                  </View>
-                </View>
+                <Card
+                  id={suggest.id}
+                  img={suggest.img}
+                  title={suggest.title}
+                  category={suggest.category}
+                  price={suggest.price}
+                />
               </Pressable>
             ))}
           </ScrollView>
@@ -510,67 +477,13 @@ const home = () => {
                   console.log("test");
                 }}
               >
-                <View
-                  key={book.id}
-                  style={{
-                    alignItems: "center",
-                    backgroundColor: "#f4e4feff",
-                    padding: 20,
-                    borderRadius: 10,
-                    shadowColor: "#593962ff",
-                    shadowOffset: { width: 0, height: 12 },
-                    shadowOpacity: 0.8,
-                    shadowRadius: 16,
-                    elevation: 15,
-                  }}
-                >
-                  <Image source={book.img} resizeMode="contain" />
-
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      width: 250,
-                      height: 200,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        textAlign: "center",
-                        color: "#17041c88",
-                        fontWeight: "bold",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {book.title}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        textAlign: "center",
-                        color: "#5b106b88",
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {book.category}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 19,
-                        textAlign: "center",
-                        color: "#65347088",
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {"Projects Starting at : " + book.price + " $"}
-                    </Text>
-                  </View>
-                </View>
+                <Card
+                  id={book.id}
+                  img={book.img}
+                  title={book.title}
+                  category={book.category}
+                  price={book.price}
+                />
               </Pressable>
             ))}
           </ScrollView>
@@ -593,7 +506,7 @@ const home = () => {
                 key={provider.id}
                 style={{
                   alignItems: "center",
-                  backgroundColor: "#f4e4feff",
+                  backgroundColor: "#f3e8f7ff",
                   padding: 20,
                   borderRadius: 10,
                   shadowColor: "#593962ff",
@@ -606,7 +519,7 @@ const home = () => {
                 <Image
                   source={provider.img}
                   resizeMode="contain"
-                  style={{ borderRadius: 100, width: 200, height: 150 }}
+                  style={{ borderRadius: 75, width: 100, height: 100 }}
                 />
 
                 <View
@@ -614,17 +527,22 @@ const home = () => {
                     flex: 1,
                     justifyContent: "center",
                     width: 250,
-                    height: 230,
+                    height: 220,
                     alignItems: "center",
                   }}
                 >
                   <Text
                     style={{
+                      flexWrap: "wrap",
                       fontSize: 24,
                       textAlign: "center",
-                      color: "#17041c88",
-                      fontWeight: "bold",
-                      flexWrap: "wrap",
+                      color: "#17041c",
+                      fontWeight: "700",
+                      textShadowColor: "#e0c0f0",
+                      textShadowOffset: { width: 1, height: 1 },
+                      textShadowRadius: 2,
+                      letterSpacing: 1,
+                      lineHeight: 28,
                     }}
                   >
                     {provider.name}
@@ -633,29 +551,39 @@ const home = () => {
                     style={{
                       fontSize: 20,
                       textAlign: "center",
-                      color: "#5b106b88",
+                      color: "#1c032188",
                       fontWeight: "bold",
                       paddingTop: 10,
                       flexWrap: "wrap",
+                      textShadowColor: "#d8a3ff",
+                      textShadowOffset: { width: 1, height: 1 },
+                      textShadowRadius: 1,
                     }}
                   >
                     {provider.serviceName}
                   </Text>
                   <Text
                     style={{
-                      fontSize: 19,
+                      fontSize: 18,
                       textAlign: "center",
-                      color: "#5b106b88",
-                      fontWeight: "bold",
-                      paddingTop: 10,
-                      flexWrap: "wrap",
+                      color: "#653470",
+                      fontWeight: "500",
+                      marginTop: 3,
+                      letterSpacing: 0.5,
+                      backgroundColor: "#f0e0f5",
+                      borderRadius: 6,
+                      paddingHorizontal: 6,
+                      paddingVertical: 5,
+                      alignSelf: "center",
+                      shadowColor: "#000",
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
                     }}
                   >
-                    {"PRICE: " + provider.price + " $"}
+                    {provider.price + " $"}
                   </Text>
                   <View
                     style={{
-                      paddingTop: 10,
                       flex: 1,
                       flexDirection: "row",
                       justifyContent: "space-evenly",
@@ -667,7 +595,7 @@ const home = () => {
                     href="/"
                     style={{
                       marginTop: 10,
-                      backgroundColor: "#750d83ff",
+                      backgroundColor: "#893696ff",
                       borderRadius: 10,
                       textAlign: "center",
                       width: width / 4,
@@ -693,6 +621,132 @@ const home = () => {
           <Text style={[styles.title, { textAlign: "left", paddingTop: 60 }]}>
             Offers & Discount
           </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={{
+              gap: 40,
+              padding: 40,
+              paddingHorizontal: 30,
+            }}
+          >
+            {offers.map((offer) => (
+              <View
+                key={offer.id}
+                style={{
+                  alignItems: "center",
+                  backgroundColor: "#f3e8f7ff",
+                  padding: 20,
+                  borderRadius: 10,
+                  shadowColor: "#593962ff",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 16,
+                  elevation: 15,
+                }}
+              >
+                <Image
+                  source={offer.img}
+                  resizeMode="contain"
+                  style={{ borderRadius: 60, width: 100, height: 100 }}
+                />
+
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    width: 250,
+                    height: 200,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      flexWrap: "wrap",
+                      fontSize: 24,
+                      textAlign: "center",
+                      color: "#17041c",
+                      fontWeight: "700",
+                      textShadowColor: "#e0c0f0",
+                      textShadowOffset: { width: 1, height: 1 },
+                      textShadowRadius: 2,
+                      letterSpacing: 1,
+                      lineHeight: 28,
+                    }}
+                  >
+                    {offer.title}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      textAlign: "center",
+                      color: "#1c032188",
+                      fontWeight: "bold",
+                      paddingTop: 10,
+                      flexWrap: "wrap",
+                      textShadowColor: "#d8a3ff",
+                      textShadowOffset: { width: 1, height: 1 },
+                      textShadowRadius: 1,
+                    }}
+                  >
+                    {offer.provider}
+                  </Text>
+                  <View style={{ flex: 1, flexDirection: "row", gap: 20 }}>
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        textAlign: "center",
+                        color: "#6d377588",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                        textDecorationLine: "line-through",
+                      }}
+                    >
+                      {offer.oldPrice + " $"}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        textAlign: "center",
+                        color: "#1e022588",
+                        fontWeight: "bold",
+                        paddingTop: 10,
+                        flexWrap: "wrap",
+                        textShadowColor: "#d8a3ff",
+                        textShadowOffset: { width: 1, height: 1 },
+                        textShadowRadius: 1,
+                      }}
+                    >
+                      {offer.newPrice + " $"}
+                    </Text>
+                  </View>
+
+                  <Link
+                    href="/"
+                    style={{
+                      marginTop: 10,
+                      backgroundColor: "#893696ff",
+                      borderRadius: 10,
+                      textAlign: "center",
+                      width: width / 4,
+                      padding: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#ffffffff",
+                        fontWeight: "bold",
+                        size: 16,
+                      }}
+                    >
+                      Book
+                    </Text>
+                  </Link>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
 
           {/* our social media  */}
           <View style={{ paddingTop: 40, paddingBottom: 10 }}>
@@ -732,7 +786,6 @@ const home = () => {
                 color: "#3b2d4bff",
                 fontSize: 15,
                 textAlign: "center",
-                paddingBottom: 10,
               }}
             >
               © 2025 SevLink. All rights reserved
@@ -748,6 +801,17 @@ const home = () => {
 export default home;
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#f7eaf9ff",
+  },
+  logo: {
+    width: 130,
+    height: 100,
+  },
   slide: {
     flex: 1,
     alignItems: "center",
