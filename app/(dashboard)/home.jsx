@@ -304,7 +304,10 @@ const home = () => {
           paddingTop: 15,
         }}
       >
-        <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
+        >
           {/* view for image slider */}
           <View
             style={{ flex: 1, backgroundColor: "#f7eaf9ff", paddingTop: 20 }}
@@ -368,7 +371,7 @@ const home = () => {
           </Text>
           <ScrollView
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               gap: 30,
               padding: 30,
@@ -432,7 +435,7 @@ const home = () => {
           </Text>
           <ScrollView
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               gap: 40,
               padding: 40,
@@ -463,7 +466,7 @@ const home = () => {
           </Text>
           <ScrollView
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               gap: 40,
               padding: 40,
@@ -494,7 +497,7 @@ const home = () => {
           </Text>
           <ScrollView
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               gap: 40,
               padding: 40,
@@ -623,7 +626,7 @@ const home = () => {
           </Text>
           <ScrollView
             horizontal
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               gap: 40,
               padding: 40,
