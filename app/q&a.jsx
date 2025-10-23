@@ -52,7 +52,7 @@ export default function FAQScreen() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenIndex(openIndex === index ? null : index);
   };
-
+const router = useRouter();
   return (
     <LinearGradient
       colors={["#e0c3f2ff", "#b57edcff", "#f5e1ffff"]}
@@ -111,7 +111,7 @@ export default function FAQScreen() {
 
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => alert("Opening support chat...")}
+             onPress={() => router.push("/contact")}
           >
             <LinearGradient
               colors={["#b57edcff", "#750d83ff", "#750d83ff"]}
