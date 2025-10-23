@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -52,6 +53,7 @@ export default function FAQScreen() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenIndex(openIndex === index ? null : index);
   };
+   const router = useRouter();
 
   return (
     <LinearGradient
@@ -113,7 +115,7 @@ export default function FAQScreen() {
 
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => alert("Opening support chat...")}
+            onPress={() =>  router.push("/contact")}
           >
             <LinearGradient
               colors={["#b57edcff", "#750d83ff", "#750d83ff"]}
