@@ -1,4 +1,4 @@
-import { Ionicons, Octicons, Foundation } from "@expo/vector-icons";
+import { Ionicons, Octicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 const DashboardLayout = () => {
@@ -7,20 +7,26 @@ const DashboardLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#bb9dc4ff",
-          paddingTop: 10,
-          hight: 90,
+          backgroundColor: "#f7eaf9ff",
+          borderTopColor: "#601d77ff",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 10,
         },
-        tabBarActiveTintColor: "#601d77ff",
-        tabBarInactiveTintColor: "#856a94ff",
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
-            <Ionicons size={24} name={focused ? "home" : "home-outline"} />
+            <AntDesign
+              name="home"
+              size={27}
+              color={focused ? "#320540ff" : "#6e5f74ff"}
+            />
           ),
         }}
       />
@@ -28,19 +34,27 @@ const DashboardLayout = () => {
       <Tabs.Screen
         name="myTasker"
         options={{
-          title: "My Taskers",
+          tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
-            <Ionicons size={24} name={focused ? "heart" : "heart-outline"} />
+            <Ionicons
+              size={27}
+              name="heart"
+              color={focused ? "#320540ff" : "#6e5f74ff"}
+            />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="profile"
+        name="setting"
         options={{
-          title: "Profile",
+          tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
-            <Ionicons size={24} name={focused ? "person" : "person-outline"} />
+            <Ionicons
+              name="settings-sharp"
+              size={27}
+              color={focused ? "#320540ff" : "#6e5f74ff"}
+            />
           ),
         }}
       />
@@ -48,10 +62,10 @@ const DashboardLayout = () => {
       <Tabs.Screen
         name="tasks"
         options={{
-          title: "Tasks",
+          tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
             <Octicons
-              size={24}
+              size={27}
               name={"tasklist"}
               color={focused ? "#320540ff" : "#6e5f74ff"}
             />
