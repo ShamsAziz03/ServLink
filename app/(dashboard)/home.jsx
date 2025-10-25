@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Foundation, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Logo from "../../assets/logo.png";
 import {
@@ -15,6 +15,7 @@ import {
 import React, { useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
 import Card from "../../components/card";
+import Notification from "../../components/notification";
 
 function getStars(rating) {
   const stars = [];
@@ -39,6 +40,8 @@ function getStars(rating) {
 const home = () => {
   const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visible, setVisibility] = useState(false);
+
   const width = Dimensions.get("window").width;
   const list = [
     {
@@ -288,9 +291,16 @@ const home = () => {
         paddingTop: insets.top,
       }}
     >
+      <Notification visible={visible} onClose={() => setVisibility(false)} />
       {/* the first view - header */}
       <View style={styles.header}>
-        <Ionicons name="notifications" size={30} color="#601d77ff" />
+        <Pressable
+          onPress={() => {
+            setVisibility((prev) => !prev);
+          }}
+        >
+          <Ionicons name="notifications" size={30} color="#601d77ff" />
+        </Pressable>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Ionicons name="search" size={30} color="#601d77ff" />
       </View>
