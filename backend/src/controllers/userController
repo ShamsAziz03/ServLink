@@ -3,8 +3,7 @@ const bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
   const {
-    first_name, last_name, email, phone, password,
-    address, city, location_coordinates, interests, birth_date
+    first_name, last_name, email, phone, password, city, location_coordinates, interests, birth_date,role
   } = req.body;
 
   try {
@@ -17,10 +16,41 @@ exports.register = async (req, res) => {
 
     await User.createUser({
       first_name, last_name, email, phone, password_hash,
-      address, city, location_coordinates, interests, birth_date
+       city, location_coordinates, interests, birth_date,role
     });
 
     res.status(201).json({ message: "User registered successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await User.getUserByEmail(email);
+    if (rows.length === 0) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const user = rows[0];
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    // Optional: يمكنك إضافة JWT هنا
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+      },
+    });
 
   } catch (err) {
     res.status(500).json({ error: err.message });

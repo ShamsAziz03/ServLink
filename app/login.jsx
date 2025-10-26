@@ -4,6 +4,7 @@ import { TextInput, Button, Text, Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -15,9 +16,9 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [birth_date, setbirth_date] = useState("");
+  const router = useRouter();
 
   const interests = [
     { name: "Cleaning", icon: "https://cdn-icons-png.flaticon.com/128/994/994928.png" },
@@ -65,53 +66,74 @@ export default function App() {
   };
 
   // Handle registration
- const handleRegister = async () => {
-  const interestsString = checkedItems.join("-");
-  const role = isProvider ? "provider" : "user";
+  const handleRegister = async () => {
+    const interestsString = checkedItems.join("-");
 
-  const [first_name, last_name] = fullName.split(" ");
+    const role = isProvider ? "provider" : "user";
+    const [first_name, last_name] = fullName.split(" ");
 
-  const data = {
-    first_name,
-    last_name: last_name || "",
-    email,
-    phone,
-    password,
-    address,
-    city,
-    location_coordinates: location,
-    interests: interestsString,
-    birth_date,
-    role,
-  };
+    const data = {
+      first_name,
+      last_name: last_name || "",
+      email,
+      phone,
+      password,
+      city,
+      location_coordinates: location,
+      interests: interestsString,
+      birth_date,
+      role,
+    };
 
-  try {
-    const response = await fetch("http://192.168.1.14:5000/api/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    const text = await response.text(); // أولًا استلم النص الخام
-    console.log("Server response:", text);
-
-    // جرب تحويله إلى JSON فقط إذا كان JSON صالح
-    let resData;
     try {
-      resData = JSON.parse(text);
-    } catch (e) {
-      resData = null; // لو مش JSON
+      const response = await fetch("http://ip:5000/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const text = await response.text(); // أولًا استلم النص الخام
+      console.log("Server response:", text);
+
+      // جرب تحويله إلى JSON فقط إذا كان JSON صالح
+      let resData;
+      try {
+        resData = JSON.parse(text);
+      } catch (e) {
+        resData = null; // لو مش JSON
+      }
+
+      if (response.ok) {
+        alert("Account Created!");
+      } else {
+        alert(resData?.message || "Error occurred");
+      }
+    } catch (err) {
+      alert("Network Error: " + err.message);
     }
 
-    if (response.ok) {
-      alert("Account Created!");
-    } else {
-      alert(resData?.message || "Error occurred");
+  };
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://ip:5000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const resData = await response.json();
+
+      if (response.ok) {
+        alert("Login Successful! Welcome " + resData.user.first_name);
+        console.log(resData.user);
+          router.push("/home")
+      } else {
+        alert(resData.message || "Login failed");
+      }
+    } catch (err) {
+      alert("Network Error: " + err.message);
     }
-  } catch (err) {
-    alert("Network Error: " + err.message);
-  }
-};
+  };
 
 
   return (
@@ -135,21 +157,13 @@ export default function App() {
                 style={styles.input}
                 left={<TextInput.Icon icon="account" />}
               />
-
-              <TextInput
-                label="Address"
-                value={address}
-                onChangeText={setAddress}
-                mode="outlined"
-                style={styles.input}
-              />
-
               <TextInput
                 label="City"
                 value={city}
                 onChangeText={setCity}
                 mode="outlined"
                 style={styles.input}
+                left={<TextInput.Icon icon="city" />}
               />
 
               <TextInput
@@ -159,6 +173,7 @@ export default function App() {
                 placeholder="YYYY-MM-DD"
                 mode="outlined"
                 style={styles.input}
+                left={<TextInput.Icon icon="clock" />}
               />
             </>
           )}
@@ -294,7 +309,7 @@ export default function App() {
 
           <Button
             mode="contained"
-            onPress={handleRegister}
+            onPress={isSignup ? handleRegister : handleLogin}
             style={styles.button}
             labelStyle={{ fontSize: 16, fontWeight: "bold" }}
           >
