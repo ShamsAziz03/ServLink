@@ -1,0 +1,28 @@
+const User = require("../models/userModel");
+const bcrypt = require("bcrypt");
+
+exports.register = async (req, res) => {
+  const {
+    first_name, last_name, email, phone, password,
+    address, city, location_coordinates, interests, birth_date
+  } = req.body;
+
+  try {
+    const [existingUser] = await User.getUserByEmail(email);
+    if (existingUser.length > 0) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+
+    await User.createUser({
+      first_name, last_name, email, phone, password_hash,
+      address, city, location_coordinates, interests, birth_date
+    });
+
+    res.status(201).json({ message: "User registered successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

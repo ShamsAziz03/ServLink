@@ -11,34 +11,22 @@ export default function App() {
   const [isProvider, setIsProvider] = useState(false);
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [birth_date, setbirth_date] = useState("");
 
   const interests = [
-  {
-    name: "Cleaning",
-    icon: "https://cdn-icons-png.flaticon.com/128/994/994928.png", 
-  },
-  {
-    name: "Painting",
-    icon: "https://cdn-icons-png.flaticon.com/128/681/681582.png", // فرشاة تلوين
-  },
-  {
-    name: "Gardening",
-    icon: "https://cdn-icons-png.flaticon.com/128/1543/1543908.png",
-  },
-  {
-    name: "Decoration",
-    icon: "https://cdn-icons-png.flaticon.com/128/13375/13375974.png",
-  },
-  {
-    name: "Child Care",
-    icon: "https://cdn-icons-png.flaticon.com/128/10154/10154448.png",
-  },
-  {
-    name:"Teaching",
-    icon:"https://cdn-icons-png.flaticon.com/128/5344/5344646.png",
-  },
-];
-
+    { name: "Cleaning", icon: "https://cdn-icons-png.flaticon.com/128/994/994928.png" },
+    { name: "Painting", icon: "https://cdn-icons-png.flaticon.com/128/681/681582.png" },
+    { name: "Gardening", icon: "https://cdn-icons-png.flaticon.com/128/1543/1543908.png" },
+    { name: "Decoration", icon: "https://cdn-icons-png.flaticon.com/128/13375/13375974.png" },
+    { name: "Child Care", icon: "https://cdn-icons-png.flaticon.com/128/10154/10154448.png" },
+    { name: "Teaching", icon: "https://cdn-icons-png.flaticon.com/128/5344/5344646.png" },
+  ];
 
   const toggleCheckbox = (item) => {
     setCheckedItems((prev) =>
@@ -76,34 +64,109 @@ export default function App() {
     setLocation(`${loc.coords.latitude}, ${loc.coords.longitude}`);
   };
 
-  return (
-    <LinearGradient 
-  colors={["#e0c3f2ff", "#b57edcff","#750d83ff",]}
+  // Handle registration
+ const handleRegister = async () => {
+  const interestsString = checkedItems.join("-");
+  const role = isProvider ? "provider" : "user";
 
-  style={styles.container}>
+  const [first_name, last_name] = fullName.split(" ");
+
+  const data = {
+    first_name,
+    last_name: last_name || "",
+    email,
+    phone,
+    password,
+    address,
+    city,
+    location_coordinates: location,
+    interests: interestsString,
+    birth_date,
+    role,
+  };
+
+  try {
+    const response = await fetch("http://192.168.1.14:5000/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const text = await response.text(); // أولًا استلم النص الخام
+    console.log("Server response:", text);
+
+    // جرب تحويله إلى JSON فقط إذا كان JSON صالح
+    let resData;
+    try {
+      resData = JSON.parse(text);
+    } catch (e) {
+      resData = null; // لو مش JSON
+    }
+
+    if (response.ok) {
+      alert("Account Created!");
+    } else {
+      alert(resData?.message || "Error occurred");
+    }
+  } catch (err) {
+    alert("Network Error: " + err.message);
+  }
+};
+
+
+  return (
+    <LinearGradient colors={["#e0c3f2ff", "#b57edcff", "#750d83ff"]} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
           <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/128/15181/15181334.png",
-            }}
+            source={{ uri: "https://cdn-icons-png.flaticon.com/128/15181/15181334.png" }}
             style={styles.logo}
           />
-
 
           <Text style={styles.title}>{isSignup ? "Create Account" : "Welcome Back!"}</Text>
 
           {isSignup && (
-            <TextInput
-              label="Full Name"
-              mode="outlined"
-              style={styles.input}
-              left={<TextInput.Icon icon="account" />}
-            />
+            <>
+              <TextInput
+                label="Full Name"
+                value={fullName}
+                onChangeText={setFullName}
+                mode="outlined"
+                style={styles.input}
+                left={<TextInput.Icon icon="account" />}
+              />
+
+              <TextInput
+                label="Address"
+                value={address}
+                onChangeText={setAddress}
+                mode="outlined"
+                style={styles.input}
+              />
+
+              <TextInput
+                label="City"
+                value={city}
+                onChangeText={setCity}
+                mode="outlined"
+                style={styles.input}
+              />
+
+              <TextInput
+                label="Birth Date"
+                value={birth_date}
+                onChangeText={setbirth_date}
+                placeholder="YYYY-MM-DD"
+                mode="outlined"
+                style={styles.input}
+              />
+            </>
           )}
 
           <TextInput
             label="Email"
+            value={email}
+            onChangeText={setEmail}
             mode="outlined"
             style={styles.input}
             keyboardType="email-address"
@@ -111,13 +174,14 @@ export default function App() {
           />
           <TextInput
             label="Password"
+            value={password}
+            onChangeText={setPassword}
             mode="outlined"
             secureTextEntry
             style={styles.input}
             left={<TextInput.Icon icon="lock" />}
           />
 
-          {/* Forgot Password for login */}
           {!isSignup && (
             <TouchableOpacity onPress={() => alert("Reset Password Flow")}>
               <Text style={styles.forgotText}>Forgot Password?</Text>
@@ -126,9 +190,10 @@ export default function App() {
 
           {isSignup && (
             <>
-              {/* Phone & Location */}
               <TextInput
                 label="Phone Number"
+                value={phone}
+                onChangeText={setPhone}
                 mode="outlined"
                 keyboardType="phone-pad"
                 style={styles.input}
@@ -136,21 +201,17 @@ export default function App() {
               />
               <TextInput
                 label="Location"
+                value={location}
+                onChangeText={setLocation}
                 mode="outlined"
                 style={styles.input}
-                value={location}
                 placeholder="Use button to get location"
                 left={<TextInput.Icon icon="map-marker" />}
               />
-              <Button
-                mode="outlined"
-                onPress={getLocation}
-                style={{ marginBottom: 10 }}
-              >
+              <Button mode="outlined" onPress={getLocation} style={{ marginBottom: 10 }}>
                 Get Current Location
               </Button>
 
-              {/* Interests Section */}
               <Text style={styles.subtitle}>Select Your Interests</Text>
               <View style={styles.interestsContainer}>
                 {interests.map((item) => (
@@ -175,10 +236,8 @@ export default function App() {
                 ))}
               </View>
 
-              {/* Divider */}
               <View style={styles.divider} />
 
-              {/* Service Provider Section */}
               <Text style={styles.providerTitle}>Service Provider Section</Text>
               <View style={styles.providerRow}>
                 <Checkbox
@@ -235,7 +294,7 @@ export default function App() {
 
           <Button
             mode="contained"
-            onPress={() => alert(isSignup ? "Account Created!" : "Logged In!")}
+            onPress={handleRegister}
             style={styles.button}
             labelStyle={{ fontSize: 16, fontWeight: "bold" }}
           >
@@ -254,15 +313,16 @@ export default function App() {
     </LinearGradient>
   );
 }
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingBottom: 100 },
   card: {
     width: "90%",
-    backgroundColor: "#f5f0fa", 
+    backgroundColor: "#f5f0fa",
     borderRadius: 25,
     padding: 25,
-    shadowColor: "#37043a", 
+    shadowColor: "#37043a",
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 7,
@@ -270,13 +330,8 @@ const styles = StyleSheet.create({
   logo: { width: 90, height: 90, alignSelf: "center", marginBottom: 15 },
   title: { textAlign: "center", fontSize: 22, fontWeight: "bold", marginBottom: 15, color: "#6a5c7b" },
   subtitle: { marginTop: 10, fontWeight: "600", fontSize: 16, color: "#6a5c7b" },
-  input: { marginVertical: 8, backgroundColor: "#ede9fe" },  
- button: { 
-  marginTop: 15, 
-  backgroundColor: "#750d83ff",   
-  borderRadius: 15, 
-  paddingVertical: 5 
-},
+  input: { marginVertical: 8, backgroundColor: "#ede9fe" },
+  button: { marginTop: 15, backgroundColor: "#750d83ff", borderRadius: 15, paddingVertical: 5 },
   uploadButton: { marginTop: 10, backgroundColor: "#78688fff", borderRadius: 10 },
   switchText: { textAlign: "center", marginTop: 10, color: "#6a5c7b" },
   forgotText: { textAlign: "right", color: "#c287c8", marginVertical: 5, textDecorationLine: "underline", fontWeight: "500" },
@@ -296,7 +351,7 @@ const styles = StyleSheet.create({
   },
   interestCard: {
     width: "47%",
-    backgroundColor: "#ede9fe",  
+    backgroundColor: "#ede9fe",
     borderRadius: 15,
     alignItems: "center",
     paddingVertical: 12,
@@ -306,15 +361,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   interestCardSelected: {
-  borderColor: "#750d83ff",
-  backgroundColor: "#750d83ff",    
-  shadowColor: "#750d83ff",
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
-},
-
+    borderColor: "#750d83ff",
+    backgroundColor: "#750d83ff",
+    shadowColor: "#750d83ff",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
   interestImage: { width: 45, height: 45, marginBottom: 5 },
   interestText: { fontSize: 15, color: "#6a5c7b", fontWeight: "600" },
   interestTextSelected: { color: "#fff" },
 });
-///hello
