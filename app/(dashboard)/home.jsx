@@ -302,7 +302,9 @@ const home = () => {
           <Ionicons name="notifications" size={30} color="#601d77ff" />
         </Pressable>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
-        <Ionicons name="search" size={30} color="#601d77ff" />
+        <Link href="/search">
+          <Ionicons name="search" size={30} color="#601d77ff" />
+        </Link>
       </View>
 
       {/* the second view - full page  */}
