@@ -120,8 +120,6 @@ It serves **three main user types:**
 - 🌍 **Multi-language support (Arabic / English)**  
 - 🧾 **Auto-generated invoices for providers**  
 - 🗺️ **Real-time provider tracking**  
-- 📲 **Push notifications via Firebase**  
-- 🧑‍⚖️ **Dispute management automation**
 
 ---
 
