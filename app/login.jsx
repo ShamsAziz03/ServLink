@@ -111,21 +111,20 @@ export default function App() {
     };
 
     try {
-      const response = await fetch("http://ip:5000/api/users/register", {
+      const response = await fetch("http://10.0.0.2:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      const text = await response.text();  
+      const text = await response.text();
       console.log("Server response:", text);
 
-      
       let resData;
       try {
         resData = JSON.parse(text);
       } catch (e) {
-        resData = null; 
+        resData = null;
       }
 
       if (response.ok) {
@@ -139,7 +138,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://ip:5000/api/users/login", {
+      const response = await fetch("http://10.0.0.2:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
