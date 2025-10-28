@@ -117,15 +117,15 @@ export default function App() {
         body: JSON.stringify(data),
       });
 
-      const text = await response.text(); // أولًا استلم النص الخام
+      const text = await response.text();  
       console.log("Server response:", text);
 
-      // جرب تحويله إلى JSON فقط إذا كان JSON صالح
+      
       let resData;
       try {
         resData = JSON.parse(text);
       } catch (e) {
-        resData = null; // لو مش JSON
+        resData = null; 
       }
 
       if (response.ok) {

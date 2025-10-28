@@ -20,6 +20,35 @@ export default function ContactUsScreen() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
+    const handleSubmit = async () => {
+    if (!name || !email || !message) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+        const response = await fetch("http://ip:5000/contact-us", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, message }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Message sent successfully!");
+            setName("");
+            setEmail("");
+            setMessage("");
+        } else {
+            alert("Failed to sent message!");
+        }
+    } catch (error) {
+        alert("Network error!");
+        console.log(error);
+    }
+};
+
 
     return (
         <LinearGradient
@@ -86,7 +115,7 @@ export default function ContactUsScreen() {
                     </View>
 
                     {/* Submit Button */}
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                         <LinearGradient
                             colors={["#750d83ff", "#b57edcff"]}
                             style={styles.buttonGradient}

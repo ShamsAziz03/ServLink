@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const contactRoute = require("./routes/contactRoutes");
 const db = require("./config/db");
 
 // Middleware
@@ -18,7 +19,8 @@ app.use("/categories", categoryRoutes);
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
-
+app.use(express.json());
+app.use("/", contactRoute);
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
