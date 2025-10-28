@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 const db = require("./config/db");
 
 // Middleware
@@ -11,6 +12,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/users", userRoutes);
+
+app.use("/categories", categoryRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is running");
