@@ -12,7 +12,7 @@ import {
   Pressable,
 } from "react-native";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
 import Card from "../../components/card";
 import Notification from "../../components/notification";
@@ -134,32 +134,7 @@ const home = () => {
       ),
     },
   ];
-  const categories = [
-    { id: 1, name: "Handyman", img: require("../../assets/handyman.png") },
-    {
-      id: 2,
-      name: "Agriculture",
-      img: require("../../assets/agriculture.png"),
-    },
-    { id: 3, name: "Cleaning", img: require("../../assets/cleaning.png") },
-    {
-      id: 4,
-      name: "Furniture Moving",
-      img: require("../../assets/furnituremoving.png"),
-    },
-    { id: 5, name: "Childcare", img: require("../../assets/childcare.png") },
-    { id: 6, name: "Pet Care", img: require("../../assets/petcare.png") },
-    {
-      id: 7,
-      name: "IT / Computer Services",
-      img: require("../../assets/itservices.png"),
-    },
-    {
-      id: 8,
-      name: "Private Lessons",
-      img: require("../../assets/privatelessons.png"),
-    },
-  ];
+
   const suggested = [
     {
       id: 1,
@@ -283,6 +258,23 @@ const home = () => {
     },
   ];
 
+  const [categoriesData, setcategoriesData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/categories");
+      const fetchedData = await response.json();
+      setcategoriesData(fetchedData[0]);
+      console.log("Response:", fetchedData[0]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData(); // Initial load
+    const interval = setInterval(fetchData, 43200000); //every 12 hour
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <View
       style={{
@@ -390,9 +382,9 @@ const home = () => {
               paddingHorizontal: 10,
             }}
           >
-            {categories.map((category) => (
+            {categoriesData.map((category) => (
               <View
-                key={category.id}
+                key={category.category_id}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
@@ -415,7 +407,11 @@ const home = () => {
                 >
                   {category.name}
                 </Text>
-                <Image source={category.img} resizeMode="contain" />
+                <Image
+                  source={{ uri: category.cover_image }}
+                  resizeMode="contain"
+                  style={{ width: 200, height: 200 }}
+                />
                 <Link
                   href="/login"
                   style={{

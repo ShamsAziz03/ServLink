@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
-const categoryRoutes = require("./routes/categoryRoutes");
+const homeRoutes = require("./routes/homeRoutes");
 const contactRoute = require("./routes/contactRoutes");
 const db = require("./config/db");
 
@@ -14,7 +14,8 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 
-app.use("/categories", categoryRoutes);
+app.use("/homeInfo", homeRoutes);
+app.use("/assets", express.static("D:/ServLink/assets"));
 
 app.get("/", (req, res) => {
   res.send("Backend is running");
