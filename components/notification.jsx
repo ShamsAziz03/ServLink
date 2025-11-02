@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -10,56 +10,64 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Notification = ({ visible, onClose }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: "1",
-      title: "Friend Request",
-      message: "Anna sent you a friend request",
-      sent_at: new Date("2025-10-25T08:30:00"),
-    },
-    {
-      id: "2",
-      title: "System Alert",
-      message: "Your password will expire in 3 days",
-      sent_at: new Date("2025-10-25T09:15:00"),
-    },
-    {
-      id: "3",
-      title: "Promotion",
-      message: "Get 20% off on your next purchase",
-      sent_at: new Date("2025-10-25T10:00:00"),
-    },
-    {
-      id: "4",
-      title: "Message Alert",
-      message: "New message from Mike",
-      sent_at: new Date("2025-10-25T10:45:00"),
-    },
-    {
-      id: "5",
-      title: "Payment Confirmation",
-      message: "Your payment of $120 was successful",
-      sent_at: new Date("2025-10-25T11:30:00"),
-    },
-    {
-      id: "6",
-      title: "Event Reminder",
-      message: "Meeting with Sarah at 3 PM",
-      sent_at: new Date("2025-10-25T12:15:00"),
-    },
-    {
-      id: "7",
-      title: "System Update",
-      message: "Version 2.1.0 is available for download",
-      sent_at: new Date("2025-10-25T13:00:00"),
-    },
-  ]);
+const Notification = ({ visible, onClose, user_id }) => {
+  const [notifications, setNotifications] = useState([]);
+  const userId = user_id;
+
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
-  const deleteNotification = (id) => {
-    setNotifications(notifications.filter((n) => n.id !== id));
+
+  //to fetch notifications
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:5000/homeInfo/notifications/${userId}`
+      );
+      const fetchedData = await response.json();
+      setNotifications(fetchedData[0]);
+      console.log("Response:", fetchedData[0]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+  useEffect(() => {
+    if (visible) {
+      fetchNotifications();
+    }
+  }, [visible]);
+
+  //to delete data
+  const deleteNotification = async (id) => {
+    try {
+      if (id != -1) {
+        const response = await fetch(
+          `http://10.0.2.2:5000/homeInfo/deleteNotification/${id}`,
+          { method: "DELETE" }
+        );
+        const result = await response.json();
+        if (response.ok) {
+          console.log(result.message);
+        } else {
+          console.warn(result.message);
+        }
+      } else {
+        const response = await fetch(
+          `http://10.0.2.2:5000/homeInfo/deleteNotifications/${userId}`,
+          { method: "DELETE" }
+        );
+        const result = await response.json();
+        if (response.ok) {
+          console.log(result.message);
+        } else {
+          console.warn(result.message);
+        }
+      }
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error In Delete!!!", error);
+    }
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -94,7 +102,7 @@ const Notification = ({ visible, onClose }) => {
           >
             {notifications.map((notification) => (
               <View
-                key={notification.id}
+                key={notification.notification_id}
                 style={{
                   backgroundColor: "#f3e8f7ff",
                   padding: 20,
@@ -125,7 +133,7 @@ const Notification = ({ visible, onClose }) => {
                   </Text>
                   <Pressable
                     onPress={() => {
-                      deleteNotification(notification.id);
+                      deleteNotification(notification.notification_id);
                     }}
                   >
                     <MaterialIcons name="clear" size={20} color="#601d77ff" />
@@ -159,7 +167,7 @@ const Notification = ({ visible, onClose }) => {
           </ScrollView>
           <Pressable
             onPress={() => {
-              setNotifications([]);
+              deleteNotification(-1);
             }}
           >
             <Text

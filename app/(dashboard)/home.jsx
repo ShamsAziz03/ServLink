@@ -231,33 +231,8 @@ const home = () => {
       rating: 3,
     },
   ];
-  const offers = [
-    {
-      id: 1,
-      title: "Home Cleaning Discount",
-      provider: "Omar Khaled",
-      img: require("../../assets/discounts/20_sale.jpg"),
-      oldPrice: 60,
-      newPrice: 12,
-    },
-    {
-      id: 2,
-      title: "Furniture Assembly Offer",
-      provider: "Samer Ahmad",
-      img: require("../../assets/discounts/50_sale.jpg"),
-      oldPrice: 80,
-      newPrice: 40,
-    },
-    {
-      id: 3,
-      title: "Gardening & Lawn Care Deal",
-      provider: "Sara Zahi",
-      img: require("../../assets/discounts/30_sale.jpg"),
-      oldPrice: 100,
-      newPrice: 70,
-    },
-  ];
 
+  //for fetch categories
   const [categoriesData, setcategoriesData] = useState([]);
   const fetchData = async () => {
     try {
@@ -271,9 +246,26 @@ const home = () => {
   };
   useEffect(() => {
     fetchData(); // Initial load
-    const interval = setInterval(fetchData, 43200000); //every 12 hour
-    return () => clearInterval(interval);
   }, []);
+
+  //for fetch offers
+  const [offersData, setOffersData] = useState([]);
+  const fetchOffers = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/offers");
+      const fetchedDataOffers = await response.json();
+      setOffersData(fetchedDataOffers[0]);
+      console.log("Response:", fetchedDataOffers[0]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchOffers(); // Initial load
+  }, []);
+
+  //user Id
+  const [userId, setUserId] = useState(1);
 
   return (
     <View
@@ -283,7 +275,11 @@ const home = () => {
         paddingTop: insets.top,
       }}
     >
-      <Notification visible={visible} onClose={() => setVisibility(false)} />
+      <Notification
+        user_id={userId}
+        visible={visible}
+        onClose={() => setVisibility(false)}
+      />
       {/* the first view - header */}
       <View style={styles.header}>
         <Pressable
@@ -641,7 +637,7 @@ const home = () => {
               paddingHorizontal: 30,
             }}
           >
-            {offers.map((offer) => (
+            {offersData.map((offer) => (
               <View
                 key={offer.id}
                 style={{
@@ -657,7 +653,7 @@ const home = () => {
                 }}
               >
                 <Image
-                  source={offer.img}
+                  source={{ uri: offer.img_url }}
                   resizeMode="contain"
                   style={{ borderRadius: 60, width: 100, height: 100 }}
                 />
@@ -700,7 +696,7 @@ const home = () => {
                       textShadowRadius: 1,
                     }}
                   >
-                    {offer.provider}
+                    {offer.provider_name}
                   </Text>
                   <View style={{ flex: 1, flexDirection: "row", gap: 20 }}>
                     <Text
@@ -714,7 +710,7 @@ const home = () => {
                         textDecorationLine: "line-through",
                       }}
                     >
-                      {offer.oldPrice + " $"}
+                      {offer.old_price + " $"}
                     </Text>
                     <Text
                       style={{
@@ -729,7 +725,7 @@ const home = () => {
                         textShadowRadius: 1,
                       }}
                     >
-                      {offer.newPrice + " $"}
+                      {offer.new_price + " $"}
                     </Text>
                   </View>
 
