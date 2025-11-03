@@ -53,4 +53,56 @@ router.delete("/deleteNotifications/:user_id", async (req, res) => {
   res.json({ message: "Notifications deleted successfully" });
 });
 
+router.get("/topProviders", async (req, res) => {
+  try {
+    const query = `
+ SELECT  r.score , ps.base_price, u.first_name, u.last_name, s.name, sp.id_card_photo, sp.provider_id
+FROM ratings r
+JOIN bookings b ON r.booking_id = b.booking_id
+JOIN provider_services ps ON b.Provider_Services_id = ps.Provider_Services_id
+JOIN service_providers sp ON ps.provider_id = sp.provider_id
+JOIN users u ON sp.user_id = u.user_id
+JOIN services s ON ps.service_id = s.service_id
+ORDER BY r.score DESC, r.rated_at DESC
+LIMIT 4;
+    `;
+
+    const [rows] = await db.promise().execute(query);
+    res.send(rows);
+  } catch (err) {
+    console.error("SQL Error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", detail: err.message });
+  }
+});
+
+router.get("/mostBooked", async (req, res) => {
+  try {
+    const query = `
+SELECT 
+    s.service_id,
+    s.name AS service_name,
+    s.image AS service_image,
+    c.name AS category_name,
+    ps.base_price,
+    COUNT(*) AS total_bookings
+FROM bookings b
+JOIN provider_services ps ON b.Provider_Services_id = ps.Provider_Services_id
+JOIN services s ON ps.service_id = s.service_id
+JOIN categories c ON s.category_id = c.category_id
+GROUP BY s.service_id, s.name, s.image, c.name,ps.base_price
+ORDER BY total_bookings DESC
+LIMIT 5;
+    `;
+
+    const [rows] = await db.promise().execute(query);
+    res.send(rows);
+  } catch (err) {
+    console.error("SQL Error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", detail: err.message });
+  }
+});
 module.exports = router;

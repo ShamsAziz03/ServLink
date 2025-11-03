@@ -166,71 +166,8 @@ const home = () => {
     },
   ];
 
-  const mostBooked = [
-    {
-      id: 1,
-      title: "Installing Electrical Sockets",
-      category: "Handyman",
-      img: require("../../assets/Installing_electrical_sockets.jpg"),
-      price: 30,
-    },
-    {
-      id: 2,
-      title: "Pipe Work (Plumbing)",
-      category: "Handyman",
-      img: require("../../assets/pipe_work (plumbing).jpg"),
-      price: 40,
-    },
-    {
-      id: 3,
-      title: "Academic tutoring (math/science)",
-      category: "Private Lessons",
-      img: require("../../assets/private_language_lessons.jpg"),
-      price: 70,
-    },
-    {
-      id: 4,
-      title: "Tree Trimming",
-      category: "Gardening",
-      img: require("../../assets/Tree_trimming.jpg"),
-      price: 50,
-    },
-  ];
-
-  const topProviders = [
-    {
-      id: 1,
-      name: "Omar Khaled",
-      serviceName: "Installing Electrical Sockets",
-      img: require("../../assets/topProviders/icon1.jpg"),
-      price: 30,
-      rating: 4,
-    },
-    {
-      id: 2,
-      name: "Fadi Rami",
-      serviceName: "Pipe Work (Plumbing)",
-      img: require("../../assets/topProviders/icon2.jpg"),
-      price: 40,
-      rating: 5,
-    },
-    {
-      id: 3,
-      name: "Sara Haddad",
-      serviceName: "Academic tutoring (math/science)",
-      img: require("../../assets/topProviders/icon3.jpg"),
-      price: 30,
-      rating: 4,
-    },
-    {
-      id: 4,
-      name: "Ziad Fares",
-      serviceName: "Tree Trimming",
-      img: require("../../assets/topProviders/icon4.jpg"),
-      price: 40,
-      rating: 3,
-    },
-  ];
+  //user Id
+  const [userId, setUserId] = useState(1);
 
   //for fetch categories
   const [categoriesData, setcategoriesData] = useState([]);
@@ -244,9 +181,6 @@ const home = () => {
       console.error("Error fetching data:", error);
     }
   };
-  useEffect(() => {
-    fetchData(); // Initial load
-  }, []);
 
   //for fetch offers
   const [offersData, setOffersData] = useState([]);
@@ -260,12 +194,41 @@ const home = () => {
       console.error("Error fetching data:", error);
     }
   };
-  useEffect(() => {
-    fetchOffers(); // Initial load
-  }, []);
 
-  //user Id
-  const [userId, setUserId] = useState(1);
+  //for fetch top providers
+  const [topProviders, setTopProviders] = useState([]);
+  const fetchTopProviders = async () => {
+    try {
+      const response = await fetch(
+        "http://10.0.2.2:5000/homeInfo/topProviders"
+      );
+      const fetchedData = await response.json();
+      setTopProviders(fetchedData);
+      console.log("top providers:", fetchedData);
+    } catch (error) {
+      console.error("Error fetching top providers:", error);
+    }
+  };
+
+  //for most booked services
+  const [mostBooked, setMostBooked] = useState([]);
+  const fetchMostBooked = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/mostBooked");
+      const fetchedData = await response.json();
+      setMostBooked(fetchedData);
+      console.log("most booked:", fetchedData);
+    } catch (error) {
+      console.error("Error fetching most booked:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Initial load
+    fetchOffers();
+    fetchTopProviders();
+    fetchMostBooked();
+  }, []);
 
   return (
     <View
@@ -479,17 +442,17 @@ const home = () => {
           >
             {mostBooked.map((book) => (
               <Pressable
-                key={book.id}
+                key={book.service_id}
                 onPress={() => {
                   console.log("test");
                 }}
               >
                 <Card
-                  id={book.id}
-                  img={book.img}
-                  title={book.title}
-                  category={book.category}
-                  price={book.price}
+                  id={book.service_id}
+                  img={book.service_image}
+                  title={book.service_name}
+                  category={book.category_name}
+                  price={book.base_price}
                 />
               </Pressable>
             ))}
@@ -510,7 +473,7 @@ const home = () => {
           >
             {topProviders.map((provider) => (
               <View
-                key={provider.id}
+                key={provider.provider_id}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
@@ -524,7 +487,7 @@ const home = () => {
                 }}
               >
                 <Image
-                  source={provider.img}
+                  source={{ uri: provider.id_card_photo }}
                   resizeMode="contain"
                   style={{ borderRadius: 75, width: 100, height: 100 }}
                 />
@@ -552,7 +515,7 @@ const home = () => {
                       lineHeight: 28,
                     }}
                   >
-                    {provider.name}
+                    {provider.first_name + " " + provider.last_name}
                   </Text>
                   <Text
                     style={{
@@ -567,7 +530,7 @@ const home = () => {
                       textShadowRadius: 1,
                     }}
                   >
-                    {provider.serviceName}
+                    {provider.name}
                   </Text>
                   <Text
                     style={{
@@ -587,7 +550,7 @@ const home = () => {
                       shadowRadius: 2,
                     }}
                   >
-                    {provider.price + " $"}
+                    {provider.base_price + " $"}
                   </Text>
                   <View
                     style={{
@@ -596,7 +559,7 @@ const home = () => {
                       justifyContent: "space-evenly",
                     }}
                   >
-                    {getStars(provider.rating)}
+                    {getStars(provider.score)}
                   </View>
                   <Link
                     href="/"

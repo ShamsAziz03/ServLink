@@ -24,7 +24,7 @@ const Card = ({ id, img, title, category, price }) => {
         width: 280,
       }}
     >
-      <Image source={img} resizeMode="contain" style={styles.img} />
+      <Image source={{ uri: img }} resizeMode="contain" style={styles.img} />
 
       <View
         style={{
