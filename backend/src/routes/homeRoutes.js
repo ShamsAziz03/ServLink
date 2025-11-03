@@ -85,15 +85,15 @@ SELECT
     s.name AS service_name,
     s.image AS service_image,
     c.name AS category_name,
-    ps.base_price,
-    COUNT(*) AS total_bookings
+    COUNT(b.booking_id) AS total_bookings
 FROM bookings b
 JOIN provider_services ps ON b.Provider_Services_id = ps.Provider_Services_id
 JOIN services s ON ps.service_id = s.service_id
 JOIN categories c ON s.category_id = c.category_id
-GROUP BY s.service_id, s.name, s.image, c.name,ps.base_price
+GROUP BY s.service_id, s.name, s.image, c.name
 ORDER BY total_bookings DESC
 LIMIT 5;
+
     `;
 
     const [rows] = await db.promise().execute(query);

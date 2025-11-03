@@ -1,14 +1,6 @@
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 
-const Card = ({ id, img, title, category, price }) => {
+const Card = ({ id, img, title, category }) => {
   return (
     <View
       style={{
@@ -24,7 +16,13 @@ const Card = ({ id, img, title, category, price }) => {
         width: 280,
       }}
     >
-      <Image source={{ uri: img }} resizeMode="contain" style={styles.img} />
+      <Image
+        source={
+          typeof img === "string" && img.startsWith("http") ? { uri: img } : img
+        }
+        resizeMode="contain"
+        style={styles.img}
+      />
 
       <View
         style={{
@@ -66,27 +64,6 @@ const Card = ({ id, img, title, category, price }) => {
         >
           {category}
         </Text>
-
-        <Text
-          style={{
-            fontSize: 18,
-            textAlign: "center",
-            color: "#653470",
-            fontWeight: "500",
-            marginTop: 15,
-            letterSpacing: 0.5,
-            backgroundColor: "#f0e0f5",
-            borderRadius: 6,
-            paddingHorizontal: 6,
-            paddingVertical: 5,
-            alignSelf: "center",
-            shadowColor: "#000",
-            shadowOpacity: 0.1,
-            shadowRadius: 2,
-          }}
-        >
-          {"Starting at: " + price + " $"}
-        </Text>
       </View>
     </View>
   );
@@ -96,7 +73,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   img: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
   },
 });
