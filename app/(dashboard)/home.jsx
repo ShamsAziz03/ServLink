@@ -452,6 +452,7 @@ const home = () => {
                   img={book.service_image}
                   title={book.service_name}
                   category={book.category_name}
+                  price={book.base_price}
                 />
               </Pressable>
             ))}

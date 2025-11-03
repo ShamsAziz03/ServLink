@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 
-const Card = ({ id, img, title, category }) => {
+const Card = ({ id, img, title, category, price }) => {
   return (
     <View
       style={{
@@ -64,6 +64,27 @@ const Card = ({ id, img, title, category }) => {
         >
           {category}
         </Text>
+
+        <Text
+          style={{
+            fontSize: 18,
+            textAlign: "center",
+            color: "#653470",
+            fontWeight: "500",
+            marginTop: 15,
+            letterSpacing: 0.5,
+            backgroundColor: "#f0e0f5",
+            borderRadius: 6,
+            paddingHorizontal: 6,
+            paddingVertical: 5,
+            alignSelf: "center",
+            shadowColor: "#000",
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+          }}
+        >
+          {"Starting at: " + price + " $"}
+        </Text>
       </View>
     </View>
   );
@@ -73,7 +94,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   img: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   },
 });
