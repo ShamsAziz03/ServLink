@@ -16,6 +16,27 @@ import { LinearGradient } from "expo-linear-gradient";
 const ServicePage = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
+  function getStars(rating) {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      if (rating - 1 < i) {
+        stars.push(
+          <Text key={i} style={{ fontSize: 27, color: "#000000ff" }}>
+            ☆
+          </Text>
+        );
+      } else {
+        stars.push(
+          <Text key={i} style={{ fontSize: 27, color: "#660468ff" }}>
+            ★
+          </Text>
+        );
+      }
+    }
+    return stars;
+  }
+
+  const [activeCategory, setActiveCategory] = useState(1);
 
   const categoriesData = [
     {
@@ -59,7 +80,6 @@ const ServicePage = () => {
       icon: "book",
     },
   ];
-  const [activeCategory, setActiveCategory] = useState(1);
 
   const servicesData = [
     {
@@ -148,26 +168,6 @@ const ServicePage = () => {
       date_time: "2025-10-22 14:00:00",
     },
   ];
-
-  function getStars(rating) {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      if (rating - 1 < i) {
-        stars.push(
-          <Text key={i} style={{ fontSize: 27, color: "#000000ff" }}>
-            ☆
-          </Text>
-        );
-      } else {
-        stars.push(
-          <Text key={i} style={{ fontSize: 27, color: "#660468ff" }}>
-            ★
-          </Text>
-        );
-      }
-    }
-    return stars;
-  }
 
   return (
     <View
@@ -340,7 +340,7 @@ const ServicePage = () => {
             >
               {/* Gradient background */}
               <LinearGradient
-                colors={["#fdfbff", "#ebcdeeff"]}
+                colors={["#fdfbff", "#f1dbf4ff"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
