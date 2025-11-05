@@ -424,7 +424,7 @@ const CategoryPage = () => {
                   </Text>
 
                   {/* Description */}
-                  <Text
+                  {/* <Text
                     style={{
                       paddingTop: 5,
                       fontSize: 15,
@@ -439,7 +439,7 @@ const CategoryPage = () => {
                     }}
                   >
                     {service.description}
-                  </Text>
+                  </Text> */}
                   {/* price */}
                   <View
                     style={{
