@@ -141,7 +141,7 @@ const CategoryPage = () => {
     {
       feedback_id: 1,
       user_name: "ahmad ali",
-      service_id: 1,
+      category_id: 1,
       rating: 3,
       comment: "Furniture assembly was okay, met expectations.",
       date_time: "2025-10-18 12:00:00",
@@ -149,7 +149,7 @@ const CategoryPage = () => {
     {
       feedback_id: 2,
       user_name: "ahmad ali",
-      service_id: 2,
+      category_id: 1,
       rating: 4,
       comment: "Sink fixed well, minor delay in arrival.",
       date_time: "2025-10-13 09:00:00",
@@ -157,14 +157,38 @@ const CategoryPage = () => {
     {
       feedback_id: 3,
       user_name: "ahmad ali",
-      service_id: 4,
+      category_id: 4,
       rating: 5,
       comment: "Backyard looks amazing after tree trimming, highly satisfied!",
       date_time: "2025-10-27 10:30:00",
     },
     {
       feedback_id: 4,
-      service_id: 6,
+      category_id: 6,
+      user_name: "ahmad ali",
+      rating: 5,
+      comment: "Furniture assembled quickly and safely, excellent work!",
+      date_time: "2025-10-22 14:00:00",
+    },
+      {
+      feedback_id: 4,
+      category_id: 1,
+      user_name: "ahmad ali",
+      rating: 5,
+      comment: "Furniture assembled quickly and safely, excellent work!",
+      date_time: "2025-10-22 14:00:00",
+    },
+      {
+      feedback_id: 4,
+      category_id: 2,
+      user_name: "ahmad ali",
+      rating: 5,
+      comment: "Furniture assembled quickly and safely, excellent work!",
+      date_time: "2025-10-22 14:00:00",
+    },
+      {
+      feedback_id: 4,
+      category_id: 3,
       user_name: "ahmad ali",
       rating: 5,
       comment: "Furniture assembled quickly and safely, excellent work!",
@@ -329,106 +353,108 @@ const CategoryPage = () => {
             paddingHorizontal: 10,
           }}
         >
-          {servicesData.map((service) => (
-            <Pressable
-              key={service.service_id}
-              style={{
-                width: "48%",
-                margin: 2,
-                borderRadius: 12,
-                overflow: "hidden",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 3,
-                alignItems: "center",
-                marginBottom: 12,
-              }}
-              onPress={() => {
-                console.log(service.title);
-              }}
-            >
-              {/* Gradient background */}
-              <LinearGradient
-                colors={["#fdfbff", "#f1dbf4ff"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+          {servicesData
+            .filter((service) => service.category_id === activeCategory)
+            .map((service) => (
+              <Pressable
+                key={service.service_id}
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  padding: 10,
+                  width: "48%",
+                  margin: 2,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 3,
                   alignItems: "center",
-                  justifyContent: "flex-start",
+                  marginBottom: 12,
+                }}
+                onPress={() => {
+                  console.log(service.title);
                 }}
               >
-                {/* Service Image */}
-                <View style={{ width: "100%", height: 130, marginBottom: 8 }}>
-                  <Image
-                    source={{ uri: service.image }}
+                {/* Gradient background */}
+                <LinearGradient
+                  colors={["#fdfbff", "#f1dbf4ff"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    flex: 1,
+                    width: "100%",
+                    padding: 10,
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  {/* Service Image */}
+                  <View style={{ width: "100%", height: 130, marginBottom: 8 }}>
+                    <Image
+                      source={{ uri: service.image }}
+                      style={{
+                        width: "100%",
+                        height: 150,
+                        borderRadius: 8,
+                      }}
+                      resizeMode="cover"
+                    />
+                    <Pressable
+                      onPress={() => {
+                        console.log(service.title);
+                      }}
+                    >
+                      <FontAwesome
+                        name="shopping-cart"
+                        size={30}
+                        color="#f3eeeeff"
+                        style={{
+                          position: "absolute",
+                          bottom: 5,
+                          left: 5,
+                          backgroundColor: "#42013bff",
+                          padding: 6,
+                          borderRadius: 50,
+                        }}
+                      />
+                    </Pressable>
+                  </View>
+                  {/* Service Title */}
+                  <Text
                     style={{
-                      width: "100%",
-                      height: 150,
-                      borderRadius: 8,
-                    }}
-                    resizeMode="cover"
-                  />
-                  <Pressable
-                    onPress={() => {
-                      console.log(service.title);
+                      fontSize: 17,
+                      color: "#5f0557ff",
+                      textAlign: "center",
+                      paddingTop: 15,
+                      fontWeight: "900",
+                      textShadowColor: "#c595ddff",
+                      textShadowOffset: { width: 1.5, height: 1.5 },
+                      textShadowRadius: 2,
                     }}
                   >
-                    <FontAwesome
-                      name="shopping-cart"
-                      size={30}
-                      color="#f3eeeeff"
-                      style={{
-                        position: "absolute",
-                        bottom: 5,
-                        left: 5,
-                        backgroundColor: "#42013bff",
-                        padding: 6,
-                        borderRadius: 50,
-                      }}
-                    />
-                  </Pressable>
-                </View>
-                {/* Service Title */}
-                <Text
-                  style={{
-                    fontSize: 17,
-                    color: "#5f0557ff",
-                    textAlign: "center",
-                    paddingTop: 15,
-                    fontWeight: "900",
-                    textShadowColor: "#c595ddff",
-                    textShadowOffset: { width: 1.5, height: 1.5 },
-                    textShadowRadius: 2,
-                  }}
-                >
-                  {service.title}
-                </Text>
+                    {service.title}
+                  </Text>
 
-                {/* Description */}
-                <Text
-                  style={{
-                    paddingTop: 3,
-                    fontSize: 14.5,
-                    textAlign: "center",
-                    color: "#430851ff",
-                    fontWeight: "400",
-                    letterSpacing: 0.5,
-                    textShadowColor: "#d8a3ff",
-                    textShadowOffset: { width: 1, height: 1 },
-                    textShadowRadius: 1,
-                    paddingBottom: 10,
-                  }}
-                >
-                  {service.description}
-                </Text>
-              </LinearGradient>
-            </Pressable>
-          ))}
+                  {/* Description */}
+                  <Text
+                    style={{
+                      paddingTop: 3,
+                      fontSize: 14.5,
+                      textAlign: "center",
+                      color: "#430851ff",
+                      fontWeight: "400",
+                      letterSpacing: 0.5,
+                      textShadowColor: "#d8a3ff",
+                      textShadowOffset: { width: 1, height: 1 },
+                      textShadowRadius: 1,
+                      paddingBottom: 10,
+                    }}
+                  >
+                    {service.description}
+                  </Text>
+                </LinearGradient>
+              </Pressable>
+            ))}
         </View>
 
         {/* for feedback */}
@@ -467,84 +493,86 @@ const CategoryPage = () => {
             width: "100%",
           }}
         >
-          {feedbackData.map((feedback) => (
-            <View
-              key={feedback.feedback_id}
-              style={{
-                width: "92%",
-                borderRadius: 12,
-              }}
-            >
-              <LinearGradient
-                colors={["#f1ebf6ff", "#dfbfe2ff"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+          {feedbackData
+            .filter((feedback) => feedback.category_id === activeCategory)
+            .map((feedback) => (
+              <View
+                key={feedback.feedback_id}
                 style={{
-                  borderRadius: 20,
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
+                  width: "92%",
+                  borderRadius: 12,
                 }}
               >
-                {/* Header: User icon + name */}
-                <View
+                <LinearGradient
+                  colors={["#f1ebf6ff", "#dfbfe2ff"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 6,
-                    gap: 10,
+                    borderRadius: 20,
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
                   }}
                 >
-                  <FontAwesome name="user-circle" size={36} color="#7b1fa2" />
+                  {/* Header: User icon + name */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 6,
+                      gap: 10,
+                    }}
+                  >
+                    <FontAwesome name="user-circle" size={36} color="#7b1fa2" />
+                    <Text
+                      style={{
+                        marginLeft: 8,
+                        fontSize: 18,
+                        fontWeight: "900",
+                        color: "#3b0a4f",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {feedback.user_name}
+                    </Text>
+                    {/* Date */}
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#470a45ff",
+                        fontWeight: "500",
+                        marginLeft: 50,
+                      }}
+                    >
+                      {feedback.date_time}
+                    </Text>
+                  </View>
+
+                  {/* Comment */}
                   <Text
                     style={{
-                      marginLeft: 8,
                       fontSize: 18,
-                      fontWeight: "900",
-                      color: "#3b0a4f",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {feedback.user_name}
-                  </Text>
-                  {/* Date */}
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "#470a45ff",
+                      color: "#4e1966",
+                      marginTop: 10,
+                      lineHeight: 20,
                       fontWeight: "500",
-                      marginLeft: 50,
                     }}
                   >
-                    {feedback.date_time}
+                    {feedback.comment}
                   </Text>
-                </View>
 
-                {/* Comment */}
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: "#4e1966",
-                    marginTop: 10,
-                    lineHeight: 20,
-                    fontWeight: "500",
-                  }}
-                >
-                  {feedback.comment}
-                </Text>
-
-                {/* Rating */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    marginBottom: 6,
-                  }}
-                >
-                  {getStars(feedback.rating)}
-                </View>
-              </LinearGradient>
-            </View>
-          ))}
+                  {/* Rating */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {getStars(feedback.rating)}
+                  </View>
+                </LinearGradient>
+              </View>
+            ))}
         </View>
         {/* for the button */}
         <View style={styles.container}>
