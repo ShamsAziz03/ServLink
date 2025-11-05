@@ -92,6 +92,7 @@ const CategoryPage = () => {
       description:
         "Professional help assembling and installing furniture at your home.",
       image: "http://10.0.2.2:5000/assets/Assemble_and_install_furniture2.jpg",
+      price: 20.0,
     },
     {
       service_id: 2,
@@ -99,6 +100,7 @@ const CategoryPage = () => {
       title: "Baby Sitting",
       description: "Reliable babysitting services for your children.",
       image: "http://10.0.2.2:5000/assets/Babysitting.jpg",
+      price: 30.0,
     },
     {
       service_id: 3,
@@ -106,6 +108,7 @@ const CategoryPage = () => {
       title: "Helping Disabled at Home",
       description: "Assistance and care for the elderly or disabled at home.",
       image: "http://10.0.2.2:5000/assets/Helping_elderly_disabled_at_home.jpg",
+      price: 40.0,
     },
     {
       service_id: 4,
@@ -113,6 +116,7 @@ const CategoryPage = () => {
       title: "Full Furniture Relocation",
       description: "Complete moving service for furniture and household items.",
       image: "http://10.0.2.2:5000/assets/Full_furniture_relocation.jpg",
+      price: 20.0,
     },
     {
       service_id: 5,
@@ -121,6 +125,7 @@ const CategoryPage = () => {
       description:
         "Installation of electrical sockets by a professional handyman.",
       image: "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
+      price: 80.0,
     },
     {
       service_id: 6,
@@ -128,6 +133,7 @@ const CategoryPage = () => {
       title: "Pipe Work (Plumbing)",
       description: "Plumbing and pipe work services for homes and offices.",
       image: "http://10.0.2.2:5000/assets/pipe_work (plumbing).jpg",
+      price: 90.0,
     },
     {
       service_id: 7,
@@ -135,6 +141,7 @@ const CategoryPage = () => {
       title: "Academic Tutoring (Math/Science)",
       description: "Private academic lessons in math and science subjects.",
       image: "http://10.0.2.2:5000/assets/private_language_lessons.jpg",
+      price: 50.0,
     },
   ];
   const feedbackData = [
@@ -170,7 +177,7 @@ const CategoryPage = () => {
       comment: "Furniture assembled quickly and safely, excellent work!",
       date_time: "2025-10-22 14:00:00",
     },
-      {
+    {
       feedback_id: 4,
       category_id: 1,
       user_name: "ahmad ali",
@@ -178,7 +185,7 @@ const CategoryPage = () => {
       comment: "Furniture assembled quickly and safely, excellent work!",
       date_time: "2025-10-22 14:00:00",
     },
-      {
+    {
       feedback_id: 4,
       category_id: 2,
       user_name: "ahmad ali",
@@ -186,7 +193,7 @@ const CategoryPage = () => {
       comment: "Furniture assembled quickly and safely, excellent work!",
       date_time: "2025-10-22 14:00:00",
     },
-      {
+    {
       feedback_id: 4,
       category_id: 3,
       user_name: "ahmad ali",
@@ -389,40 +396,21 @@ const CategoryPage = () => {
                   }}
                 >
                   {/* Service Image */}
-                  <View style={{ width: "100%", height: 130, marginBottom: 8 }}>
-                    <Image
-                      source={{ uri: service.image }}
-                      style={{
-                        width: "100%",
-                        height: 150,
-                        borderRadius: 8,
-                      }}
-                      resizeMode="cover"
-                    />
-                    <Pressable
-                      onPress={() => {
-                        console.log(service.title);
-                      }}
-                    >
-                      <FontAwesome
-                        name="shopping-cart"
-                        size={30}
-                        color="#f3eeeeff"
-                        style={{
-                          position: "absolute",
-                          bottom: 5,
-                          left: 5,
-                          backgroundColor: "#42013bff",
-                          padding: 6,
-                          borderRadius: 50,
-                        }}
-                      />
-                    </Pressable>
-                  </View>
+
+                  <Image
+                    source={{ uri: service.image }}
+                    style={{
+                      width: "100%",
+                      height: 120,
+                      borderRadius: 8,
+                    }}
+                    resizeMode="cover"
+                  />
+
                   {/* Service Title */}
                   <Text
                     style={{
-                      fontSize: 17,
+                      fontSize: 18,
                       color: "#5f0557ff",
                       textAlign: "center",
                       paddingTop: 15,
@@ -438,8 +426,8 @@ const CategoryPage = () => {
                   {/* Description */}
                   <Text
                     style={{
-                      paddingTop: 3,
-                      fontSize: 14.5,
+                      paddingTop: 5,
+                      fontSize: 15,
                       textAlign: "center",
                       color: "#430851ff",
                       fontWeight: "400",
@@ -452,6 +440,47 @@ const CategoryPage = () => {
                   >
                     {service.description}
                   </Text>
+                  {/* price */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "center",
+                        color: "#653470",
+                        fontWeight: "900",
+                        backgroundColor: "#e5cfecff",
+                        borderRadius: 6,
+                        alignSelf: "center",
+                        shadowColor: "#000",
+                        shadowOpacity: 0.1,
+                        shadowRadius: 2,
+                        padding: 5,
+                      }}
+                    >
+                      {"Start at: " + service.price + " ₪"}
+                    </Text>
+                    <Pressable
+                      onPress={() => {
+                        console.log(service.title);
+                      }}
+                    >
+                      <FontAwesome
+                        name="shopping-cart"
+                        size={23}
+                        color="#f3eeeeff"
+                        style={{
+                          backgroundColor: "#42013bff",
+                          padding: 6,
+                          borderRadius: 50,
+                        }}
+                      />
+                    </Pressable>
+                  </View>
                 </LinearGradient>
               </Pressable>
             ))}
@@ -574,7 +603,7 @@ const CategoryPage = () => {
               </View>
             ))}
         </View>
-        {/* for the button */}
+        {/* for the feedback button */}
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.button}
