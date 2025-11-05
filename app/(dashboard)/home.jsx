@@ -372,7 +372,7 @@ const home = () => {
                   style={{ width: 200, height: 200 }}
                 />
                 <Link
-                  href="/login"
+                  href="/servicePage"
                   style={{
                     marginTop: 20,
                     padding: 5,
@@ -550,7 +550,7 @@ const home = () => {
                       shadowRadius: 2,
                     }}
                   >
-                    {provider.base_price + " $"}
+                    {provider.base_price + " ₪"}
                   </Text>
                   <View
                     style={{
@@ -673,7 +673,7 @@ const home = () => {
                         textDecorationLine: "line-through",
                       }}
                     >
-                      {offer.old_price + " $"}
+                      {offer.old_price + " ₪"}
                     </Text>
                     <Text
                       style={{
@@ -688,7 +688,7 @@ const home = () => {
                         textShadowRadius: 1,
                       }}
                     >
-                      {offer.new_price + " $"}
+                      {offer.new_price + " ₪"}
                     </Text>
                   </View>
 
