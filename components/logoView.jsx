@@ -3,11 +3,10 @@ import { StyleSheet, View, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 
-const LogoView = () => {
+const LogoView = ({ pageToBack }) => {
   return (
     <View style={styles.header}>
-      <Link href="/home">
-        {" "}
+      <Link href={pageToBack}>
         <Ionicons
           name="arrow-back-outline"
           size={30}

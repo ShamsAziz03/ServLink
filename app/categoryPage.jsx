@@ -6,14 +6,16 @@ import {
   Dimensions,
   Pressable,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 
-const ServicePage = () => {
+const CategoryPage = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
   function getStars(rating) {
@@ -37,6 +39,7 @@ const ServicePage = () => {
   }
 
   const [activeCategory, setActiveCategory] = useState(1);
+  const navigation = useNavigation();
 
   const categoriesData = [
     {
@@ -187,7 +190,12 @@ const ServicePage = () => {
           <Ionicons name="arrow-back-outline" size={35} color={"#7b3685ff"} />
         </Link>
         <Text style={styles.text}>Categories</Text>
-        <Link href="/search">
+        <Link
+          href={{
+            pathname: "/search",
+            params: { pageToBack: "/categoryPage" },
+          }}
+        >
           <Ionicons name="search" size={32} color="#7b3685ff" />
         </Link>
       </View>
@@ -337,6 +345,9 @@ const ServicePage = () => {
                 alignItems: "center",
                 marginBottom: 12,
               }}
+              onPress={() => {
+                console.log(service.title);
+              }}
             >
               {/* Gradient background */}
               <LinearGradient
@@ -352,25 +363,43 @@ const ServicePage = () => {
                 }}
               >
                 {/* Service Image */}
-                <Image
-                  source={{ uri: service.image }}
-                  style={{
-                    width: "100%",
-                    height: 130,
-                    borderRadius: 8,
-                    marginBottom: 8,
-                  }}
-                  resizeMode="cover"
-                />
-
+                <View style={{ width: "100%", height: 130, marginBottom: 8 }}>
+                  <Image
+                    source={{ uri: service.image }}
+                    style={{
+                      width: "100%",
+                      height: 150,
+                      borderRadius: 8,
+                    }}
+                    resizeMode="cover"
+                  />
+                  <Pressable
+                    onPress={() => {
+                      console.log(service.title);
+                    }}
+                  >
+                    <FontAwesome
+                      name="shopping-cart"
+                      size={30}
+                      color="#f3eeeeff"
+                      style={{
+                        position: "absolute",
+                        bottom: 5,
+                        left: 5,
+                        backgroundColor: "#42013bff",
+                        padding: 6,
+                        borderRadius: 50,
+                      }}
+                    />
+                  </Pressable>
+                </View>
                 {/* Service Title */}
                 <Text
                   style={{
                     fontSize: 17,
                     color: "#5f0557ff",
-                    marginBottom: 4,
                     textAlign: "center",
-                    paddingTop: 5,
+                    paddingTop: 15,
                     fontWeight: "900",
                     textShadowColor: "#c595ddff",
                     textShadowOffset: { width: 1.5, height: 1.5 },
@@ -383,7 +412,7 @@ const ServicePage = () => {
                 {/* Description */}
                 <Text
                   style={{
-                    paddingTop: 5,
+                    paddingTop: 3,
                     fontSize: 14.5,
                     textAlign: "center",
                     color: "#430851ff",
@@ -392,7 +421,7 @@ const ServicePage = () => {
                     textShadowColor: "#d8a3ff",
                     textShadowOffset: { width: 1, height: 1 },
                     textShadowRadius: 1,
-                    paddingBottom: 15,
+                    paddingBottom: 10,
                   }}
                 >
                   {service.description}
@@ -403,23 +432,32 @@ const ServicePage = () => {
         </View>
 
         {/* for feedback */}
-        <Text
+        {/* for title */}
+        <View
           style={{
-            fontSize: 26,
-            fontWeight: "bold",
-            color: "#5e1675",
+            flexDirection: "row",
+            gap: 10,
             marginVertical: 10,
             marginTop: 30,
-            letterSpacing: 1,
-            textShadowColor: "#e4c9f7",
-            textShadowOffset: { width: 3, height: 3 },
-            textShadowRadius: 3,
-            marginRight: 180,
           }}
         >
-          FEEDBACKS
-        </Text>
-
+          <MaterialIcons name="feedback" size={40} color="#500554ff" />
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: "bold",
+              color: "#5e1675",
+              letterSpacing: 1,
+              textShadowColor: "#e4c9f7",
+              textShadowOffset: { width: 3, height: 3 },
+              textShadowRadius: 3,
+              marginRight: 160,
+            }}
+          >
+            FEEDBACKS
+          </Text>
+        </View>
+        {/* for the feedback cards */}
         <View
           style={{
             flexDirection: "column",
@@ -508,12 +546,21 @@ const ServicePage = () => {
             </View>
           ))}
         </View>
+        {/* for the button */}
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.buttonText}>Give Your Feedback</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
 };
 
-export default ServicePage;
+export default CategoryPage;
 
 const styles = StyleSheet.create({
   fullView: {
@@ -533,5 +580,28 @@ const styles = StyleSheet.create({
     color: "#7b3685ff",
     fontSize: 30,
     fontWeight: "bold",
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 10,
+  },
+  button: {
+    backgroundColor: "#7b117fff",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

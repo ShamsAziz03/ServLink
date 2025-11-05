@@ -83,7 +83,7 @@ const Card = ({ id, img, title, category, price }) => {
             shadowRadius: 2,
           }}
         >
-          {"Starting at: " + price + " $"}
+          {"Starting at: " + price + " ₪"}
         </Text>
       </View>
     </View>
@@ -94,7 +94,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   img: {
-    width: 150,
+    width: "100%",
     height: 150,
   },
 });

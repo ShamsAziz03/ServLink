@@ -253,7 +253,12 @@ const home = () => {
           <Ionicons name="notifications" size={30} color="#601d77ff" />
         </Pressable>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
-        <Link href="/search">
+        <Link
+          href={{
+            pathname: "/search",
+            params: { pageToBack: "/home" },
+          }}
+        >
           <Ionicons name="search" size={30} color="#601d77ff" />
         </Link>
       </View>
@@ -372,7 +377,7 @@ const home = () => {
                   style={{ width: 200, height: 200 }}
                 />
                 <Link
-                  href="/servicePage"
+                  href="/categoryPage"
                   style={{
                     marginTop: 20,
                     padding: 5,

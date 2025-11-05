@@ -20,8 +20,8 @@ const SearchItem = ({ id, title, img, category, description }) => {
       <View
         style={{
           flexDirection: "row",
-          borderColor: "#170101ff",
-          borderWidth: 1.5,
+          borderColor: "#680260ff",
+          borderWidth: 0.5,
           borderRadius: 10,
           marginBottom: 20,
         }}

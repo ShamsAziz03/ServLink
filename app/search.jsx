@@ -12,11 +12,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LogoView from "../components/logoView";
 import SearchItem from "../components/searchItem";
+import { useLocalSearchParams } from "expo-router";
 
 const search = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState("");
+  const { pageToBack } = useLocalSearchParams();
 
   const searchResults = [
     {
@@ -93,7 +95,7 @@ const search = () => {
         },
       ]}
     >
-      <LogoView />
+      <LogoView pageToBack={pageToBack} />
       <View style={styles.searchBar}>
         <Ionicons
           name="search-sharp"
@@ -177,8 +179,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderRadius: 10,
     marginHorizontal: 20,
-    borderColor: "#0d0012ff",
-    borderWidth: 1.5,
+    borderColor: "#3a0350ff",
+    borderWidth: 1,
   },
   texts: {
     flexDirection: "column",
