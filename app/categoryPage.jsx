@@ -93,6 +93,7 @@ const CategoryPage = () => {
         "Professional help assembling and installing furniture at your home.",
       image: "http://10.0.2.2:5000/assets/Assemble_and_install_furniture2.jpg",
       price: 20.0,
+      rate: 2,
     },
     {
       service_id: 2,
@@ -101,6 +102,7 @@ const CategoryPage = () => {
       description: "Reliable babysitting services for your children.",
       image: "http://10.0.2.2:5000/assets/Babysitting.jpg",
       price: 30.0,
+      rate: 3,
     },
     {
       service_id: 3,
@@ -109,6 +111,7 @@ const CategoryPage = () => {
       description: "Assistance and care for the elderly or disabled at home.",
       image: "http://10.0.2.2:5000/assets/Helping_elderly_disabled_at_home.jpg",
       price: 40.0,
+      rate: 5,
     },
     {
       service_id: 4,
@@ -117,6 +120,7 @@ const CategoryPage = () => {
       description: "Complete moving service for furniture and household items.",
       image: "http://10.0.2.2:5000/assets/Full_furniture_relocation.jpg",
       price: 20.0,
+      rate: 5,
     },
     {
       service_id: 5,
@@ -126,6 +130,7 @@ const CategoryPage = () => {
         "Installation of electrical sockets by a professional handyman.",
       image: "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
       price: 80.0,
+      rate: 4,
     },
     {
       service_id: 6,
@@ -134,6 +139,7 @@ const CategoryPage = () => {
       description: "Plumbing and pipe work services for homes and offices.",
       image: "http://10.0.2.2:5000/assets/pipe_work (plumbing).jpg",
       price: 90.0,
+      rate: 4,
     },
     {
       service_id: 7,
@@ -142,6 +148,7 @@ const CategoryPage = () => {
       description: "Private academic lessons in math and science subjects.",
       image: "http://10.0.2.2:5000/assets/private_language_lessons.jpg",
       price: 50.0,
+      rate: 4,
     },
   ];
   const feedbackData = [
@@ -378,9 +385,19 @@ const CategoryPage = () => {
                   alignItems: "center",
                   marginBottom: 12,
                 }}
-                onPress={() => {
-                  console.log(service.title);
-                }}
+                onPress={() =>
+                  navigation.navigate("servicePage", {
+                    serviceInfo: {
+                      service_id: service.service_id,
+                      category_id: service.category_id,
+                      title: service.title,
+                      image: service.image,
+                      description: service.description,
+                      rating: service.rate,
+                      price: service.price,
+                    },
+                  })
+                }
               >
                 {/* Gradient background */}
                 <LinearGradient
@@ -396,12 +413,11 @@ const CategoryPage = () => {
                   }}
                 >
                   {/* Service Image */}
-
                   <Image
                     source={{ uri: service.image }}
                     style={{
                       width: "100%",
-                      height: 120,
+                      height: 140,
                       borderRadius: 8,
                     }}
                     resizeMode="cover"
@@ -414,6 +430,7 @@ const CategoryPage = () => {
                       color: "#5f0557ff",
                       textAlign: "center",
                       paddingTop: 15,
+                      paddingBottom: 10,
                       fontWeight: "900",
                       textShadowColor: "#c595ddff",
                       textShadowOffset: { width: 1.5, height: 1.5 },
@@ -423,50 +440,53 @@ const CategoryPage = () => {
                     {service.title}
                   </Text>
 
-                  {/* Description */}
-                  <Text
-                    style={{
-                      paddingTop: 5,
-                      fontSize: 15,
-                      textAlign: "center",
-                      color: "#430851ff",
-                      fontWeight: "400",
-                      letterSpacing: 0.5,
-                      textShadowColor: "#d8a3ff",
-                      textShadowOffset: { width: 1, height: 1 },
-                      textShadowRadius: 1,
-                      paddingBottom: 10,
-                    }}
-                  >
-                    {service.description}
-                  </Text>
-                  {/* price */}
+                  {/* details with order now */}
                   <View
                     style={{
                       flexDirection: "row",
                       gap: 10,
+                      marginTop: 5,
+                      padding: 10,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: "center",
-                        color: "#653470",
-                        fontWeight: "900",
-                        backgroundColor: "#e5cfecff",
-                        borderRadius: 6,
-                        alignSelf: "center",
-                        shadowColor: "#000",
-                        shadowOpacity: 0.1,
-                        shadowRadius: 2,
-                        padding: 5,
-                      }}
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("servicePage", {
+                          serviceInfo: {
+                            service_id: service.service_id,
+                            category_id: service.category_id,
+                            title: service.title,
+                            image: service.image,
+                            description: service.description,
+                            rating: service.rate,
+                            price: service.price,
+                          },
+                        })
+                      }
                     >
-                      {"Start at: " + service.price + " ₪"}
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: "center",
+                          color: "#e4e0e6ff",
+                          fontWeight: "900",
+                          backgroundColor: "#793c82ff",
+                          borderRadius: 6,
+                          alignSelf: "center",
+                          shadowColor: "#000",
+                          shadowOpacity: 0.1,
+                          shadowRadius: 2,
+                          padding: 4,
+                          margin: 2,
+                        }}
+                      >
+                        View Details
+                      </Text>
+                    </Pressable>
                     <Pressable
                       onPress={() => {
                         console.log(service.title);
+                        navigation.navigate("login");
                       }}
                     >
                       <FontAwesome
@@ -474,7 +494,7 @@ const CategoryPage = () => {
                         size={23}
                         color="#f3eeeeff"
                         style={{
-                          backgroundColor: "#42013bff",
+                          backgroundColor: "#682972ff",
                           padding: 6,
                           borderRadius: 50,
                         }}
@@ -607,7 +627,7 @@ const CategoryPage = () => {
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate("login")}
           >
             <Text style={styles.buttonText}>Give Your Feedback</Text>
           </TouchableOpacity>
