@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
   const {
-    first_name, last_name, email, phone, password, city, location_coordinates, interests, birth_date,role
+    first_name, last_name, email, phone, password, city, location_coordinates, interests, birth_date, role
   } = req.body;
 
   try {
@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
 
     await User.createUser({
       first_name, last_name, email, phone, password_hash,
-       city, location_coordinates, interests, birth_date,role
+      city, location_coordinates, interests, birth_date, role
     });
 
     res.status(201).json({ message: "User registered successfully" });
@@ -25,6 +25,7 @@ exports.register = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -40,19 +41,66 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
-    // Optional: يمكنك إضافة JWT هنا
     res.status(200).json({
       message: "Login successful",
       user: {
-        id: user.id,
+        user_id: user.user_id,  // ← هنا
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        city: user.city,
       },
     });
 
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  const userId = req.params.id; // من URL param
+  const { first_name, last_name, email, phone, city } = req.body;
+
+  try {
+    const [userRows] = await User.getUserById(userId);
+    if (userRows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await User.updateUser(userId, { first_name, last_name, email, phone, city });
+
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const userId = req.params.id;
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    const [rows] = await User.getUserById(userId);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = rows[0];
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+
+    await User.updatePassword(userId, newHash);
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Error changing password:", err);
     res.status(500).json({ error: err.message });
   }
 };

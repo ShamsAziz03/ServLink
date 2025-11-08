@@ -11,6 +11,8 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -111,7 +113,7 @@ export default function App() {
     };
 
     try {
-      const response = await fetch("http://10.0.0.2:5000/api/users/register", {
+      const response = await fetch("http://ip:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -138,7 +140,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://10.0.0.2:5000/api/users/login", {
+      const response = await fetch("http://ip:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -147,9 +149,9 @@ export default function App() {
       const resData = await response.json();
 
       if (response.ok) {
+        await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        console.log(resData.user);
-        router.push("/home");
+        router.push("/profileUser"); // بعد الدخول ينتقل لصفحة البروفايل
       } else {
         alert(resData.message || "Login failed");
       }
@@ -268,7 +270,7 @@ export default function App() {
                     style={[
                       styles.interestCard,
                       checkedItems.includes(item.name) &&
-                        styles.interestCardSelected,
+                      styles.interestCardSelected,
                     ]}
                     onPress={() => toggleCheckbox(item.name)}
                   >
@@ -280,7 +282,7 @@ export default function App() {
                       style={[
                         styles.interestText,
                         checkedItems.includes(item.name) &&
-                          styles.interestTextSelected,
+                        styles.interestTextSelected,
                       ]}
                     >
                       {item.name}
