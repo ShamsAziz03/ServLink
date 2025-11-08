@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { register, login } = require("../controllers/userController");
+const userController = require("../controllers/userController");
 
-router.post("/register", register);
-router.post("/login", login);
+// تسجيل وتسجيل الدخول
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+
+// تعديل الملف الشخصي
+router.patch("/:id", userController.updateUser);
+
+// تغيير كلمة المرور
+router.patch("/:id/changePassword", userController.changePassword);
 
 module.exports = router;
