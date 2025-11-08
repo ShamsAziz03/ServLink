@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -40,175 +40,69 @@ const CategoryPage = () => {
 
   const [activeCategory, setActiveCategory] = useState(1);
   const navigation = useNavigation();
-
-  const categoriesData = [
-    {
-      category_id: 1,
-      name: "Handyman",
-      icon: "hammer",
-    },
-    {
-      category_id: 2,
-      name: "Agriculture",
-      icon: "leaf",
-    },
-    {
-      category_id: 3,
-      name: "Cleaning",
-      icon: "sparkles",
-    },
-    {
-      category_id: 4,
-      name: "Furniture Moving",
-      icon: "cube",
-    },
-    {
-      category_id: 5,
-      name: "Child Care",
-      icon: "accessibility",
-    },
-    {
-      category_id: 6,
-      name: "Pet Care",
-      icon: "paw",
-    },
-    {
-      category_id: 7,
-      name: "IT / Computer Services",
-      icon: "laptop",
-    },
-    {
-      category_id: 8,
-      name: "Private Lessons",
-      icon: "book",
-    },
+  const icons = [
+    "hammer",
+    "leaf",
+    "sparkles",
+    "cube",
+    "accessibility",
+    "paw",
+    "laptop",
+    "book",
   ];
 
-  const servicesData = [
-    {
-      service_id: 1,
-      category_id: 1,
-      title: "Assemble Furniture",
-      description:
-        "Professional help assembling and installing furniture at your home.",
-      image: "http://10.0.2.2:5000/assets/Assemble_and_install_furniture2.jpg",
-      price: 20.0,
-      rate: 2,
-    },
-    {
-      service_id: 2,
-      category_id: 5,
-      title: "Baby Sitting",
-      description: "Reliable babysitting services for your children.",
-      image: "http://10.0.2.2:5000/assets/Babysitting.jpg",
-      price: 30.0,
-      rate: 3,
-    },
-    {
-      service_id: 3,
-      category_id: 3,
-      title: "Helping Disabled at Home",
-      description: "Assistance and care for the elderly or disabled at home.",
-      image: "http://10.0.2.2:5000/assets/Helping_elderly_disabled_at_home.jpg",
-      price: 40.0,
-      rate: 5,
-    },
-    {
-      service_id: 4,
-      category_id: 4,
-      title: "Full Furniture Relocation",
-      description: "Complete moving service for furniture and household items.",
-      image: "http://10.0.2.2:5000/assets/Full_furniture_relocation.jpg",
-      price: 20.0,
-      rate: 5,
-    },
-    {
-      service_id: 5,
-      category_id: 1,
-      title: "Installing Electrical Sockets",
-      description:
-        "Installation of electrical sockets by a professional handyman.",
-      image: "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
-      price: 80.0,
-      rate: 4,
-    },
-    {
-      service_id: 6,
-      category_id: 1,
-      title: "Pipe Work (Plumbing)",
-      description: "Plumbing and pipe work services for homes and offices.",
-      image: "http://10.0.2.2:5000/assets/pipe_work (plumbing).jpg",
-      price: 90.0,
-      rate: 4,
-    },
-    {
-      service_id: 7,
-      category_id: 8,
-      title: "Academic Tutoring (Math/Science)",
-      description: "Private academic lessons in math and science subjects.",
-      image: "http://10.0.2.2:5000/assets/private_language_lessons.jpg",
-      price: 50.0,
-      rate: 4,
-    },
-  ];
-  const feedbackData = [
-    {
-      feedback_id: 1,
-      user_name: "ahmad ali",
-      category_id: 1,
-      rating: 3,
-      comment: "Furniture assembly was okay, met expectations.",
-      date_time: "2025-10-18 12:00:00",
-    },
-    {
-      feedback_id: 2,
-      user_name: "ahmad ali",
-      category_id: 1,
-      rating: 4,
-      comment: "Sink fixed well, minor delay in arrival.",
-      date_time: "2025-10-13 09:00:00",
-    },
-    {
-      feedback_id: 3,
-      user_name: "ahmad ali",
-      category_id: 4,
-      rating: 5,
-      comment: "Backyard looks amazing after tree trimming, highly satisfied!",
-      date_time: "2025-10-27 10:30:00",
-    },
-    {
-      feedback_id: 4,
-      category_id: 6,
-      user_name: "ahmad ali",
-      rating: 5,
-      comment: "Furniture assembled quickly and safely, excellent work!",
-      date_time: "2025-10-22 14:00:00",
-    },
-    {
-      feedback_id: 4,
-      category_id: 1,
-      user_name: "ahmad ali",
-      rating: 5,
-      comment: "Furniture assembled quickly and safely, excellent work!",
-      date_time: "2025-10-22 14:00:00",
-    },
-    {
-      feedback_id: 4,
-      category_id: 2,
-      user_name: "ahmad ali",
-      rating: 5,
-      comment: "Furniture assembled quickly and safely, excellent work!",
-      date_time: "2025-10-22 14:00:00",
-    },
-    {
-      feedback_id: 4,
-      category_id: 3,
-      user_name: "ahmad ali",
-      rating: 5,
-      comment: "Furniture assembled quickly and safely, excellent work!",
-      date_time: "2025-10-22 14:00:00",
-    },
-  ];
+  const [categoriesData, setcategoriesData] = useState([]);
+  const fetchcategoriesData = async () => {
+    try {
+      const response = await fetch(
+        "http://10.0.2.2:5000/categoryPage/categories"
+      );
+      const fetchedData = await response.json();
+      setcategoriesData(fetchedData[0]);
+      console.log("Response:", fetchedData[0]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const [servicesData, setServicesData] = useState([]);
+  const fetchServicesData = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:5000/categoryPage/services/${activeCategory}`
+      );
+      const fetchedData = await response.json();
+      setServicesData(fetchedData);
+      console.log("Response services:!!!!!!!!!!", fetchedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const [feedbackData, setFeedbackData] = useState([]);
+  const fetchFeedbackData = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:5000/categoryPage/feedback/${activeCategory}`
+      );
+      const fetchedData = await response.json();
+      setFeedbackData(fetchedData);
+      console.log("Response feedback:", fetchedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchcategoriesData();
+    fetchServicesData();
+    fetchFeedbackData();
+  }, []);
+
+  useEffect(() => {
+    fetchServicesData();
+    fetchFeedbackData();
+  }, [activeCategory]);
 
   return (
     <View
@@ -260,7 +154,9 @@ const CategoryPage = () => {
           return (
             <Pressable
               key={category.category_id}
-              onPress={() => setActiveCategory(category.category_id)}
+              onPress={() => {
+                setActiveCategory(category.category_id);
+              }}
               style={{
                 alignItems: "center",
                 marginHorizontal: 15,
@@ -270,7 +166,7 @@ const CategoryPage = () => {
               }}
             >
               <Ionicons
-                name={category.icon}
+                name={icons[category.category_id - 1]}
                 size={35}
                 color={isActive ? "#7b3685ff" : "#878686ff"}
               />
@@ -323,7 +219,7 @@ const CategoryPage = () => {
             }}
           >
             <Ionicons
-              name="hammer"
+              name={icons[activeCategory - 1]}
               size={40}
               color="#7b3685ff"
               style={{ marginRight: 10 }}
@@ -339,7 +235,7 @@ const CategoryPage = () => {
                 textShadowRadius: 2,
               }}
             >
-              HANDY MAN
+              {servicesData.length > 0 ? servicesData[0].category_name : ""}
             </Text>
           </View>
 
@@ -355,7 +251,9 @@ const CategoryPage = () => {
               textShadowRadius: 1,
             }}
           >
-            Services related to handyman work.
+            {servicesData.length > 0
+              ? servicesData[0].category_description
+              : ""}
           </Text>
         </LinearGradient>
         {/* for services */}
@@ -390,11 +288,9 @@ const CategoryPage = () => {
                     serviceInfo: {
                       service_id: service.service_id,
                       category_id: service.category_id,
-                      title: service.title,
+                      title: service.service_name,
                       image: service.image,
-                      description: service.description,
-                      rating: service.rate,
-                      price: service.price,
+                      description: service.service_description,
                     },
                   })
                 }
@@ -437,7 +333,7 @@ const CategoryPage = () => {
                       textShadowRadius: 2,
                     }}
                   >
-                    {service.title}
+                    {service.service_name}
                   </Text>
 
                   {/* details with order now */}
@@ -455,11 +351,9 @@ const CategoryPage = () => {
                           serviceInfo: {
                             service_id: service.service_id,
                             category_id: service.category_id,
-                            title: service.title,
+                            title: service.service_name,
                             image: service.image,
-                            description: service.description,
-                            rating: service.rate,
-                            price: service.price,
+                            description: service.service_description,
                           },
                         })
                       }
@@ -546,7 +440,7 @@ const CategoryPage = () => {
             .filter((feedback) => feedback.category_id === activeCategory)
             .map((feedback) => (
               <View
-                key={feedback.feedback_id}
+                key={feedback.rating_id}
                 style={{
                   width: "92%",
                   borderRadius: 12,
@@ -567,6 +461,7 @@ const CategoryPage = () => {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                      justifyContent: "space-evenly",
                       marginBottom: 6,
                       gap: 10,
                     }}
@@ -574,14 +469,13 @@ const CategoryPage = () => {
                     <FontAwesome name="user-circle" size={36} color="#7b1fa2" />
                     <Text
                       style={{
-                        marginLeft: 8,
                         fontSize: 18,
                         fontWeight: "900",
                         color: "#3b0a4f",
                         fontStyle: "italic",
                       }}
                     >
-                      {feedback.user_name}
+                      {feedback.first_name + " " + feedback.last_name}
                     </Text>
                     {/* Date */}
                     <Text
@@ -589,10 +483,16 @@ const CategoryPage = () => {
                         fontSize: 12,
                         color: "#470a45ff",
                         fontWeight: "500",
-                        marginLeft: 50,
+                        flexWrap: "wrap",
                       }}
                     >
-                      {feedback.date_time}
+                      {new Date(feedback.rated_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </Text>
                   </View>
 
@@ -606,7 +506,7 @@ const CategoryPage = () => {
                       fontWeight: "500",
                     }}
                   >
-                    {feedback.comment}
+                    {feedback.feedback_text}
                   </Text>
 
                   {/* Rating */}
@@ -617,7 +517,7 @@ const CategoryPage = () => {
                       marginBottom: 6,
                     }}
                   >
-                    {getStars(feedback.rating)}
+                    {getStars(feedback.score)}
                   </View>
                 </LinearGradient>
               </View>

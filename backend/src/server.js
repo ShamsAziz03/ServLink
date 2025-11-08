@@ -4,6 +4,8 @@ const cors = require("cors");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
 const homeRoutes = require("./routes/homeRoutes");
+const categoryPageRoutes = require("./routes/categoryPageRoutes");
+const servicePageRoutes = require("./routes/servicePageRoutes");
 const contactRoute = require("./routes/contactRoutes");
 const db = require("./config/db");
 
@@ -15,6 +17,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 
 app.use("/homeInfo", homeRoutes);
+app.use("/categoryPage", categoryPageRoutes);
+app.use("/servicePage", servicePageRoutes);
 app.use("/assets", express.static("D:/ServLink/assets"));
 
 app.get("/", (req, res) => {
