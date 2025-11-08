@@ -32,7 +32,7 @@ export default function EditProfile() {
     if (!user) return;
 
     try {
-      const response = await fetch(`http://192.168.1.13:5000/api/users/${user.user_id}`, {
+      const response = await fetch(`http://ip:5000/api/users/${user.user_id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ first_name, last_name, email, phone, city }),

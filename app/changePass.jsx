@@ -26,7 +26,7 @@ export default function ChangePassword() {
 
     try {
       const response = await fetch(
-        `http://192.168.1.13:5000/api/users/${user.user_id}/changePassword`,
+        `http://ip:5000/api/users/${user.user_id}/changePassword`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
