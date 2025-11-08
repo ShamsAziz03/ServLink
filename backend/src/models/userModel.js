@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-// 🧩 إنشاء مستخدم جديد
+
 exports.createUser = ({
   first_name,
   last_name,
@@ -32,17 +32,16 @@ exports.createUser = ({
   );
 };
 
-// 🔍 البحث عن مستخدم عبر البريد الإلكتروني
+
 exports.getUserByEmail = (email) => {
   return db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
 };
 
-// 🔍 البحث عن مستخدم عبر الـ user_id
+
 exports.getUserById = (userId) => {
   return db.promise().query("SELECT * FROM users WHERE user_id = ?", [userId]);
 };
 
-// ✏️ تحديث بيانات المستخدم (تعديل الملف الشخصي)
 exports.updateUser = (userId, data) => {
   const { first_name, last_name, email, phone, city } = data;
   return db
@@ -52,8 +51,6 @@ exports.updateUser = (userId, data) => {
       [first_name, last_name, email, phone, city, userId]
     );
 };
-
-// 🔐 تحديث كلمة المرور
 exports.updatePassword = (userId, newHash) => {
   return db
     .promise()
