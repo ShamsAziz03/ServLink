@@ -150,7 +150,7 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/profileUser"); // بعد الدخول ينتقل لصفحة البروفايل
+        router.push("/home"); // بعد الدخول ينتقل لصفحة البروفايل
       } else {
         alert(resData.message || "Login failed");
       }
