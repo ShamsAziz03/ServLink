@@ -6,7 +6,7 @@ import { Foundation } from "@expo/vector-icons";
 const myTasker = () => {
   return (
     <View>
-      <Link href="/" style={{ paddingTop: 40, paddingLeft: 10 }}>
+      <Link href="/questions" style={{ paddingTop: 40, paddingLeft: 10 }}>
         <Foundation name="list" size={40} color="black" />
       </Link>
       <Text style={{ paddingTop: 50 }}>myTasker</Text>
