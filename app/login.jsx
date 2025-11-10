@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -26,6 +27,7 @@ export default function App() {
   const [city, setCity] = useState("");
   const [birth_date, setbirth_date] = useState("");
   const router = useRouter();
+  const navigation = useNavigation();
 
   const interests = [
     {
@@ -150,7 +152,7 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/home"); // بعد الدخول ينتقل لصفحة البروفايل
+        router.push("/home");
       } else {
         alert(resData.message || "Login failed");
       }
@@ -161,7 +163,7 @@ export default function App() {
 
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#750d83ff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -369,6 +371,16 @@ export default function App() {
                 ? "Already have an account? Log In"
                 : "Don't have an account? Sign Up"}
             </Text>
+          </TouchableOpacity>
+
+          {/* add go to home without register */}
+
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("(dashboard)", { screen: "home" })
+            }
+          >
+            <Text style={styles.switchText}>GO TO HOME</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

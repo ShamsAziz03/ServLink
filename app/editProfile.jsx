@@ -61,7 +61,7 @@ export default function EditProfile() {
 
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#f5e1ffff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
