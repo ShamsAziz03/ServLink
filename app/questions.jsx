@@ -7,30 +7,61 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoReturn from "../components/headerLogoReturn";
+import { Link } from "expo-router";
 
 const Questions = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
 
   const questions = [
+    // Furniture Assembly
     {
       question_id: 1,
-      question_text: "ما هو اسمك؟",
-      answer_type: "text",
+      question_text: "What type of furniture needs assembly?",
+      answer_type: "select",
+      options: JSON.stringify([
+        "Bed",
+        "Wardrobe",
+        "Table",
+        "Chair",
+        "Desk",
+        "Other",
+      ]),
     },
     {
       question_id: 2,
-      question_text: "ما هو لونك المفضل؟",
+      question_text: "How many items need assembly?",
       answer_type: "select",
-      options: JSON.stringify(["أحمر", "أزرق", "أخضر", "أصفر"]),
+      options: JSON.stringify(["1", "2-3", "4-5", "6+"]),
     },
     {
       question_id: 3,
-      question_text: "اكتب وصفًا لنفسك",
+      question_text: "Do you already have all the parts and screws?",
+      answer_type: "select",
+      options: JSON.stringify(["Yes", "No, need help with missing parts"]),
+    },
+    {
+      question_id: 4,
+      question_text: "Is the furniture new (from a box) or used?",
+      answer_type: "select",
+      options: JSON.stringify([
+        "New (from package)",
+        "Used (already assembled before)",
+      ]),
+    },
+    {
+      question_id: 5,
+      question_text: "Upload photo(s) of the furniture or manual (optional)",
+      answer_type: "file",
+    },
+    {
+      question_id: 6,
+      question_text: "Any specific brand or model?",
       answer_type: "text",
     },
   ];
@@ -71,13 +102,14 @@ const Questions = () => {
             flexDirection: "row",
             justifyContent: "center",
             marginBottom: 20,
+            flexWrap: "wrap",
           }}
         >
           {questions.map((_, i) => (
             <View
               key={i}
               style={{
-                width: 40,
+                width: 20,
                 height: 10,
                 backgroundColor: i <= currentIndex ? "#7b117fff" : "#e6cce8",
                 borderRadius: 4,
@@ -88,7 +120,10 @@ const Questions = () => {
         </View>
 
         {/* Question */}
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          showsVerticalScrollIndicator={false}
+        >
           <Text
             style={{
               fontSize: 22,
@@ -104,12 +139,14 @@ const Questions = () => {
           {currentQuestion.answer_type === "text" && (
             <TextInput
               style={{
-                backgroundColor: "#fff",
+                backgroundColor: "#f5e7f3ff",
                 borderRadius: 10,
                 width: width * 0.9,
                 padding: 15,
-                fontSize: 16,
+                fontSize: 19,
                 marginBottom: 30,
+                borderColor: "#684e6dff",
+                borderWidth: 0.5,
               }}
               placeholder="Write Your answer here..."
               value={answers[currentQuestion.question_id] || ""}
@@ -166,7 +203,7 @@ const Questions = () => {
           {currentIndex > 0 && (
             <TouchableOpacity
               style={{
-                backgroundColor: "#ccc",
+                backgroundColor: "#e5d6eaff",
                 borderRadius: 12,
                 padding: 10,
                 width: 100,
@@ -174,7 +211,7 @@ const Questions = () => {
               }}
               onPress={() => setCurrentIndex(currentIndex - 1)}
             >
-              <Text>Back</Text>
+              <Text style={{ fontSize: 17, fontWeight: "500" }}>Back</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
@@ -187,8 +224,22 @@ const Questions = () => {
             }}
             onPress={handleNext}
           >
-            <Text style={{ color: "#fff" }}>Next</Text>
+            <Text style={{ color: "#fff", fontSize: 17, fontWeight: "500" }}>
+              Next
+            </Text>
           </TouchableOpacity>
+
+          <Link href="/userLocation">
+            <Text
+              style={{
+                color: "#e4e0e6ff",
+                fontSize: 20,
+                fontFamily: "Inter-Black",
+              }}
+            >
+              go to map
+            </Text>
+          </Link>
         </View>
       </View>
     </LinearGradient>
