@@ -50,7 +50,7 @@ const Map = ({ selectPosition }) => {
       lat: parseFloat(item.lat),
       lon: parseFloat(item.lon),
       name: item.name,
-      place_id: item.place_id,
+      place_id: parseInt(item.place_id),
     };
     setUserCurrentLocation(currentLocation);
   };
