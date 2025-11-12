@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoReturn from "../components/headerLogoReturn";
 import { Link } from "expo-router";
+import { AppContext } from "../context/AppContext"; //for global states
 
 const Questions = () => {
   const width = Dimensions.get("window").width;
@@ -78,6 +79,17 @@ const Questions = () => {
       console.log("Answers:", answers);
     }
   };
+
+  //to use golbal var
+  const { userCurrentLocation, setUserCurrentLocation } =
+    useContext(AppContext);
+
+  useEffect(() => {
+    console.log(
+      "the global var is:",
+      JSON.stringify(userCurrentLocation, null, 2)
+    );
+  }, []);
 
   return (
     <LinearGradient

@@ -1,6 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import MapView, { Marker, UrlTile } from "react-native-maps";
 import { StyleSheet, View } from "react-native";
+import { AppContext } from "../context/AppContext";
+//for global states
 
 const Map = ({ selectPosition }) => {
   const INITIAL_REGION = {
@@ -22,7 +24,9 @@ const Map = ({ selectPosition }) => {
   ]);
   const mapRef = useRef(null);
   //to store the location of user
-  const [userCurrentLocation, setUserCurrentLocation] = useState({});
+  //for global states
+  const { userCurrentLocation, setUserCurrentLocation } =
+    useContext(AppContext);
 
   const focusMap = (item) => {
     //to focus on region
@@ -42,7 +46,7 @@ const Map = ({ selectPosition }) => {
       },
     };
     setMarkers([...markers, newMark]);
-    //to pass the user location to second page and questions
+    //to pass the user location to other pages - make global
     const currentLocation = {
       address: item.address,
       addresstype: item.addresstype,
