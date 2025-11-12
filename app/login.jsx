@@ -301,7 +301,7 @@ export default function App() {
                   onPress={() => setIsProvider(!isProvider)}
                   color="#750d83ff"
                 />
-                <Text style={styles.providerText}>I’m a Service Provider</Text>
+                <Text style={styles.providerText}>I'm a Service Provider</Text>
               </View>
 
               {isProvider && (
