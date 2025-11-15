@@ -38,7 +38,8 @@ const Questions = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const currentQuestion = serviceQuestions[currentIndex];
-  let showOther = false;
+  const [otherAnswers, setOtherAnswers] = useState(true);
+  const [selectedOption, setSelectedOption] = useState({});
 
   const fetchServiceQuestions = async () => {
     try {
@@ -85,10 +86,7 @@ const Questions = () => {
       console.log("Answers:", answers);
       fetchStoreAnswers();
     }
-  };
-
-  const handleOther = () => {
-    showOther = true;
+    setOtherAnswers(false);
   };
 
   useEffect(() => {
@@ -197,23 +195,25 @@ const Questions = () => {
           {/* Select input */}
           {currentQuestion.answer_type === "select" &&
             JSON.parse(currentQuestion.options).map((opt, i) => (
-              <View>
+              <View key={i}>
                 <TouchableOpacity
-                  key={i}
                   onPress={() => {
+                    if (opt === "Other") setOtherAnswers(true);
+                    else setOtherAnswers(false);
                     setAnswers({
                       ...answers,
                       [currentQuestion.question_id]: opt,
                     });
-                    if (opt === "Other") {
-                      handleOther();
-                    }
+                    setSelectedOption({
+                      ...selectedOption,
+                      [currentQuestion.question_id]: opt,
+                    });
                   }}
                   style={{
                     width: width * 0.85,
                     padding: 15,
                     backgroundColor:
-                      answers[currentQuestion.question_id] === opt
+                      selectedOption[currentQuestion.question_id] === opt
                         ? "#7b117fff"
                         : "#fff",
                     borderRadius: 12,
@@ -224,7 +224,7 @@ const Questions = () => {
                   <Text
                     style={{
                       color:
-                        answers[currentQuestion.question_id] === opt
+                        selectedOption[currentQuestion.question_id] === opt
                           ? "#fff"
                           : "#5f0557ff",
                       fontWeight: "700",
@@ -235,7 +235,7 @@ const Questions = () => {
                   </Text>
                 </TouchableOpacity>
                 {/* for others */}
-                {showOther === true && (
+                {opt === "Other" && otherAnswers === true && (
                   <TextInput
                     style={{
                       backgroundColor: "#f5e7f3ff",
@@ -248,8 +248,12 @@ const Questions = () => {
                       borderWidth: 0.5,
                       marginTop: 10,
                     }}
-                    placeholder="Plese Specify your answer"
-                    value={answers[currentQuestion.question_id] || ""}
+                    placeholder="Please specify your answer"
+                    value={
+                      answers[currentQuestion.question_id] === "Other"
+                        ? ""
+                        : currentQuestion.question_id
+                    }
                     onChangeText={(text) =>
                       setAnswers({
                         ...answers,
