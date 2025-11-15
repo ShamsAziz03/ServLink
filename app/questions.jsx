@@ -14,38 +14,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoReturn from "../components/headerLogoReturn";
 import { Link } from "expo-router";
 import { AppContext } from "../context/AppContext"; //for global states
+import { useNavigation } from "@react-navigation/native";
 
 const Questions = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const { userCurrentLocation, currentService } = useContext(AppContext); //to use golbal var
 
-  const questions = [
-    // Furniture Assembly
-    {
-      question_id: 1,
-      question_text: "What type of furniture needs assembly?",
-      answer_type: "select",
-      options: JSON.stringify([
-        "Bed",
-        "Wardrobe",
-        "Table",
-        "Chair",
-        "Desk",
-        "Other",
-      ]),
-    },
-    {
-      question_id: 2,
-      question_text: "How many items need assembly?",
-      answer_type: "select",
-      options: JSON.stringify(["1", "2-3", "4-5", "6+"]),
-    },
-    {
-      question_id: 3,
-      question_text: "Do you already have all the parts and screws?",
-      answer_type: "select",
-      options: JSON.stringify(["Yes", "No, need help with missing parts"]),
-    },
+  const [serviceQuestions, setServiceQuestions] = useState([
     {
       question_id: 4,
       question_text: "Is the furniture new (from a box) or used?",
@@ -54,42 +31,69 @@ const Questions = () => {
         "New (from package)",
         "Used (already assembled before)",
       ]),
+      service_id: "5",
     },
-    {
-      question_id: 5,
-      question_text: "Upload photo(s) of the furniture or manual (optional)",
-      answer_type: "file",
-    },
-    {
-      question_id: 6,
-      question_text: "Any specific brand or model?",
-      answer_type: "text",
-    },
-  ];
+  ]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const currentQuestion = serviceQuestions[currentIndex];
+  let showOther = false;
 
-  const currentQuestion = questions[currentIndex];
-
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      console.log("Answers:", answers);
+  const fetchServiceQuestions = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:5000/serviceQuestions/getServiceQuestions/${currentService.service_id}`
+      );
+      const fetchedData = await response.json();
+      setServiceQuestions(fetchedData);
+      console.log("questions:", fetchedData);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
     }
   };
 
-  //to use golbal var
-  const { userCurrentLocation, setUserCurrentLocation } =
-    useContext(AppContext);
+  const fetchStoreAnswers = async () => {
+    const response = await fetch(
+      `http://10.0.2.2:5000/serviceQuestions/storeAnswers`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ answers }),
+      }
+    );
+    const result = await response.json();
+    if (response.ok) {
+      console.log(result.message);
+    } else {
+      console.warn(result.message);
+    }
+  };
+
+  const handleNext = () => {
+    const q = currentQuestion;
+
+    if (q.is_required && !answers[q.question_id]) {
+      alert("This question is required.");
+      return;
+    }
+    if (currentIndex < serviceQuestions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      console.log("Answers:", answers);
+      fetchStoreAnswers();
+    }
+  };
+
+  const handleOther = () => {
+    showOther = true;
+  };
 
   useEffect(() => {
-    console.log(
-      "the global var is:",
-      JSON.stringify(userCurrentLocation, null, 2)
-    );
-  }, []);
+    fetchServiceQuestions();
+  }, [currentService.service_id]);
 
   return (
     <LinearGradient
@@ -107,7 +111,29 @@ const Questions = () => {
           },
         ]}
       >
-        <HeaderLogoReturn linkToRetrun="home" title="Questions" />
+        <HeaderLogoReturn
+          linkToReturn="servicePage"
+          title="Questions"
+          goToService={true}
+        />
+        {/* current location */}
+        <View style={{ alignItems: "center" }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "900",
+              color: "#5f0557ff",
+              marginBottom: 20,
+              padding: 10,
+              backgroundColor: "#eed4edff",
+              borderRadius: 15,
+            }}
+          >
+            {userCurrentLocation.display_name
+              ? "Location -> " + userCurrentLocation.display_name
+              : "Choose Location! Press Back"}
+          </Text>
+        </View>
         {/* Progress */}
         <View
           style={{
@@ -117,7 +143,7 @@ const Questions = () => {
             flexWrap: "wrap",
           }}
         >
-          {questions.map((_, i) => (
+          {serviceQuestions.map((_, i) => (
             <View
               key={i}
               style={{
@@ -171,36 +197,68 @@ const Questions = () => {
           {/* Select input */}
           {currentQuestion.answer_type === "select" &&
             JSON.parse(currentQuestion.options).map((opt, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() =>
-                  setAnswers({ ...answers, [currentQuestion.question_id]: opt })
-                }
-                style={{
-                  width: width * 0.85,
-                  padding: 15,
-                  backgroundColor:
-                    answers[currentQuestion.question_id] === opt
-                      ? "#7b117fff"
-                      : "#fff",
-                  borderRadius: 12,
-                  marginVertical: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text
+              <View>
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => {
+                    setAnswers({
+                      ...answers,
+                      [currentQuestion.question_id]: opt,
+                    });
+                    if (opt === "Other") {
+                      handleOther();
+                    }
+                  }}
                   style={{
-                    color:
+                    width: width * 0.85,
+                    padding: 15,
+                    backgroundColor:
                       answers[currentQuestion.question_id] === opt
-                        ? "#fff"
-                        : "#5f0557ff",
-                    fontWeight: "700",
-                    fontSize: 18,
+                        ? "#7b117fff"
+                        : "#fff",
+                    borderRadius: 12,
+                    marginVertical: 5,
+                    alignItems: "center",
                   }}
                 >
-                  {opt}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      color:
+                        answers[currentQuestion.question_id] === opt
+                          ? "#fff"
+                          : "#5f0557ff",
+                      fontWeight: "700",
+                      fontSize: 18,
+                    }}
+                  >
+                    {opt}
+                  </Text>
+                </TouchableOpacity>
+                {/* for others */}
+                {showOther === true && (
+                  <TextInput
+                    style={{
+                      backgroundColor: "#f5e7f3ff",
+                      borderRadius: 10,
+                      width: width * 0.9,
+                      padding: 15,
+                      fontSize: 19,
+                      marginBottom: 30,
+                      borderColor: "#684e6dff",
+                      borderWidth: 0.5,
+                      marginTop: 10,
+                    }}
+                    placeholder="Plese Specify your answer"
+                    value={answers[currentQuestion.question_id] || ""}
+                    onChangeText={(text) =>
+                      setAnswers({
+                        ...answers,
+                        [currentQuestion.question_id]: text,
+                      })
+                    }
+                  />
+                )}
+              </View>
             ))}
         </ScrollView>
 
@@ -212,20 +270,25 @@ const Questions = () => {
             marginTop: 10,
           }}
         >
-          {currentIndex > 0 && (
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#e5d6eaff",
-                borderRadius: 12,
-                padding: 10,
-                width: 100,
-                alignItems: "center",
-              }}
-              onPress={() => setCurrentIndex(currentIndex - 1)}
-            >
-              <Text style={{ fontSize: 17, fontWeight: "500" }}>Back</Text>
-            </TouchableOpacity>
-          )}
+          {/* back button */}
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#e5d6eaff",
+              borderRadius: 12,
+              padding: 10,
+              width: 100,
+              alignItems: "center",
+            }}
+            onPress={() => {
+              currentIndex > 0
+                ? setCurrentIndex(currentIndex - 1)
+                : navigation.navigate("userLocation");
+            }}
+          >
+            <Text style={{ fontSize: 17, fontWeight: "500" }}>Back</Text>
+          </TouchableOpacity>
+
+          {/* next button */}
           <TouchableOpacity
             style={{
               backgroundColor: "#7b117fff",
@@ -240,18 +303,6 @@ const Questions = () => {
               Next
             </Text>
           </TouchableOpacity>
-
-          <Link href="/userLocation">
-            <Text
-              style={{
-                color: "#e4e0e6ff",
-                fontSize: 20,
-                fontFamily: "Inter-Black",
-              }}
-            >
-              go to map
-            </Text>
-          </Link>
         </View>
       </View>
     </LinearGradient>

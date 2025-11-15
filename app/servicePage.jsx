@@ -8,12 +8,17 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from "@react-navigation/native";
+import { AppContext } from "../context/AppContext";
 
 const CategoryPage = () => {
   const width = Dimensions.get("window").width;
@@ -41,8 +46,11 @@ const CategoryPage = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { serviceInfo } = route.params;
+  const { setCurrentService } = useContext(AppContext);
 
-  const [serviceMetaData, setServiceMetaData] = useState([{}]); //for price and rating
+  const [serviceMetaData, setServiceMetaData] = useState([
+    { base_price: 50, score: 3 },
+  ]); //for price and rating
   const fetchserviceMetaData = async () => {
     try {
       const response = await fetch(
@@ -50,7 +58,7 @@ const CategoryPage = () => {
       );
       const fetchedData = await response.json();
       setServiceMetaData(fetchedData);
-      console.log("Response:", fetchedData);
+      console.log("Response of meta info:", fetchedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -87,6 +95,7 @@ const CategoryPage = () => {
     fetchserviceMetaData();
     fetchFeedbackData();
     fetchProviders();
+    setCurrentService(serviceInfo);
   }, []);
 
   return (
@@ -229,7 +238,9 @@ const CategoryPage = () => {
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("login")}
+            onPress={() => {
+              navigation.navigate("userLocation");
+            }}
           >
             <Text style={[styles.buttonText, { fontSize: 20 }]}>
               Book Service Now

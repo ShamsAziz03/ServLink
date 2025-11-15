@@ -1,11 +1,15 @@
 import Map from "../components/map";
 import SearchBox from "../components/searchBox";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import { Link } from "expo-router";
+import React, { useState, useContext } from "react";
+import { AppContext } from "../context/AppContext";
+import { useNavigation } from "@react-navigation/native";
 
 const UserLocation = () => {
   const [selectPosition, setSelectPosition] = useState({});
+  const { currentService } = useContext(AppContext);
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Map selectPosition={selectPosition} />
@@ -17,7 +21,10 @@ const UserLocation = () => {
         />
       </View>
       <View style={styles.nextContainer}>
-        <Link href="/questions" asChild>
+        <Pressable
+          style={{ paddingTop: 40, paddingLeft: 10 }}
+          onPress={() => navigation.navigate("questions")}
+        >
           <Text
             style={{
               fontSize: 25,
@@ -30,7 +37,7 @@ const UserLocation = () => {
           >
             Next
           </Text>
-        </Link>
+        </Pressable>
       </View>
     </View>
   );

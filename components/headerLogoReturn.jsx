@@ -1,14 +1,30 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import React, { useEffect, useState, useContext } from "react";
+import { AppContext } from "../context/AppContext";
+import { useNavigation } from "@react-navigation/native";
 
-const HeaderLogoReturn = ({ linkToRetrun, title }) => {
+const HeaderLogoReturn = ({ linkToReturn, title, goToService = false }) => {
+  const navigation = useNavigation();
+  const { currentService } = useContext(AppContext);
+  const handlePress = () => {
+    if (goToService) {
+      navigation.navigate(linkToReturn, { serviceInfo: currentService });
+    } else {
+      navigation.navigate(linkToReturn);
+    }
+  };
+
   return (
     <View style={styles.header}>
-      <Link href={linkToRetrun}>
+      <Pressable
+        onPress={() => {
+          handlePress();
+        }}
+      >
         <Ionicons name="arrow-back-outline" size={35} color={"#7b3685ff"} />
-      </Link>
+      </Pressable>
       <Text style={styles.text}>{title}</Text>
     </View>
   );
