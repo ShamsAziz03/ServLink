@@ -140,7 +140,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://ip:5000/api/users/login", {
+      const response = await fetch("http://ip/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -151,7 +151,7 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/profileUser"); // بعد الدخول ينتقل لصفحة البروفايل
+        router.push("/myTasks"); 
       } else {
         alert(resData.message || "Login failed");
       }
