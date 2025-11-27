@@ -32,11 +32,14 @@ export default function EditProfile() {
     if (!user) return;
 
     try {
-      const response = await fetch(`http://ip:5000/api/users/${user.user_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ first_name, last_name, email, phone, city }),
-      });
+      const response = await fetch(
+        `http://10.0.2.2:5000/api/users/${user.user_id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ first_name, last_name, email, phone, city }),
+        }
+      );
 
       const data = await response.json();
 
@@ -58,7 +61,7 @@ export default function EditProfile() {
 
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#f5e1ffff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>

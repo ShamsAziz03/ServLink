@@ -53,10 +53,10 @@ export default function FAQScreen() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenIndex(openIndex === index ? null : index);
   };
-const router = useRouter();
+  const router = useRouter();
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#f5e1ffff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -112,10 +112,10 @@ const router = useRouter();
 
           <TouchableOpacity
             activeOpacity={0.8}
-             onPress={() => router.push("/contact")}
+            onPress={() => router.push("/contact")}
           >
             <LinearGradient
-              colors={["#b57edcff", "#750d83ff", "#750d83ff"]}
+              colors={["#bd68bdff", "#7d138bff"]}
               style={styles.contactButton}
             >
               <Text style={styles.contactButtonText}>Contact Support</Text>
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     color: "#750d83ff",
     textAlign: "center",
     marginBottom: 25,
+    marginTop: 20,
   },
   card: {
     backgroundColor: "#f8f4fc",
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardOpen: {
-    backgroundColor: "#e5d3f5",
+    backgroundColor: "#f3e2f7ff",
   },
   questionRow: {
     flexDirection: "row",
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   contactText: {
-    color: "#750d83ff",
+    color: "#f8f0f9ff",
     fontSize: 16,
     textAlign: "center",
     marginBottom: 15,

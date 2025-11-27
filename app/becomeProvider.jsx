@@ -39,13 +39,12 @@ export default function BecomeProviderScreen() {
   };
 
   const handleSubmit = () => {
-    // هنا تضيف منطق إرسال البيانات للسيرفر
     alert("Provider information submitted!");
   };
 
   return (
     <LinearGradient
-      colors={["#f1ebf6ff", "#dfbfe2ff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView
@@ -125,11 +124,7 @@ export default function BecomeProviderScreen() {
             </>
           )}
 
-          <Button
-            mode="contained"
-            onPress={handleSubmit}
-            style={styles.button}
-          >
+          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
           </Button>
         </View>

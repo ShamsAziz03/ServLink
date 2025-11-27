@@ -32,7 +32,7 @@ const DashboardLayout = () => {
       />
 
       <Tabs.Screen
-        name="myTasker"
+        name="favTaskers"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
@@ -44,21 +44,6 @@ const DashboardLayout = () => {
           ),
         }}
       />
-
-      <Tabs.Screen
-        name="setting"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="settings-sharp"
-              size={27}
-              color={focused ? "#320540ff" : "#6e5f74ff"}
-            />
-          ),
-        }}
-      />
-
       <Tabs.Screen
         name="tasks"
         options={{
@@ -67,6 +52,19 @@ const DashboardLayout = () => {
             <Octicons
               size={27}
               name={"tasklist"}
+              color={focused ? "#320540ff" : "#6e5f74ff"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profileUser"
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="person-sharp"
+              size={27}
               color={focused ? "#320540ff" : "#6e5f74ff"}
             />
           ),

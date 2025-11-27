@@ -12,7 +12,7 @@ import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -27,6 +27,7 @@ export default function App() {
   const [city, setCity] = useState("");
   const [birth_date, setbirth_date] = useState("");
   const router = useRouter();
+  const navigation = useNavigation();
 
   const interests = [
     {
@@ -113,7 +114,7 @@ export default function App() {
     };
 
     try {
-      const response = await fetch("http://ip:5000/api/users/register", {
+      const response = await fetch("http://10.0.2.2:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -140,7 +141,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://ip/api/users/login", {
+      const response = await fetch("http://10.0.2.2:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -151,7 +152,7 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/myTasks"); 
+        router.push("/home");
       } else {
         alert(resData.message || "Login failed");
       }
@@ -162,7 +163,7 @@ export default function App() {
 
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#750d83ff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -270,7 +271,7 @@ export default function App() {
                     style={[
                       styles.interestCard,
                       checkedItems.includes(item.name) &&
-                      styles.interestCardSelected,
+                        styles.interestCardSelected,
                     ]}
                     onPress={() => toggleCheckbox(item.name)}
                   >
@@ -282,7 +283,7 @@ export default function App() {
                       style={[
                         styles.interestText,
                         checkedItems.includes(item.name) &&
-                        styles.interestTextSelected,
+                          styles.interestTextSelected,
                       ]}
                     >
                       {item.name}
@@ -300,7 +301,7 @@ export default function App() {
                   onPress={() => setIsProvider(!isProvider)}
                   color="#750d83ff"
                 />
-                <Text style={styles.providerText}>I’m a Service Provider</Text>
+                <Text style={styles.providerText}>I'm a Service Provider</Text>
               </View>
 
               {isProvider && (
@@ -370,6 +371,16 @@ export default function App() {
                 ? "Already have an account? Log In"
                 : "Don't have an account? Sign Up"}
             </Text>
+          </TouchableOpacity>
+
+          {/* add go to home without register */}
+
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("(dashboard)", { screen: "home" })
+            }
+          >
+            <Text style={styles.switchText}>GO TO HOME</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

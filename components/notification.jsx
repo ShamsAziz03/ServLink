@@ -153,10 +153,9 @@ const Notification = ({ visible, onClose, user_id }) => {
                     color: "#856b8c88",
                   }}
                 >
-                  {notification.sent_at.toLocaleString("en-US", {
-                    weekday: "short",
+                  {new Date(notification.sent_at).toLocaleString("en-US", {
                     year: "numeric",
-                    month: "short",
+                    month: "long",
                     day: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",

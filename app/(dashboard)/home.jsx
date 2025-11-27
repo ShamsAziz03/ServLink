@@ -346,9 +346,9 @@ const home = () => {
               paddingHorizontal: 10,
             }}
           >
-            {categoriesData.map((category) => (
+            {categoriesData.map((category, index) => (
               <View
-                key={category.category_id}
+                key={`${category.category_id}-${index}`}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
@@ -414,9 +414,9 @@ const home = () => {
               paddingHorizontal: 30,
             }}
           >
-            {suggested.map((suggest) => (
+            {suggested.map((suggest, index) => (
               <Pressable
-                key={suggest.id}
+                key={`${suggest.id}-${index}`}
                 onPress={() => {
                   console.log("test");
                 }}
@@ -445,9 +445,9 @@ const home = () => {
               paddingHorizontal: 30,
             }}
           >
-            {mostBooked.map((book) => (
+            {mostBooked.map((book, index) => (
               <Pressable
-                key={book.service_id}
+                key={`${book.service_id}-${index}`}
                 onPress={() => {
                   console.log("test");
                 }}
@@ -476,9 +476,9 @@ const home = () => {
               paddingHorizontal: 30,
             }}
           >
-            {topProviders.map((provider) => (
+            {topProviders.map((provider, index) => (
               <View
-                key={provider.provider_id}
+                key={`${provider.provider_id}-${index}`}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
@@ -543,7 +543,7 @@ const home = () => {
                       textAlign: "center",
                       color: "#653470",
                       fontWeight: "500",
-                      marginTop: 3,
+                      marginVertical: 15,
                       letterSpacing: 0.5,
                       backgroundColor: "#f0e0f5",
                       borderRadius: 6,
@@ -605,9 +605,9 @@ const home = () => {
               paddingHorizontal: 30,
             }}
           >
-            {offersData.map((offer) => (
+            {offersData.map((offer, index) => (
               <View
-                key={offer.id}
+                key={`${offer.id}-${index}`}
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",

@@ -49,7 +49,7 @@ export default function ContactUsScreen() {
 
   return (
     <LinearGradient
-      colors={["#e0c3f2ff", "#b57edcff", "#750d83ff"]}
+      colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
