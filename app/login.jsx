@@ -99,7 +99,7 @@ export default function App() {
     };
 
     try {
-      const response = await fetch("http://ip:5000/api/users/register", {
+      const response = await fetch("http://10.0.2.2:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -126,7 +126,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://ip:5000/api/users/login", {
+      const response = await fetch("http://10.0.2.2:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

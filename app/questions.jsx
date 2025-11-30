@@ -84,7 +84,10 @@ const Questions = () => {
       setCurrentIndex(currentIndex + 1);
     } else {
       console.log("Answers:", answers);
-      fetchStoreAnswers();
+      // fetchStoreAnswers();
+      navigation.navigate("serviceBooking", {
+        answers: answers,
+      });
     }
     setOtherAnswers(false);
   };
