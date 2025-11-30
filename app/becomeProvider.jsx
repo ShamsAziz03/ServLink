@@ -4,14 +4,13 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
 } from "react-native";
-import { TextInput, Button, Text, Checkbox } from "react-native-paper";
+import { TextInput, Button, Text } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import BackButton from "../components/BackButton";
 
 export default function BecomeProviderScreen() {
-  const [isProvider, setIsProvider] = useState(false);
   const [images, setImages] = useState([]);
   const [serviceType, setServiceType] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
@@ -19,8 +18,7 @@ export default function BecomeProviderScreen() {
   const [workingHours, setWorkingHours] = useState("");
 
   const pickImage = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       alert("Permission to access gallery is required!");
       return;
@@ -47,82 +45,72 @@ export default function BecomeProviderScreen() {
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
+      <BackButton goTo="/profileUser"/>
+
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: "center",
           alignItems: "center",
           paddingVertical: 20,
+          paddingBottom: 70,
         }}
       >
         <View style={styles.card}>
           <Text style={styles.title}>Become a Service Provider</Text>
 
-          <View style={styles.providerRow}>
-            <Checkbox
-              status={isProvider ? "checked" : "unchecked"}
-              onPress={() => setIsProvider(!isProvider)}
-              color="#750d83ff"
-            />
-            <Text style={styles.providerText}>I’m a Service Provider</Text>
+          <TextInput
+            label="Service Type"
+            mode="outlined"
+            style={styles.input}
+            value={serviceType}
+            onChangeText={setServiceType}
+          />
+          <TextInput
+            label="Hourly Rate ($)"
+            mode="outlined"
+            keyboardType="numeric"
+            style={styles.input}
+            value={hourlyRate}
+            onChangeText={setHourlyRate}
+          />
+          <TextInput
+            label="About You"
+            mode="outlined"
+            multiline
+            numberOfLines={3}
+            style={styles.input}
+            value={about}
+            onChangeText={setAbout}
+          />
+          <TextInput
+            label="Working Hours"
+            mode="outlined"
+            placeholder="e.g. 9:00 AM - 6:00 PM"
+            style={styles.input}
+            value={workingHours}
+            onChangeText={setWorkingHours}
+          />
+
+          <Text style={styles.subtitle}>Upload Sample Work</Text>
+          <Button
+            mode="contained"
+            onPress={pickImage}
+            style={styles.uploadButton}
+            labelStyle={{ fontWeight: "bold" }}
+          >
+            Choose Images
+          </Button>
+
+          <View style={styles.imageContainer}>
+            {images.map((uri, index) => (
+              <Image
+                key={index}
+                source={{ uri }}
+                style={styles.imagePreview}
+              />
+            ))}
           </View>
-
-          {isProvider && (
-            <>
-              <TextInput
-                label="Service Type"
-                mode="outlined"
-                style={styles.input}
-                value={serviceType}
-                onChangeText={setServiceType}
-              />
-              <TextInput
-                label="Hourly Rate ($)"
-                mode="outlined"
-                keyboardType="numeric"
-                style={styles.input}
-                value={hourlyRate}
-                onChangeText={setHourlyRate}
-              />
-              <TextInput
-                label="About You"
-                mode="outlined"
-                multiline
-                numberOfLines={3}
-                style={styles.input}
-                value={about}
-                onChangeText={setAbout}
-              />
-              <TextInput
-                label="Working Hours"
-                mode="outlined"
-                placeholder="e.g. 9:00 AM - 6:00 PM"
-                style={styles.input}
-                value={workingHours}
-                onChangeText={setWorkingHours}
-              />
-
-              <Text style={styles.subtitle}>Upload Sample Work</Text>
-              <Button
-                mode="contained"
-                onPress={pickImage}
-                style={styles.uploadButton}
-                labelStyle={{ fontWeight: "bold" }}
-              >
-                Choose Images
-              </Button>
-
-              <View style={styles.imageContainer}>
-                {images.map((uri, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri }}
-                    style={styles.imagePreview}
-                  />
-                ))}
-              </View>
-            </>
-          )}
 
           <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
@@ -170,8 +158,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#78688fff",
     borderRadius: 10,
   },
-  providerRow: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  providerText: { color: "#750d83ff", fontWeight: "500" },
   imageContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 10 },
   imagePreview: { width: 90, height: 90, borderRadius: 10, margin: 5 },
 });

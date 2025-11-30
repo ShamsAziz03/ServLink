@@ -11,6 +11,7 @@ const contactRoute = require("./routes/contactRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const db = require("./config/db");
 const ratingRoutes = require("./routes/ratingRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
 
 
 
@@ -35,6 +36,10 @@ app.use(express.json());
 app.use("/", contactRoute);
 
 app.use("/api/bookings", bookingRoutes);
+
+
+app.use("/api/favorites", favoriteRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

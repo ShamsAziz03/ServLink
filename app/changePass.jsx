@@ -3,6 +3,8 @@ import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import BackButton from "../components/BackButton";
+
 
 export default function ChangePassword() {
   const [user, setUser] = useState(null);
@@ -52,6 +54,8 @@ export default function ChangePassword() {
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
+       <BackButton goTo="/profileUser"/>
+
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
           <Text style={styles.title}>Change Password</Text>
@@ -101,6 +105,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingTop:0,
+    paddingBottom:90,
   },
   card: {
     width: "90%",

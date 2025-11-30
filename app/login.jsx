@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { TextInput, Button, Text, Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,7 +18,6 @@ export default function App() {
   const [checkedItems, setCheckedItems] = useState([]);
   const [isProvider, setIsProvider] = useState(false);
   const [images, setImages] = useState([]);
-  const [location, setLocation] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -81,18 +79,6 @@ export default function App() {
       setImages((prev) => [...prev, ...selected]);
     }
   };
-
-  const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permission to access location is required!");
-      return;
-    }
-
-    let loc = await Location.getCurrentPositionAsync({});
-    setLocation(`${loc.coords.latitude}, ${loc.coords.longitude}`);
-  };
-
   // Handle registration
   const handleRegister = async () => {
     const interestsString = checkedItems.join("-");
@@ -107,14 +93,13 @@ export default function App() {
       phone,
       password,
       city,
-      location_coordinates: location,
       interests: interestsString,
       birth_date,
       role,
     };
 
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/users/register", {
+      const response = await fetch("http://ip:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -141,7 +126,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/users/login", {
+      const response = await fetch("http://ip:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -152,7 +137,7 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/home");
+        router.push("/favTaskers");
       } else {
         alert(resData.message || "Login failed");
       }
@@ -246,23 +231,6 @@ export default function App() {
                 style={styles.input}
                 left={<TextInput.Icon icon="phone" />}
               />
-              <TextInput
-                label="Location"
-                value={location}
-                onChangeText={setLocation}
-                mode="outlined"
-                style={styles.input}
-                placeholder="Use button to get location"
-                left={<TextInput.Icon icon="map-marker" />}
-              />
-              <Button
-                mode="outlined"
-                onPress={getLocation}
-                style={{ marginBottom: 10 }}
-              >
-                Get Current Location
-              </Button>
-
               <Text style={styles.subtitle}>Select Your Interests</Text>
               <View style={styles.interestsContainer}>
                 {interests.map((item) => (

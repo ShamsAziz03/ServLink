@@ -173,7 +173,7 @@ const home = () => {
   const [categoriesData, setcategoriesData] = useState([]);
   const fetchData = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/homeInfo/categories");
+      const response = await fetch("http://ip:5000/homeInfo/categories");
       const fetchedData = await response.json();
       setcategoriesData(fetchedData[0]);
       console.log("Response:", fetchedData[0]);
@@ -186,7 +186,7 @@ const home = () => {
   const [offersData, setOffersData] = useState([]);
   const fetchOffers = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/homeInfo/offers");
+      const response = await fetch("http://ip:5000/homeInfo/offers");
       const fetchedDataOffers = await response.json();
       setOffersData(fetchedDataOffers[0]);
       console.log("Response:", fetchedDataOffers[0]);
@@ -200,7 +200,7 @@ const home = () => {
   const fetchTopProviders = async () => {
     try {
       const response = await fetch(
-        "http://10.0.2.2:5000/homeInfo/topProviders"
+        "http://ip:5000/homeInfo/topProviders"
       );
       const fetchedData = await response.json();
       setTopProviders(fetchedData);
@@ -214,7 +214,7 @@ const home = () => {
   const [mostBooked, setMostBooked] = useState([]);
   const fetchMostBooked = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/homeInfo/mostBooked");
+      const response = await fetch("http://ip:5000/homeInfo/mostBooked");
       const fetchedData = await response.json();
       setMostBooked(fetchedData);
       console.log("most booked:", fetchedData);

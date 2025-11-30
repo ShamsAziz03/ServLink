@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import BackButton from "../components/BackButton";
 
 export default function EditProfile() {
   const [user, setUser] = useState(null);
@@ -64,6 +65,8 @@ export default function EditProfile() {
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
+      <BackButton goTo="/profileUser"/>
+
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
           <Text style={styles.title}>Edit Profile</Text>

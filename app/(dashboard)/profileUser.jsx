@@ -23,7 +23,7 @@ export default function ProfileScreen() {
       try {
         const storedUser = await AsyncStorage.getItem("user");
         if (!storedUser) {
-          console.log("❌ No user found");
+          console.log("No user found");
           setLoading(false);
           return;
         }
