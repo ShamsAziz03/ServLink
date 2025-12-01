@@ -48,7 +48,7 @@ const ServiceBooking = () => {
       description:
         "Skilled in assembling all types of furniture efficiently and safely.",
     },
-       {
+    {
       name: "ahmad omar",
       price: 120,
       img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
@@ -86,7 +86,6 @@ const ServiceBooking = () => {
           title="Booking Service"
           goToService={false}
         />
-
         {/* the conentent of the page */}
         {/* for the what user should do */}
         <View

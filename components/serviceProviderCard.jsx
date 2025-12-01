@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React from "react";
+import BookingConfirmation from "../app/bookingConfirmation";
+import React, { useEffect, useState } from "react";
 
 function getStars(rating) {
   const stars = [];
@@ -22,6 +23,8 @@ function getStars(rating) {
 }
 
 const ServiceProviderCard = ({ name, price, img, rating, description }) => {
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+
   return (
     // full view of card
     <View style={styles.fullView}>
@@ -45,7 +48,13 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       >
         {description}
       </Text>
-      <View style={{ flexDirection: "row",justifyContent:"space-evenly"  , marginTop:10}}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          marginTop: 10,
+        }}
+      >
         <Pressable
           style={{
             backgroundColor: "#7b3685ff",
@@ -53,6 +62,7 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
             borderRadius: 10,
             alignItems: "center",
           }}
+          onPress={()=>{setShowBookingConfirmation(true)}}
         >
           <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
             Select and Book
@@ -71,6 +81,11 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
           </Text>
         </Pressable>
       </View>
+      {/* to show the booking confirmation page */}
+      <BookingConfirmation
+        visible={showBookingConfirmation}
+        onClose={()=>setShowBookingConfirmation(false)}
+      />
     </View>
   );
 };
