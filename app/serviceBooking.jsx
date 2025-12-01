@@ -30,6 +30,34 @@ const ServiceBooking = () => {
     { value: "# of completed tasks" },
   ];
 
+  // Add service providers array
+  const serviceProviders = [
+    {
+      name: "Sara Zahi",
+      price: 80,
+      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
+      rating: 4,
+      description:
+        "Expert in home and office cleaning services, including deep cleaning and maintenance.",
+    },
+    {
+      name: "ahmad omar",
+      price: 120,
+      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
+      rating: 3,
+      description:
+        "Skilled in assembling all types of furniture efficiently and safely.",
+    },
+       {
+      name: "ahmad omar",
+      price: 120,
+      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
+      rating: 3,
+      description:
+        "Skilled in assembling all types of furniture efficiently and safely.",
+    },
+  ];
+
   useEffect(() => {
     console.log("answers from SB page = ", answers);
   }, []);
@@ -97,12 +125,12 @@ const ServiceBooking = () => {
                 styles.view,
                 {
                   backgroundColor: "#8b3694ff",
-                  borderRadius: 15,
-                  padding: 13,
+                  borderRadius: 5,
+                  padding: 10,
                 },
               ]}
             >
-              <FontAwesome name="calendar" size={23} color="#f2e0f5ff" />
+              <FontAwesome name="calendar" size={21} color="#f2e0f5ff" />
 
               <MyCalendar
                 visible={visible}
@@ -160,17 +188,19 @@ const ServiceBooking = () => {
           </View>
         </View>
         {/* list of service providers */}
-        <View style={{ alignItems: "center" }}>
-          <ServiceProviderCard
-            name={"Sara Zahi"}
-            price={80}
-            img={"http://10.0.2.2:5000/assets/topProviders/icon1.jpg"}
-            rating={4}
-            description={
-              "Expert in home and office cleaning services, including deep cleaning and maintenance."
-            }
-          />
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {serviceProviders.map((serviceProvider, index) => (
+            <View key={index}>
+              <ServiceProviderCard
+                name={serviceProvider.name}
+                price={serviceProvider.price}
+                img={serviceProvider.img}
+                rating={serviceProvider.rating}
+                description={serviceProvider.description}
+              />
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </LinearGradient>
   );

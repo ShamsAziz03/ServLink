@@ -27,10 +27,7 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
     <View style={styles.fullView}>
       {/* view of basic info */}
       <View style={styles.basicInfo}>
-        <Image
-          source={{ uri: img }}
-          style={styles.image}
-        />
+        <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.details}>
           <View style={[styles.basicInfo, { justifyContent: "space-between" }]}>
             <Text style={styles.text}>{name}</Text>
@@ -43,35 +40,37 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
           </View>
         </View>
       </View>
-      <Text style={[styles.text, { fontSize: 15, fontWeight: "900" ,margin:5}]}>
+      <Text
+        style={[styles.text, { fontSize: 15, fontWeight: "900", margin: 5 }]}
+      >
         {description}
       </Text>
-      <Pressable
-        style={{
-          backgroundColor: "#7b3685ff",
-          padding: 5,
-          borderRadius: 10,
-          alignItems: "center",
-          marginHorizontal: 80,
-        }}
-      >
-        <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
-          Select
-        </Text>
-      </Pressable>
-      <Pressable
-        style={{
-          backgroundColor: "#7b3685ff",
-          padding: 5,
-          borderRadius: 10,
-          alignItems: "center",
-          marginHorizontal: 80,
-        }}
-      >
-        <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
-          View Profile
-        </Text>
-      </Pressable>
+      <View style={{ flexDirection: "row",justifyContent:"space-evenly"  , marginTop:10}}>
+        <Pressable
+          style={{
+            backgroundColor: "#7b3685ff",
+            padding: 8,
+            borderRadius: 10,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
+            Select and Book
+          </Text>
+        </Pressable>
+        <Pressable
+          style={{
+            backgroundColor: "#7b3685ff",
+            padding: 8,
+            borderRadius: 10,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
+            View Profile
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -94,6 +93,6 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   image: { width: 100, height: 100, borderRadius: 10 },
-  details: { flexDirection: "column" , marginTop:20},
+  details: { flexDirection: "column", marginTop: 20 },
   text: { color: "#7b3685ff", fontSize: 18, fontWeight: "700" },
 });
