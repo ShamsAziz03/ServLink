@@ -45,23 +45,16 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       date: "Mon, Dec 02",
       rating: 4,
     },
-    {
-      name: "Sarah M.",
-      msg: "Electrical work was done cleanly and correctly.",
-      date: "Sat, Nov 30",
-      rating: 5,
-    },
-    {
-      name: "David K.",
-      msg: "Electrical work was done cleanly and correctly.",
-      date: "Fri, Nov 29",
-      rating: 1,
-    },
+  ];
+  const experience_photos = [
+    "http://10.0.2.2:5000/assets/agriculture.png",
+    "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
+    "http://10.0.2.2:5000/assets/Mounting_TV_on_wall.png",
   ];
   const [providerInfo, setProviderInfo] = useState({
     field_of_work: "Home Cleaning",
     img: "http://10.0.2.2:5000/assets/topProviders/icon2.jpg",
-    name: "Home Cleaning",
+    name: "Ali Hasan",
     price: 25.0,
     rating: 4,
     about:
@@ -71,10 +64,8 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
     certifications:
       "Cleaning Certification Level 2, Safety Training Certificate",
     yearsOfExp: "5",
-    experience_photos:
-      "http://10.0.2.2:5000/uploads/experience_photos/omar_khaled1.jpg,http://10.0.2.2:5000/uploads/experience_photos/omar_khaled2.jpg",
+    experience_photos: experience_photos,
     service_locations: "New York, Brooklyn, Queens",
-    languages: "English, Arabic",
     feedbackData: feedbackData,
   });
 
