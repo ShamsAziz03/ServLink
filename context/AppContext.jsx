@@ -11,6 +11,7 @@ const AppProvider = ({ children }) => {
     description:
       "Professional help assembling and installing furniture at your home.",
   });
+  const [loggedUser, setLoggedUser] = useState({});
 
   return (
     <AppContext.Provider
@@ -19,6 +20,8 @@ const AppProvider = ({ children }) => {
         setUserCurrentLocation,
         currentService,
         setCurrentService,
+        loggedUser,
+        setLoggedUser,
       }}
     >
       {children}

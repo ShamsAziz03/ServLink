@@ -100,69 +100,82 @@ const Notification = ({ visible, onClose, user_id }) => {
             showsVerticalScrollIndicator={false}
             style={{ marginVertical: 10 }}
           >
-            {notifications.map((notification) => (
-              <View
-                key={notification.notification_id}
+            {notifications.length == 0 ? (
+              <Text
                 style={{
-                  backgroundColor: "#f3e8f7ff",
-                  padding: 20,
-                  margin: 10,
-                  marginHorizontal: 25,
-                  borderRadius: 10,
-                  shadowColor: "#593962ff",
-                  shadowOffset: { width: 0, height: 12 },
-                  shadowOpacity: 0.6,
-                  shadowRadius: 16,
-                  elevation: 10,
+                  fontSize: 25,
+                  color: "#340235ff",
+                  marginVertical: 200,
+                  marginHorizontal: 50,
                 }}
               >
+                No Notifications
+              </Text>
+            ) : (
+              notifications.map((notification) => (
                 <View
+                  key={notification.notification_id}
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    backgroundColor: "#f3e8f7ff",
+                    padding: 20,
+                    margin: 10,
+                    marginHorizontal: 25,
+                    borderRadius: 10,
+                    shadowColor: "#593962ff",
+                    shadowOffset: { width: 0, height: 12 },
+                    shadowOpacity: 0.6,
+                    shadowRadius: 16,
+                    elevation: 10,
                   }}
                 >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        color: "#4d045d88",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {notification.title}
+                    </Text>
+                    <Pressable
+                      onPress={() => {
+                        deleteNotification(notification.notification_id);
+                      }}
+                    >
+                      <MaterialIcons name="clear" size={20} color="#601d77ff" />
+                    </Pressable>
+                  </View>
                   <Text
                     style={{
-                      fontSize: 24,
-                      color: "#4d045d88",
-                      fontWeight: "bold",
+                      fontSize: 18,
+                      color: "#6f2b8088",
                     }}
                   >
-                    {notification.title}
+                    {notification.message}
                   </Text>
-                  <Pressable
-                    onPress={() => {
-                      deleteNotification(notification.notification_id);
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: "#856b8c88",
                     }}
                   >
-                    <MaterialIcons name="clear" size={20} color="#601d77ff" />
-                  </Pressable>
+                    {new Date(notification.sent_at).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
                 </View>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: "#6f2b8088",
-                  }}
-                >
-                  {notification.message}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: "#856b8c88",
-                  }}
-                >
-                  {new Date(notification.sent_at).toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Text>
-              </View>
-            ))}
+              ))
+            )}
           </ScrollView>
           <Pressable
             onPress={() => {

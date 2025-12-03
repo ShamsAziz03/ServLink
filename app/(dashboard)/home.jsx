@@ -12,10 +12,11 @@ import {
   Pressable,
 } from "react-native";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Carousel from "react-native-reanimated-carousel";
 import Card from "../../components/card";
 import Notification from "../../components/notification";
+import { AppContext } from "../../context/AppContext";
 
 function getStars(rating) {
   const stars = [];
@@ -41,6 +42,7 @@ const home = () => {
   const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisibility] = useState(false);
+  const { loggedUser } = useContext(AppContext);
 
   const width = Dimensions.get("window").width;
   const list = [
@@ -166,9 +168,6 @@ const home = () => {
     },
   ];
 
-  //user Id
-  const [userId, setUserId] = useState(1);
-
   //for fetch categories
   const [categoriesData, setcategoriesData] = useState([]);
   const fetchData = async () => {
@@ -239,7 +238,7 @@ const home = () => {
       }}
     >
       <Notification
-        user_id={userId}
+        user_id={loggedUser.user_id}
         visible={visible}
         onClose={() => setVisibility(false)}
       />

@@ -133,7 +133,8 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
                   paddingVertical: 10,
-                  gap: 20,
+                  gap: 10,
+                  marginBottom: 20,
                 }}
               >
                 {experience_photos.map((image, index) => (
@@ -147,7 +148,13 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                     <Image
                       source={{ uri: image }}
                       resizeMode="contain"
-                      style={{ borderRadius: 10, width: 140, height: 140 }}
+                      style={{
+                        borderRadius: 10,
+                        width: 140,
+                        height: 140,
+                        borderWidth: 1,
+                        borderColor: "#b289b1ff",
+                      }}
                     />
                   </Pressable>
                 ))}

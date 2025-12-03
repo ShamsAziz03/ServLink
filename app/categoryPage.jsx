@@ -360,21 +360,21 @@ const CategoryPage = () => {
                     >
                       <Text
                         style={{
-                          fontSize: 16,
+                          fontSize: 18,
                           textAlign: "center",
-                          color: "#e4e0e6ff",
+                          color: "#faf1ffff",
                           fontWeight: "900",
-                          backgroundColor: "#793c82ff",
-                          borderRadius: 6,
+                          backgroundColor: "#651072ff",
+                          borderRadius: 20,
                           alignSelf: "center",
                           shadowColor: "#000",
                           shadowOpacity: 0.1,
                           shadowRadius: 2,
-                          padding: 4,
-                          margin: 2,
+                          paddingHorizontal: 20,
+                          paddingVertical: 5,
                         }}
                       >
-                        View Details
+                       Details
                       </Text>
                     </Pressable>
                     <Pressable

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
   View,
   Image,
@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { AppContext } from "../context/AppContext";
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -26,6 +27,7 @@ export default function App() {
   const [birth_date, setbirth_date] = useState("");
   const router = useRouter();
   const navigation = useNavigation();
+  const { setLoggedUser } = useContext(AppContext);
 
   const interests = [
     {
@@ -137,7 +139,8 @@ export default function App() {
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
-        router.push("/favTaskers");
+        setLoggedUser(resData.user);
+        router.push("/home");
       } else {
         alert(resData.message || "Login failed");
       }
