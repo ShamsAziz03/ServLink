@@ -9,7 +9,8 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import ImageModal from "../components/imageModal";
 
 function getStars(rating) {
   const stars = [];
@@ -32,6 +33,8 @@ function getStars(rating) {
 }
 
 const ProviderProfile = ({ providerInfo, visible, onClose }) => {
+  const [showImage, setShowImage] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
   const {
     img,
     name,
@@ -43,7 +46,6 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
     yearsOfExp,
     experience_photos,
     service_locations,
-    languages,
     field_of_work,
     feedbackData,
   } = providerInfo;
@@ -113,7 +115,45 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
               </View>
               <Text style={styles.value}>{about}</Text>
             </View>
+            {/* add image of work */}
+            <View style={styles.card}>
+              <View style={styles.section}>
+                <FontAwesome name="photo" size={18} color="#4b1d5eff" />
+                <Text style={styles.title}>Work Photos</Text>
+              </View>
 
+              {/* to put image model */}
+              <ImageModal
+                visible={showImage}
+                onClose={() => setShowImage(false)}
+                img={currentImage}
+              />
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingVertical: 10,
+                  gap: 20,
+                }}
+              >
+                {experience_photos.map((image, index) => (
+                  <Pressable
+                    key={index}
+                    onPress={() => {
+                      setCurrentImage(image);
+                      setShowImage(true);
+                    }}
+                  >
+                    <Image
+                      source={{ uri: image }}
+                      resizeMode="contain"
+                      style={{ borderRadius: 10, width: 140, height: 140 }}
+                    />
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+            {/* for skills */}
             <View style={styles.card}>
               <View style={styles.section}>
                 <FontAwesome5 name="tools" size={18} color="#4b1d5eff" />
@@ -138,14 +178,6 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                 <Text style={styles.title}>Service Locations</Text>
               </View>
               <Text style={styles.value}>{service_locations}</Text>
-            </View>
-
-            <View style={styles.card}>
-              <View style={styles.section}>
-                <FontAwesome5 name="language" size={18} color="#4b1d5eff" />
-                <Text style={styles.title}>Languages</Text>
-              </View>
-              <Text style={styles.value}>{languages}</Text>
             </View>
 
             {/* for feedbacks */}
@@ -198,7 +230,7 @@ const styles = StyleSheet.create({
   providerProfile: {
     flexDirection: "column",
     gap: 10,
-    backgroundColor: "#fbe9fbff",
+    backgroundColor: "#fbf0fbff",
     padding: 15,
     margin: 10,
     borderRadius: 15,
@@ -217,20 +249,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginTop: 18,
-    marginBottom: 5,
   },
   value: {
     fontSize: 18,
     fontWeight: "500",
     color: "#4b1d5eff",
     paddingLeft: 15,
-    paddingBottom: 12,
+    paddingBottom: 20,
   },
   card: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomColor: "rgba(157, 83, 165, 0.3)",
-    marginVertical: 2,
+    marginVertical: 10,
     paddingHorizontal: 10,
   },
   reviewRow: {
