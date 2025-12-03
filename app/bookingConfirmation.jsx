@@ -65,7 +65,7 @@ const BookingConfirmation = ({ visible, onClose }) => {
               style={{
                 flexDirection: "row",
                 gap: 10,
-                backgroundColor: "#e5c0e5ff",
+                backgroundColor: "#f2d3f2ff",
                 padding: 10,
                 borderRadius: 15,
                 justifyContent: "center",
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   bookingConfirmation: {
     flexDirection: "column",
     gap: 10,
-    backgroundColor: "#f7e0f8ff",
+    backgroundColor: "#fcedfdff",
     padding: 15,
     margin: 10,
     borderRadius: 15,

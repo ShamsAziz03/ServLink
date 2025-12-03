@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import BookingConfirmation from "../app/bookingConfirmation";
+import ProviderProfile from "../app/provicerProfile";
 import React, { useEffect, useState } from "react";
 
 function getStars(rating) {
@@ -7,13 +8,13 @@ function getStars(rating) {
   for (let i = 0; i < 5; i++) {
     if (rating - 1 < i) {
       stars.push(
-        <Text key={i} style={{ fontSize: 30, color: "#000000ff" }}>
+        <Text key={i} style={{ fontSize: 25, color: "#000000ff" }}>
           ☆
         </Text>
       );
     } else {
       stars.push(
-        <Text key={i} style={{ fontSize: 30, color: "#660468ff" }}>
+        <Text key={i} style={{ fontSize: 25, color: "#660468ff" }}>
           ★
         </Text>
       );
@@ -24,6 +25,58 @@ function getStars(rating) {
 
 const ServiceProviderCard = ({ name, price, img, rating, description }) => {
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+  const [showProviderProfile, setShowProviderProfile] = useState(false);
+  const feedbackData = [
+    {
+      name: "Seventh S.",
+      msg: "Handled the setup quickly and without issues.",
+      date: "Thu, Nov 27",
+      rating: 3,
+    },
+    {
+      name: "Seventh S.",
+      msg: "Assembly went smooth and efficient.",
+      date: "Tue, Nov 25",
+      rating: 2,
+    },
+    {
+      name: "John D.",
+      msg: "Cleaning was solid and met expectations.",
+      date: "Mon, Dec 02",
+      rating: 4,
+    },
+    {
+      name: "Sarah M.",
+      msg: "Electrical work was done cleanly and correctly.",
+      date: "Sat, Nov 30",
+      rating: 5,
+    },
+    {
+      name: "David K.",
+      msg: "Electrical work was done cleanly and correctly.",
+      date: "Fri, Nov 29",
+      rating: 1,
+    },
+  ];
+  const [providerInfo, setProviderInfo] = useState({
+    field_of_work: "Home Cleaning",
+    img: "http://10.0.2.2:5000/assets/topProviders/icon2.jpg",
+    name: "Home Cleaning",
+    price: 25.0,
+    rating: 4,
+    about:
+      "Expert in home and office cleaning services, including deep cleaning and maintenance.",
+    description:
+      "I’m a cleaner who actually knows what thorough means. I handle homes and offices with deep-clean precision",
+    certifications:
+      "Cleaning Certification Level 2, Safety Training Certificate",
+    yearsOfExp: "5",
+    experience_photos:
+      "http://10.0.2.2:5000/uploads/experience_photos/omar_khaled1.jpg,http://10.0.2.2:5000/uploads/experience_photos/omar_khaled2.jpg",
+    service_locations: "New York, Brooklyn, Queens",
+    languages: "English, Arabic",
+    feedbackData: feedbackData,
+  });
 
   return (
     // full view of card
@@ -32,10 +85,8 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       <View style={styles.basicInfo}>
         <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.details}>
-          <View style={[styles.basicInfo, { justifyContent: "space-between" }]}>
-            <Text style={styles.text}>{name}</Text>
-            <Text style={styles.text}>{price + " ₪/h"}</Text>
-          </View>
+          <Text style={styles.text}>{name}</Text>
+          <Text style={styles.text}>{price + " ₪/h"}</Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-evenly" }}
           >
@@ -44,39 +95,44 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
         </View>
       </View>
       <Text
-        style={[styles.text, { fontSize: 15, fontWeight: "900", margin: 5 }]}
+        style={[styles.text, { fontSize: 17, fontWeight: "700", margin: 5 }]}
       >
         {description}
       </Text>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
+          flexDirection: "column",
           marginTop: 10,
+          gap: 5,
         }}
       >
         <Pressable
           style={{
-            backgroundColor: "#7b3685ff",
+            backgroundColor: "#8f479aff",
             padding: 8,
             borderRadius: 10,
             alignItems: "center",
           }}
-          onPress={()=>{setShowBookingConfirmation(true)}}
+          onPress={() => {
+            setShowBookingConfirmation(true);
+          }}
         >
-          <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
+          <Text style={{ fontSize: 17, color: "#ffffffff", fontWeight: "800" }}>
             Select and Book
           </Text>
         </Pressable>
         <Pressable
           style={{
-            backgroundColor: "#7b3685ff",
+            backgroundColor: "#8f479aff",
             padding: 8,
             borderRadius: 10,
             alignItems: "center",
           }}
+          onPress={() => {
+            setShowProviderProfile(true);
+          }}
         >
-          <Text style={{ fontSize: 15, color: "#f5def9ff", fontWeight: "500" }}>
+          <Text style={{ fontSize: 17, color: "#ffffffff", fontWeight: "800" }}>
             View Profile
           </Text>
         </Pressable>
@@ -84,7 +140,14 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       {/* to show the booking confirmation page */}
       <BookingConfirmation
         visible={showBookingConfirmation}
-        onClose={()=>setShowBookingConfirmation(false)}
+        onClose={() => setShowBookingConfirmation(false)}
+      />
+
+      {/* to show the provider profile page */}
+      <ProviderProfile
+        visible={showProviderProfile}
+        onClose={() => setShowProviderProfile(false)}
+        providerInfo={providerInfo}
       />
     </View>
   );
@@ -96,7 +159,7 @@ const styles = StyleSheet.create({
   fullView: {
     flexDirection: "column",
     gap: 10,
-    backgroundColor: "#f5e8f5ff",
+    backgroundColor: "#fffaffff",
     borderColor: "#aa80a9ff",
     borderWidth: 1,
     padding: 15,
@@ -107,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 20,
   },
-  image: { width: 100, height: 100, borderRadius: 10 },
+  image: { width: 100, height: 100, borderRadius: 100 },
   details: { flexDirection: "column", marginTop: 20 },
-  text: { color: "#7b3685ff", fontSize: 18, fontWeight: "700" },
+  text: { color: "#7b3685ff", fontSize: 22, fontWeight: "700" },
 });

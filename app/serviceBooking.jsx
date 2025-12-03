@@ -67,7 +67,7 @@ const ServiceBooking = () => {
 
   return (
     <LinearGradient
-      colors={["#fcf4fcff", "#d7afdcff"]}
+      colors={["#fcf4fcff", "#e8d0ebff"]}
       style={{ flex: 1, justifyContent: "space-between", padding: 20 }}
     >
       <View
@@ -92,7 +92,7 @@ const ServiceBooking = () => {
           style={[
             styles.view,
             {
-              backgroundColor: "#f1d3f5ff",
+              backgroundColor: "#f4def7ff",
               padding: 15,
               borderRadius: 15,
               width: "100%",
@@ -152,7 +152,7 @@ const ServiceBooking = () => {
               data={filters}
               placeholder="Select Filter"
               dropdownStyles={{
-                backgroundColor: "#e5cce7ff",
+                backgroundColor: "#efe5f0ff",
                 position: "absolute",
                 top: 50,
                 left: 0,
@@ -163,12 +163,12 @@ const ServiceBooking = () => {
               }}
               dropdownTextStyles={{
                 color: "#6c0268ff",
-                fontSize: 17,
+                fontSize: 19,
                 fontWeight: "700",
-                borderTopColor: "#dad7d7ff",
-                borderRightColor: "#dad7d7ff",
-                borderLeftColor: "#dad7d7ff",
-                borderBottomColor: "#949393ff",
+                borderTopColor: "#eee9e9ff",
+                borderRightColor: "#f1ececff",
+                borderLeftColor: "#f5f1f1ff",
+                borderBottomColor: "#858181ff",
                 borderWidth: 0.5,
                 textAlign: "center",
               }}

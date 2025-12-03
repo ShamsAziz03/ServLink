@@ -60,7 +60,7 @@ const SearchBox = ({ selectPosition, setSelectPosition }) => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#e4d4e3ff", borderRadius: 10 }}>
+    <View style={{ flex: 1, backgroundColor: "#faedf9ff", borderRadius: 10 }}>
       <View style={styles.searchContainer}>
         <View style={{ padding: 2, paddingTop: 3 }}>
           <Link href="/categoryPage">
