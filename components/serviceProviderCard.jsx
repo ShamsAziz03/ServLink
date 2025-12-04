@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import BookingConfirmation from "../app/bookingConfirmation";
-import ProviderProfile from "../app/provicerProfile";
+import ProviderProfile from "../app/providerProfile";
 import React, { useEffect, useState } from "react";
 
 function getStars(rating) {
@@ -23,61 +23,44 @@ function getStars(rating) {
   return stars;
 }
 
-const ServiceProviderCard = ({ name, price, img, rating, description }) => {
+const ServiceProviderCard = ({ serviceProviderInfo }) => {
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [showProviderProfile, setShowProviderProfile] = useState(false);
-  const feedbackData = [
-    {
-      name: "Seventh S.",
-      msg: "Handled the setup quickly and without issues.",
-      date: "Thu, Nov 27",
-      rating: 3,
-    },
-    {
-      name: "Seventh S.",
-      msg: "Assembly went smooth and efficient.",
-      date: "Tue, Nov 25",
-      rating: 2,
-    },
-    {
-      name: "John D.",
-      msg: "Cleaning was solid and met expectations.",
-      date: "Mon, Dec 02",
-      rating: 4,
-    },
-  ];
-  const experience_photos = [
-    "http://10.0.2.2:5000/assets/agriculture.png",
-    "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
-    "http://10.0.2.2:5000/assets/Mounting_TV_on_wall.png",
-  ];
-  const [providerInfo, setProviderInfo] = useState({
-    field_of_work: "Home Cleaning",
-    img: "http://10.0.2.2:5000/assets/topProviders/icon2.jpg",
-    name: "Ali Hasan",
-    price: 25.0,
-    rating: 4,
-    about:
-      "Expert in home and office cleaning services, including deep cleaning and maintenance.",
-    description:
-      "I’m a cleaner who actually knows what thorough means. I handle homes and offices with deep-clean precision",
-    certifications:
-      "Cleaning Certification Level 2, Safety Training Certificate",
-    yearsOfExp: "5",
-    experience_photos: experience_photos,
-    service_locations: "New York, Brooklyn, Queens",
-    feedbackData: feedbackData,
-  });
+
+  const [rating, setRating] = useState(0);
+
+  const fetchProviderRating = async () => {
+    const result = await fetch(
+      `http://10.0.2.2:5000/bookingService/getProviderRating/${serviceProviderInfo.provider_id}`
+    );
+    const data = await result.json();
+    if (data.length != 0) {
+      setRating(data[0].max_rating);
+    } else setRating(1);
+  };
+  useEffect(() => {
+    setRating(0);
+    fetchProviderRating();
+  }, []);
 
   return (
     // full view of card
     <View style={styles.fullView}>
       {/* view of basic info */}
       <View style={styles.basicInfo}>
-        <Image source={{ uri: img }} style={styles.image} />
+        <Image
+          source={{ uri: serviceProviderInfo.id_card_photo }}
+          style={styles.image}
+        />
         <View style={styles.details}>
-          <Text style={styles.text}>{name}</Text>
-          <Text style={styles.text}>{price + " ₪/h"}</Text>
+          <Text style={styles.text}>
+            {serviceProviderInfo.first_name +
+              " " +
+              serviceProviderInfo.last_name}
+          </Text>
+          <Text style={styles.text}>
+            {serviceProviderInfo.base_price + " ₪/h"}
+          </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-evenly" }}
           >
@@ -88,7 +71,7 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       <Text
         style={[styles.text, { fontSize: 17, fontWeight: "700", margin: 5 }]}
       >
-        {description}
+        {serviceProviderInfo.aboutProvider}
       </Text>
       <View
         style={{
@@ -138,7 +121,7 @@ const ServiceProviderCard = ({ name, price, img, rating, description }) => {
       <ProviderProfile
         visible={showProviderProfile}
         onClose={() => setShowProviderProfile(false)}
-        providerInfo={providerInfo}
+        providerInfo={serviceProviderInfo}
       />
     </View>
   );

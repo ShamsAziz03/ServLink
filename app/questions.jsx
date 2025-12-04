@@ -94,6 +94,10 @@ const Questions = () => {
 
   useEffect(() => {
     fetchServiceQuestions();
+    setCurrentIndex(0);
+    setAnswers({});
+    setSelectedOption({});
+    setOtherAnswers(false);
   }, [currentService.service_id]);
 
   return (

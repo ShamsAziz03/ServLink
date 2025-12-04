@@ -9,7 +9,12 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { MaterialIcons, FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  FontAwesome5,
+  FontAwesome,
+  Ionicons,
+} from "@expo/vector-icons";
 import ImageModal from "../components/imageModal";
 
 function getStars(rating) {
@@ -35,20 +40,60 @@ function getStars(rating) {
 const ProviderProfile = ({ providerInfo, visible, onClose }) => {
   const [showImage, setShowImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
+  const [rating, setRating] = useState(0);
+  const [providerExpImages, setProviderExpImages] = useState([
+    "http://10.0.2.2:5000/assets/agriculture.png",
+    "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
+    "http://10.0.2.2:5000/assets/Mounting_TV_on_wall.png",
+  ]);
+  const [feedbacks, setFeedbakcs] = useState([]);
+
   const {
-    img,
-    name,
-    price,
-    rating,
-    about,
+    id_card_photo,
+    first_name,
+    last_name,
+    base_price,
+    aboutProvider,
     description,
     certifications,
-    yearsOfExp,
-    experience_photos,
+    years_of_experience,
+    images,
     service_locations,
     field_of_work,
-    feedbackData,
+    email,
+    phone,
   } = providerInfo;
+
+  const fetchProviderRating = async () => {
+    const result = await fetch(
+      `http://10.0.2.2:5000/bookingService/getProviderRating/${providerInfo.provider_id}`
+    );
+    const data = await result.json();
+    if (data.length != 0) {
+      setRating(data[0].max_rating);
+    } else setRating(1);
+  };
+  const fetchFeedbacks = async () => {
+    const result = await fetch(
+      `http://10.0.2.2:5000/bookingService/getFeedbacks/${providerInfo.provider_id}`
+    );
+    const data = await result.json();
+    if (data.length == 0) {
+      setFeedbakcs([]);
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        data[i].rated_at = data[i].rated_at.substr(0, 10);
+        setFeedbakcs(data);
+      }
+    }
+  };
+  useEffect(() => {
+    const imagesArray = images.split(",");
+    setProviderExpImages(imagesArray);
+    setRating(0);
+    fetchProviderRating();
+    fetchFeedbacks();
+  }, []);
   return (
     <Modal
       animationType="fade"
@@ -79,12 +124,11 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "flex-start",
-                gap: 30,
+                justifyContent: "space-between",
                 marginVertical: 20,
               }}
             >
-              <Image source={{ uri: img }} style={styles.img} />
+              <Image source={{ uri: id_card_photo }} style={styles.img} />
               <View
                 style={{
                   flexDirection: "column",
@@ -92,13 +136,22 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                   marginTop: 5,
                 }}
               >
-                <Text style={[styles.title, { fontSize: 25 }]}>{name}</Text>
+                <Text style={[styles.title, { fontSize: 25 }]}>
+                  {first_name + " " + last_name}
+                </Text>
                 <Text style={[styles.title, { fontSize: 21 }]}>
-                  {price + " ₪/h"}
+                  {base_price + " ₪/h"}
                 </Text>
 
                 <Text style={styles.title}>{getStars(rating)}</Text>
               </View>
+              <Pressable style={{ marginTop: 20 }}>
+                <Ionicons
+                  name="heart-circle-outline"
+                  size={40}
+                  color="#541355ff"
+                />
+              </Pressable>
             </View>
             <View style={styles.card}>
               <View style={styles.section}>
@@ -113,7 +166,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                 <FontAwesome5 name="user" size={18} color="#4b1d5eff" />
                 <Text style={styles.title}>About</Text>
               </View>
-              <Text style={styles.value}>{about}</Text>
+              <Text style={styles.value}>{aboutProvider}</Text>
             </View>
             {/* add image of work */}
             <View style={styles.card}>
@@ -137,7 +190,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                   marginBottom: 20,
                 }}
               >
-                {experience_photos.map((image, index) => (
+                {providerExpImages.map((image, index) => (
                   <Pressable
                     key={index}
                     onPress={() => {
@@ -171,7 +224,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                   ". Certifications: " +
                   certifications +
                   ", Years Of Exp: " +
-                  yearsOfExp}
+                  years_of_experience}
               </Text>
             </View>
 
@@ -186,6 +239,20 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
               </View>
               <Text style={styles.value}>{service_locations}</Text>
             </View>
+            <View style={styles.card}>
+              <View style={styles.section}>
+                <MaterialIcons name="call" size={18} color="#4b1d5eff" />
+                <Text style={styles.title}>Contacts</Text>
+              </View>
+              <Text
+                style={[styles.value, { paddingVertical: 5, paddingBottom: 1 }]}
+              >
+                {"Email: " + email}
+              </Text>
+              <Text style={[styles.value, { paddingVertical: 5 }]}>
+                {"Phone: " + phone}
+              </Text>
+            </View>
 
             {/* for feedbacks */}
             <View style={styles.card}>
@@ -196,7 +263,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
 
               {/* feedbacks */}
               <View>
-                {feedbackData.map((feedback, index) => (
+                {feedbacks.map((feedback, index) => (
                   <View style={styles.reviewRow} key={index}>
                     <FontAwesome5
                       name="user-circle"
@@ -204,13 +271,15 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                       color="#4b1d5eff"
                     />
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.name}>{feedback.name}</Text>
-                      <Text style={styles.msg}>{feedback.msg}</Text>
+                      <Text style={styles.name}>
+                        {feedback.first_name + " " + feedback.last_name}
+                      </Text>
+                      <Text style={styles.msg}>{feedback.feedback_text}</Text>
                     </View>
                     <View style={styles.dateRate}>
-                      <Text style={styles.date}>on {feedback.date}</Text>
+                      <Text style={styles.date}>on   {feedback.rated_at}</Text>
                       <Text style={styles.title}>
-                        {getStars(feedback.rating)}
+                        {getStars(feedback.score)}
                       </Text>
                     </View>
                   </View>

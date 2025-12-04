@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   StyleSheet,
@@ -16,53 +16,53 @@ import { LinearGradient } from "expo-linear-gradient";
 import MyCalendar from "../components/calendar";
 import { SelectList } from "react-native-dropdown-select-list";
 import ServiceProviderCard from "../components/serviceProviderCard";
+import { AppContext } from "../context/AppContext";
 
 const ServiceBooking = () => {
   const insets = useSafeAreaInsets();
   const route = useRoute();
   const { answers } = route.params;
   const [visible, setVisibility] = useState(false); //for calender
-  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Recommended");
   const filters = [
     { value: "Recommended" },
     { value: "Price(Lowest to Highest)" },
-    { value: "Price(Highest to Lowset)" },
+    { value: "Price(Highest to Lowest)" },
     { value: "# of completed tasks" },
   ];
+  const { currentService } = useContext(AppContext);
 
-  // Add service providers array
-  const serviceProviders = [
-    {
-      name: "Sara Zahi",
-      price: 80,
-      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
-      rating: 4,
-      description:
-        "Expert in home and office cleaning services, including deep cleaning and maintenance.",
-    },
-    {
-      name: "ahmad omar",
-      price: 120,
-      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
-      rating: 3,
-      description:
-        "Skilled in assembling all types of furniture efficiently and safely.",
-    },
-    {
-      name: "ahmad omar",
-      price: 120,
-      img: "http://10.0.2.2:5000/assets/topProviders/icon1.jpg",
-      rating: 3,
-      description:
-        "Skilled in assembling all types of furniture efficiently and safely.",
-    },
-  ];
+  //for fetch categories
+  const [serviceProviders, setServiceProviders] = useState([]);
+  const fetchProviders = async () => {
+    try {
+      const service_id = currentService.service_id;
+      const result = await fetch(
+        `http://10.0.2.2:5000/bookingService/getServiceProviders/${service_id}`
+      );
+      const fetchedData = await result.json();
+      setServiceProviders(fetchedData);
+    } catch (err) {
+      console.error("Error fetching service providers:", err);
+    }
+  };
 
   useEffect(() => {
     console.log("answers from SB page = ", answers);
+    fetchProviders();
   }, []);
   useEffect(() => {
-    console.log("selected filter= ", selectedFilter);
+    let sorted = [...serviceProviders];
+    if (selectedFilter === "Price(Lowest to Highest)") {
+      sorted.sort(
+        (a, b) => parseFloat(a.base_price) - parseFloat(b.base_price)
+      );
+    } else if (selectedFilter === "Price(Highest to Lowest)") {
+      sorted.sort(
+        (a, b) => parseFloat(b.base_price) - parseFloat(a.base_price)
+      );
+    }
+    setServiceProviders(sorted);
   }, [selectedFilter]);
 
   return (
@@ -190,13 +190,7 @@ const ServiceBooking = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           {serviceProviders.map((serviceProvider, index) => (
             <View key={index}>
-              <ServiceProviderCard
-                name={serviceProvider.name}
-                price={serviceProvider.price}
-                img={serviceProvider.img}
-                rating={serviceProvider.rating}
-                description={serviceProvider.description}
-              />
+              <ServiceProviderCard serviceProviderInfo={serviceProvider} />
             </View>
           ))}
         </ScrollView>

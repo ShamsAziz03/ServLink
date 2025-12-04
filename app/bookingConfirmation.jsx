@@ -16,6 +16,8 @@ const BookingConfirmation = ({ visible, onClose }) => {
   const [time, setTime] = useState("2:45:00 AM");
   const [selectedDay, setSelectedDay] = useState(""); //for calender
   const [showClock, setShowClock] = useState(false); //for calender
+  const disableDates = ["2025-12-15", "2025-12-12"];
+  const [range, setRange] = useState({}); //for calender disable dates
 
   useEffect(() => {
     console.log("time is:", time);
@@ -24,6 +26,13 @@ const BookingConfirmation = ({ visible, onClose }) => {
   useEffect(() => {
     console.log("day from booking conf is:", selectedDay);
   }, [selectedDay]);
+  useEffect(() => {
+    const r = {};
+    disableDates.forEach((date) => {
+      r[date] = { disabled: true, disableTouchEvent: true };
+    });
+    setRange(r);
+  }, []);
 
   return (
     <Modal
@@ -58,8 +67,10 @@ const BookingConfirmation = ({ visible, onClose }) => {
                 selected: true,
                 disableTouchEvent: true,
               },
+              ...range,
             }}
           />
+
           <Pressable onPress={() => setShowClock(true)}>
             <View
               style={{
@@ -119,8 +130,7 @@ const BookingConfirmation = ({ visible, onClose }) => {
               paddingTop: 5,
             }}
           >
-            You can chat to adjust task details or change start time after
-            confirming.
+            You can adjust task details or change start time after confirming.
           </Text>
           <Pressable
             onPress={() => {
