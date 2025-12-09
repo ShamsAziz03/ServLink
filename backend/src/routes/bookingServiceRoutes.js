@@ -12,9 +12,17 @@ router.get(
   bookingServiceController.getProviderRating
 );
 
+router.get("/getFeedbacks/:providerId", bookingServiceController.getFeedbacks);
+
 router.get(
-  "/getFeedbacks/:providerId",
-  bookingServiceController.getFeedbacks
+  "/getServiceProviderSchedule/:providerId",
+  bookingServiceController.getProviderSchedule
+);
+
+
+router.get(
+  "/getServiceProviderUnavailableDates/:providerId",
+  bookingServiceController.getProviderUnAvailableDates
 );
 
 module.exports = router;
