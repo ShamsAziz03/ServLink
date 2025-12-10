@@ -11,7 +11,6 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import HeaderLogoReturn from "../components/headerLogoReturn";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import MyCalendar from "../components/calendar";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -20,8 +19,6 @@ import { AppContext } from "../context/AppContext";
 
 const ServiceBooking = () => {
   const insets = useSafeAreaInsets();
-  const route = useRoute();
-  const { answers } = route.params;
   const [visible, setVisibility] = useState(false); //for calender
   const [selectedFilter, setSelectedFilter] = useState("Recommended");
   const filters = [
@@ -30,7 +27,7 @@ const ServiceBooking = () => {
     { value: "Price(Highest to Lowest)" },
     { value: "# of completed tasks" },
   ];
-  const { currentService } = useContext(AppContext);
+  const { currentService, questionsAnswers } = useContext(AppContext);
 
   //for fetch categories
   const [serviceProviders, setServiceProviders] = useState([]);
@@ -48,7 +45,7 @@ const ServiceBooking = () => {
   };
 
   useEffect(() => {
-    console.log("answers from SB page = ", answers);
+    console.log("question answers from ServiceBooking page = ", questionsAnswers);
     fetchProviders();
   }, []);
   useEffect(() => {

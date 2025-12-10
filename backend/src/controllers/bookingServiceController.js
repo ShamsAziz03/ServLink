@@ -1,6 +1,7 @@
 const ServiceProviderModel = require("../models/serviceProviderModel");
 const ServiceProviderSchedule = require("../models/serviceProviderScheduleModel");
 const ServiceProviderUnavailableDates = require("../models/serviceProviderUnavailableDatesModel");
+const ServiceProviderBookings = require("../models/bookingsModel");
 
 exports.getServiceProviders = async (req, res) => {
   try {
@@ -59,6 +60,18 @@ exports.getProviderUnAvailableDates = async (req, res) => {
       await ServiceProviderUnavailableDates.getProviderUnavailableDates(
         providerId
       );
+    res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+};
+
+exports.getProviderBookings = async (req, res) => {
+  try {
+    const providerId = req.params.providerId;
+    const result = await ServiceProviderBookings.getProviderBookings(
+      providerId
+    );
     res.json(result);
   } catch (err) {
     res.json({ error: err.message });

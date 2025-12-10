@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   StyleSheet,
@@ -11,15 +11,19 @@ import {
 import { Calendar } from "react-native-calendars";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { AppContext } from "../context/AppContext";
 
 const BookingConfirmation = ({ visible, onClose, providerId }) => {
-  const [time, setTime] = useState("2:45:00 AM");
+  const [time, setTime] = useState("2:45:00");
   const [selectedDay, setSelectedDay] = useState(""); //for calender
   const [showClock, setShowClock] = useState(false); //for calender
-
   const [range, setRange] = useState({}); //for calender disable dates
-
   const [providerSchedule, setProviderSchedule] = useState([]);
+  const [providerUnavailableDates, setProviderUnavailableDates] = useState([]);
+  const [providerBookings, setProviderBookings] = useState([]);
+  const [dateHasBooks, setDateHasBooks] = useState([]); //to check if choosed date from user has bookes for SP
+  const { questionsAnswers } = useContext(AppContext); //to take how many hours the task will be
+  const [day, setDay] = useState(""); //when user set date so we split day to see day schedule
 
   const fetchServiceProviderSchedule = async () => {
     try {
@@ -33,7 +37,18 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
     }
   };
 
-  const [providerUnavailableDates, setProviderUnavailableDates] = useState([]);
+  const fetchServiceProviderBookings = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:5000/bookingService/getServiceProviderBookings/${providerId}`
+      );
+      const fetchedData = await response.json();
+      setProviderBookings(fetchedData);
+      console.log("Prov books: ", providerBookings);
+    } catch (error) {
+      console.error("Error fetching bookings of the SP:", error);
+    }
+  };
 
   const fetchServiceProviderUnavailableDates = async () => {
     try {
@@ -49,12 +64,10 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   };
 
   useEffect(() => {
-    console.log("time is:", time);
-  }, [time]);
-
-  useEffect(() => {
     //to set schedule of SP
     fetchServiceProviderSchedule();
+    //to fetch SP bookings
+    fetchServiceProviderBookings();
     //to set un available dates of SP
     fetchServiceProviderUnavailableDates();
 
@@ -63,11 +76,36 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
     if (providerUnavailableDates === null) return;
     providerUnavailableDates.forEach((unAvailableDate) => {
       const unAvaDate = unAvailableDate.date.split("T")[0];
-      console.log(unAvaDate);
       r[unAvaDate] = { disabled: true, disableTouchEvent: true };
     });
     setRange(r);
-  }, []);
+  }, [selectedDay]);
+
+  const getTaskDuration = () => {
+    for (const questionText in questionsAnswers) {
+      const answer = questionsAnswers[questionText];
+      if (!answer) continue;
+      const v = answer.toString().trim().toLowerCase();
+      if (questionText.toLowerCase().includes("big")) {
+        const m = v.match(/(\d+)/);
+        if (m) return parseInt(m[1], 10) * 60;
+      }
+
+      if (questionText.toLowerCase().includes("hours")) {
+        if (/^\d+$/.test(v)) {
+          return parseInt(v, 10) * 60;
+        }
+        if (v.includes("Full day")) return 8 * 60;
+        if (v.includes("Live-in")) return 24 * 60;
+      }
+    }
+    return 0;
+  };
+
+  const toMinutes = (t) => {
+    const [h, m, s] = t.split(":").map(Number);
+    return h * 60 + m + Math.floor(s / 60);
+  };
 
   return (
     <Modal
@@ -96,6 +134,7 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
           <Calendar
             minDate={new Date().toISOString().split("T")[0]}
             onDayPress={(day) => {
+              //to check that day is on SP schedule
               const date = new Date(day.dateString);
               const weekdays = [
                 "sunday",
@@ -110,15 +149,16 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
               let exist = 0;
               if (providerSchedule.error) {
                 //SP still not add his schedule
-                alert(
-                  "Can't Choose this day, because provider can't do task on this day!"
-                );
+                // alert(
+                //   "Can't Choose this day, because provider can't do task on this day!"
+                // );
+                //do nothing
                 return;
               }
               providerSchedule.forEach((ps) => {
                 if (ps.day_of_week === weekday) {
-                  console.log(ps.day_of_week);
                   exist = 1;
+                  setDay(weekday);
                 }
               });
               if (exist == 0) {
@@ -127,6 +167,17 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
                 );
                 return;
               }
+
+              //to check if date choosed from user has books for SP
+              if (providerBookings === null) return;
+              let booksDates = [];
+              providerBookings.forEach((pb) => {
+                let serviceDate = pb.service_date.split("T")[0];
+                if (serviceDate === day.dateString) {
+                  booksDates.push(pb);
+                }
+              });
+              setDateHasBooks(booksDates);
 
               setSelectedDay(day.dateString);
             }}
@@ -166,10 +217,59 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
               value={new Date()}
               mode={"time"}
               display="defualt"
-              is24Hour={false}
+              is24Hour={true}
               onChange={(event, selectedDate) => {
                 if (selectedDate) {
-                  setTime(selectedDate.toLocaleTimeString());
+                  let h = selectedDate.getHours();
+                  let m = selectedDate.getMinutes();
+                  let s = selectedDate.getSeconds();
+                  h = h.toString().padStart(2, "0");
+                  m = m.toString().padStart(2, "0");
+                  s = s.toString().padStart(2, "0");
+
+                  let selectedTime = `${h}:${m}:${s}`;
+                  //to check if time selected is in work time range of SP
+                  if (providerSchedule.error) return;
+                  let exist = 0;
+                  providerSchedule.forEach((ps) => {
+                    if (
+                      day == ps.day_of_week &&
+                      selectedTime >= ps.start_time &&
+                      selectedTime <= ps.end_time
+                    )
+                      exist = 1;
+                  });
+                  if (exist == 0) {
+                    alert(
+                      "Can't Choose this time, because this time is out of work time range of sp!"
+                    );
+                    setShowClock(false);
+                    return;
+                  }
+                  //to check if time selected is not on range that sp has sth booked
+                  if (dateHasBooks.length !== 0) {
+                    const taskDuration = getTaskDuration(); //in mins
+                    const selectedMins = toMinutes(selectedTime);
+
+                    for (const db of dateHasBooks) {
+                      const bookedStart = toMinutes(db.service_time) - 60; // 1 hour before, cause SP can't do task since next book has 1 hour
+                      const bookedEnd =
+                        toMinutes(db.service_time) + taskDuration + 30; // 30 min after
+
+                      if (
+                        selectedMins >= bookedStart &&
+                        selectedMins <= bookedEnd
+                      ) {
+                        alert(
+                          "Can't choose this time, SP has a booking at that time!"
+                        );
+                        setShowClock(false);
+                        return;
+                      }
+                    }
+                  }
+
+                  setTime(selectedTime);
                   setShowClock(false);
                 }
               }}

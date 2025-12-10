@@ -19,10 +19,14 @@ router.get(
   bookingServiceController.getProviderSchedule
 );
 
-
 router.get(
   "/getServiceProviderUnavailableDates/:providerId",
   bookingServiceController.getProviderUnAvailableDates
+);
+
+router.get(
+  "/getServiceProviderBookings/:providerId",
+  bookingServiceController.getProviderBookings
 );
 
 module.exports = router;
