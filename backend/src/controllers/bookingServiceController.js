@@ -77,3 +77,30 @@ exports.getProviderBookings = async (req, res) => {
     res.json({ error: err.message });
   }
 };
+
+exports.getProvidersUnAvailableDates = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result =
+      await ServiceProviderModel.getProvidersUnAvailableDates(
+        ids
+      );
+    res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+};
+
+
+exports.getProvidersSchedule = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result =
+      await ServiceProviderModel.getProvidersSchedule(
+        ids
+      );
+    res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+};

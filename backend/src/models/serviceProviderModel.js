@@ -28,7 +28,6 @@ group by sp.provider_id;
     return result;
   }
 
-
   static async getFeedbacks(providerId) {
     const query = `select sp.provider_id, r.score,r.feedback_text,u.first_name,u.last_name,r.rated_at
 from service_providers sp
@@ -39,6 +38,26 @@ join users u on b.user_id=u.user_id
 where sp.provider_id= ? ;
 `;
     const [result] = await db.promise().execute(query, [providerId]);
+    return result;
+  }
+
+  static async getProvidersUnAvailableDates(ids) {
+    const providersArray = ids.map(() => "?").join(",");
+    const query = `SELECT sp.provider_id,pud.date
+ FROM service_providers sp
+ join provider_unavailable_dates pud on sp.provider_id=pud.provider_id
+ WHERE sp.provider_id IN (${providersArray});`;
+    const [result] = await db.promise().execute(query, ids);
+    return result;
+  }
+
+   static async getProvidersSchedule(ids) {
+    const providersArray = ids.map(() => "?").join(",");
+    const query = `SELECT sp.provider_id,ps.day_of_week,ps.start_time,ps.end_time
+ FROM service_providers sp
+ join provider_schedule ps on sp.provider_id=ps.provider_id
+ WHERE sp.provider_id IN (${providersArray});`;
+    const [result] = await db.promise().execute(query, ids);
     return result;
   }
 }

@@ -13,6 +13,7 @@ const AppProvider = ({ children }) => {
   });
   const [loggedUser, setLoggedUser] = useState({});
   const [questionsAnswers, setQuestionsAnswers] = useState({});
+  const [choosedDate, setChoosedDate] = useState("");
 
   return (
     <AppContext.Provider
@@ -25,6 +26,8 @@ const AppProvider = ({ children }) => {
         setLoggedUser,
         questionsAnswers,
         setQuestionsAnswers,
+        choosedDate,
+        setChoosedDate,
       }}
     >
       {children}

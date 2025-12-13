@@ -20,17 +20,17 @@ import { AppContext } from "../context/AppContext";
 const ServiceBooking = () => {
   const insets = useSafeAreaInsets();
   const [visible, setVisibility] = useState(false); //for calender
-  const [selectedFilter, setSelectedFilter] = useState("Recommended");
   const filters = [
     { value: "Recommended" },
     { value: "Price(Lowest to Highest)" },
     { value: "Price(Highest to Lowest)" },
-    { value: "# of completed tasks" },
   ];
-  const { currentService, questionsAnswers } = useContext(AppContext);
+  const { currentService, questionsAnswers, choosedDate } =
+    useContext(AppContext);
 
-  //for fetch categories
+  //for fetch service providers
   const [serviceProviders, setServiceProviders] = useState([]);
+  const [originalServiceProviders, setOriginalServiceProviders] = useState([]);
   const fetchProviders = async () => {
     try {
       const service_id = currentService.service_id;
@@ -39,17 +39,75 @@ const ServiceBooking = () => {
       );
       const fetchedData = await result.json();
       setServiceProviders(fetchedData);
+      setOriginalServiceProviders(fetchedData);
     } catch (err) {
       console.error("Error fetching service providers:", err);
     }
   };
+  //to fetch each sp un ava dates
+  const [providersUnAvaDates, setProvidersUnAvaDates] = useState([]);
+  const fetchProvidersUnavailableDates = async () => {
+    if (originalServiceProviders.length !== 0) {
+      let SprovArray = [];
+      originalServiceProviders.forEach((sp) => {
+        SprovArray.push(sp.provider_id);
+      });
+
+      try {
+        const result = await fetch(
+          "http://10.0.2.2:5000/bookingService/getProvidersUnAvailableDates",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: SprovArray }),
+          }
+        );
+        const data = await result.json();
+        setProvidersUnAvaDates(data);
+        console.log("Providers UnAva Dates:", data);
+      } catch (err) {
+        console.error("Error fetching service providers un ava dates:", err);
+      }
+    }
+  };
+
+  //to fetch each sp schedule
+  const [providersSchedule, setProvidersSchedule] = useState([]);
+  const fetchProvidersSchedule = async () => {
+    if (originalServiceProviders.length !== 0) {
+      let SprovArray = [];
+      originalServiceProviders.forEach((sp) => {
+        SprovArray.push(sp.provider_id);
+      });
+
+      try {
+        const result = await fetch(
+          "http://10.0.2.2:5000/bookingService/getProvidersSchedule",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: SprovArray }),
+          }
+        );
+        const data = await result.json();
+        setProvidersSchedule(data);
+        console.log("Providers schedule:", data);
+      } catch (err) {
+        console.error("Error fetching service providers schedule:", err);
+      }
+    }
+  };
 
   useEffect(() => {
-    console.log("question answers from ServiceBooking page = ", questionsAnswers);
+    console.log(
+      "question answers from ServiceBooking page = ",
+      questionsAnswers
+    );
     fetchProviders();
   }, []);
-  useEffect(() => {
-    let sorted = [...serviceProviders];
+
+  const applyFilter = (selectedFilter) => {
+    let sorted = [...originalServiceProviders];
     if (selectedFilter === "Price(Lowest to Highest)") {
       sorted.sort(
         (a, b) => parseFloat(a.base_price) - parseFloat(b.base_price)
@@ -60,7 +118,46 @@ const ServiceBooking = () => {
       );
     }
     setServiceProviders(sorted);
-  }, [selectedFilter]);
+  };
+
+  useEffect(() => {
+    fetchProvidersUnavailableDates();
+    fetchProvidersSchedule();
+  }, [originalServiceProviders]);
+
+  useEffect(() => {
+    let updated = [...originalServiceProviders];
+    providersUnAvaDates.forEach((obj) => {
+      if (choosedDate === obj.date.split("T")[0]) {
+        updated = updated.filter((sp) => sp.provider_id !== obj.provider_id);
+      }
+    });
+    //to remove sp that can't work in selected day
+    const date = new Date(choosedDate);
+    const weekdays = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    const weekday = weekdays[date.getDay()];
+    let availableProviders = [];
+
+    providersSchedule.forEach((ps) => {
+      if (ps.day_of_week === weekday) {
+        availableProviders.push(ps.provider_id);
+      }
+    });
+
+    updated = updated.filter((sp) =>
+      availableProviders.includes(sp.provider_id)
+    );
+
+    setServiceProviders(updated);
+  }, [choosedDate]);
 
   return (
     <LinearGradient
@@ -126,7 +223,7 @@ const ServiceBooking = () => {
                 },
               ]}
             >
-              <FontAwesome name="calendar" size={21} color="#f2e0f5ff" />
+              <FontAwesome name="calendar" size={17} color="#f2e0f5ff" />
 
               <MyCalendar
                 visible={visible}
@@ -135,7 +232,7 @@ const ServiceBooking = () => {
               <Text
                 style={[
                   styles.text,
-                  { fontSize: 18, paddingLeft: 10, color: "#f2e2f4ff" },
+                  { fontSize: 15, paddingLeft: 10, color: "#f2e2f4ff" },
                 ]}
               >
                 Date
@@ -145,7 +242,7 @@ const ServiceBooking = () => {
 
           <View style={{ flex: 1, marginLeft: 50, zIndex: 2000 }}>
             <SelectList
-              setSelected={(val) => setSelectedFilter(val)}
+              setSelected={(val) => applyFilter(val)}
               data={filters}
               placeholder="Select Filter"
               dropdownStyles={{
@@ -160,7 +257,7 @@ const ServiceBooking = () => {
               }}
               dropdownTextStyles={{
                 color: "#6c0268ff",
-                fontSize: 19,
+                fontSize: 15,
                 fontWeight: "700",
                 borderTopColor: "#eee9e9ff",
                 borderRightColor: "#f1ececff",
@@ -177,8 +274,8 @@ const ServiceBooking = () => {
               }}
               inputStyles={{
                 color: "#6c0268ff",
-                fontSize: 16,
-                fontWeight: "700",
+                fontSize: 13,
+                fontWeight: "900",
               }}
             />
           </View>

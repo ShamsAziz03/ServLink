@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   StyleSheet,
@@ -10,15 +10,17 @@ import {
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AppContext } from "../context/AppContext";
 
 const MyCalendar = ({ visible, onClose }) => {
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
   const [selectedDay, setSelectedDay] = useState(""); //for calender
+  const { setChoosedDate } = useContext(AppContext);
 
   useEffect(() => {
-  console.log("day is:", selectedDay);
-}, [selectedDay]);
+    console.log("day is from my calender page:", selectedDay);
+  }, [selectedDay]);
 
   return (
     <Modal
@@ -31,7 +33,7 @@ const MyCalendar = ({ visible, onClose }) => {
         <View
           style={[
             styles.calenderView,
-            { width: width / 1.2, height: height - 400, marginTop:200 },
+            { width: width / 1.2, height: height - 400, marginTop: 200 },
           ]}
         >
           <View
@@ -47,7 +49,9 @@ const MyCalendar = ({ visible, onClose }) => {
             </Pressable>
           </View>
           <Calendar
+            minDate={new Date().toISOString().split("T")[0]}
             onDayPress={(day) => {
+              setChoosedDate(day.dateString);
               setSelectedDay(day.dateString);
             }}
             markedDates={{

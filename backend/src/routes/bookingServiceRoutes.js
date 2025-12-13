@@ -29,4 +29,15 @@ router.get(
   bookingServiceController.getProviderBookings
 );
 
+router.post(
+  "/getProvidersUnAvailableDates",
+  bookingServiceController.getProvidersUnAvailableDates
+);
+
+router.post(
+  "/getProvidersSchedule",
+  bookingServiceController.getProvidersSchedule
+);
+
+
 module.exports = router;
