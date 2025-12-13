@@ -64,22 +64,24 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   };
 
   useEffect(() => {
-    //to set schedule of SP
-    fetchServiceProviderSchedule();
-    //to fetch SP bookings
-    fetchServiceProviderBookings();
-    //to set un available dates of SP
-    fetchServiceProviderUnavailableDates();
+    const fetchAll = async () => {
+      await fetchServiceProviderSchedule();
+      await fetchServiceProviderBookings();
+      await fetchServiceProviderUnavailableDates();
+    };
+    fetchAll();
+  }, [providerId]);
 
-    //to disable dates from DB
+  useEffect(() => {
+    if (!providerUnavailableDates) return;
+
     const r = {};
-    if (providerUnavailableDates === null) return;
     providerUnavailableDates.forEach((unAvailableDate) => {
       const unAvaDate = unAvailableDate.date.split("T")[0];
       r[unAvaDate] = { disabled: true, disableTouchEvent: true };
     });
     setRange(r);
-  }, [selectedDay]);
+  }, [providerUnavailableDates]);
 
   const getTaskDuration = () => {
     for (const questionText in questionsAnswers) {

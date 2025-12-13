@@ -25,8 +25,13 @@ const ServiceBooking = () => {
     { value: "Price(Lowest to Highest)" },
     { value: "Price(Highest to Lowest)" },
   ];
-  const { currentService, questionsAnswers, choosedDate } =
-    useContext(AppContext);
+  const {
+    currentService,
+    questionsAnswers,
+    choosedDate,
+    userCurrentLocation,
+    loggedUser,
+  } = useContext(AppContext);
 
   //for fetch service providers
   const [serviceProviders, setServiceProviders] = useState([]);
@@ -116,6 +121,31 @@ const ServiceBooking = () => {
       sorted.sort(
         (a, b) => parseFloat(b.base_price) - parseFloat(a.base_price)
       );
+    } else if (selectedFilter === "Recommended") {
+      const userCity =
+        (userCurrentLocation && userCurrentLocation.name) ||
+        (loggedUser && loggedUser.city) ||
+        null;
+
+      if (userCity !== null) {
+        sorted.sort((a, b) => {
+          if (
+            a.service_locations
+              .toLowerCase()
+              .includes(userCity.toLowerCase()) &&
+            !b.service_locations.toLowerCase().includes(userCity.toLowerCase())
+          )
+            return -1;
+          else if (
+            !a.service_locations
+              .toLowerCase()
+              .includes(userCity.toLowerCase()) &&
+            b.service_locations.toLowerCase().includes(userCity.toLowerCase())
+          )
+            return 1;
+          else return 0;
+        });
+      }
     }
     setServiceProviders(sorted);
   };
