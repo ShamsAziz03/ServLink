@@ -155,7 +155,7 @@ const CategoryPage = () => {
           ABOUT THE SERVICE
         </Text>
         <LinearGradient
-          colors={["#fcf4fcff", "#d7afdcff"]} // purple gradient
+          colors={["#f6ddf8ff", "#fff0ffff"]} // purple gradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -178,8 +178,8 @@ const CategoryPage = () => {
           >
             <Text
               style={{
-                fontSize: 25,
-                fontWeight: "900",
+                fontSize: 22,
+                fontWeight: "700",
                 letterSpacing: 1,
                 color: "#5f0557ff",
                 textShadowColor: "#c7add4ff",
@@ -197,27 +197,25 @@ const CategoryPage = () => {
                 letterSpacing: 0.5,
                 color: "#800776ff",
                 textShadowColor: "#c7add4ff",
-                textShadowOffset: { width: 2, height: 2 },
+                textShadowOffset: { width: 1, height: 1 },
                 textShadowRadius: 2,
+                paddingBottom: 5,
               }}
             >
               {serviceInfo.description}
             </Text>
             <Text
               style={{
-                fontSize: 18,
-                fontWeight: "700",
+                fontSize: 20,
+                fontWeight: "900",
                 letterSpacing: 0.5,
                 color: "#5b0453ff",
                 textShadowColor: "#c7add4ff",
-                textShadowOffset: { width: 1, height: 1 },
+                textShadowOffset: { width: 3, height: 3 },
                 textShadowRadius: 2,
                 marginTop: 10,
-                marginLeft: 60,
-                backgroundColor: "#debedbff",
-                borderRadius: 10,
+                marginLeft: 50,
                 padding: 8,
-                width: 200,
               }}
             >
               {"Starting at: " + (serviceMetaData[0].base_price ?? 0) + " ₪"}

@@ -12,8 +12,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const db = require("./config/db");
 const ratingRoutes = require("./routes/ratingRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
-
-
+const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
 
 // Middleware
 app.use(cors());
@@ -37,16 +36,15 @@ app.use("/", contactRoute);
 
 app.use("/api/bookings", bookingRoutes);
 
-
 app.use("/api/favorites", favoriteRoutes);
-
+//for service booking
+app.use("/bookingService", bookingServiceRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
-
 
 // Test DB connection
 db.getConnection((err, connection) => {

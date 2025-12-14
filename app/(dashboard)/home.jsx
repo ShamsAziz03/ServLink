@@ -12,10 +12,11 @@ import {
   Pressable,
 } from "react-native";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Carousel from "react-native-reanimated-carousel";
 import Card from "../../components/card";
 import Notification from "../../components/notification";
+import { AppContext } from "../../context/AppContext";
 
 function getStars(rating) {
   const stars = [];
@@ -41,6 +42,7 @@ const home = () => {
   const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisibility] = useState(false);
+  const { loggedUser } = useContext(AppContext);
 
   const width = Dimensions.get("window").width;
   const list = [
@@ -166,14 +168,11 @@ const home = () => {
     },
   ];
 
-  //user Id
-  const [userId, setUserId] = useState(1);
-
   //for fetch categories
   const [categoriesData, setcategoriesData] = useState([]);
   const fetchData = async () => {
     try {
-      const response = await fetch("http://ip:5000/homeInfo/categories");
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/categories");
       const fetchedData = await response.json();
       setcategoriesData(fetchedData[0]);
       console.log("Response:", fetchedData[0]);
@@ -186,7 +185,7 @@ const home = () => {
   const [offersData, setOffersData] = useState([]);
   const fetchOffers = async () => {
     try {
-      const response = await fetch("http://ip:5000/homeInfo/offers");
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/offers");
       const fetchedDataOffers = await response.json();
       setOffersData(fetchedDataOffers[0]);
       console.log("Response:", fetchedDataOffers[0]);
@@ -200,7 +199,7 @@ const home = () => {
   const fetchTopProviders = async () => {
     try {
       const response = await fetch(
-        "http://ip:5000/homeInfo/topProviders"
+        "http://10.0.2.2:5000/homeInfo/topProviders"
       );
       const fetchedData = await response.json();
       setTopProviders(fetchedData);
@@ -214,7 +213,7 @@ const home = () => {
   const [mostBooked, setMostBooked] = useState([]);
   const fetchMostBooked = async () => {
     try {
-      const response = await fetch("http://ip:5000/homeInfo/mostBooked");
+      const response = await fetch("http://10.0.2.2:5000/homeInfo/mostBooked");
       const fetchedData = await response.json();
       setMostBooked(fetchedData);
       console.log("most booked:", fetchedData);
@@ -239,7 +238,7 @@ const home = () => {
       }}
     >
       <Notification
-        user_id={userId}
+        user_id={loggedUser.user_id}
         visible={visible}
         onClose={() => setVisibility(false)}
       />

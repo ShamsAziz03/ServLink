@@ -20,7 +20,8 @@ const Questions = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { userCurrentLocation, currentService } = useContext(AppContext); //to use golbal var
+  const { userCurrentLocation, currentService, setQuestionsAnswers } =
+    useContext(AppContext); //to use golbal var
 
   const [serviceQuestions, setServiceQuestions] = useState([
     {
@@ -76,21 +77,25 @@ const Questions = () => {
   const handleNext = () => {
     const q = currentQuestion;
 
-    if (q.is_required && !answers[q.question_id]) {
+    if (q.is_required && !answers[q.question_text]) {
       alert("This question is required.");
       return;
     }
     if (currentIndex < serviceQuestions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      console.log("Answers:", answers);
-      fetchStoreAnswers();
+      setQuestionsAnswers(answers);
+      navigation.navigate("serviceBooking");
     }
     setOtherAnswers(false);
   };
 
   useEffect(() => {
     fetchServiceQuestions();
+    setCurrentIndex(0);
+    setAnswers({});
+    setSelectedOption({});
+    setOtherAnswers(false);
   }, [currentService.service_id]);
 
   return (
@@ -185,9 +190,9 @@ const Questions = () => {
                 borderWidth: 0.5,
               }}
               placeholder="Write Your answer here..."
-              value={answers[currentQuestion.question_id] || ""}
+              value={answers[currentQuestion.question_text] || ""}
               onChangeText={(text) =>
-                setAnswers({ ...answers, [currentQuestion.question_id]: text })
+                setAnswers({ ...answers, [currentQuestion.question_text]: text })
               }
             />
           )}
@@ -202,18 +207,18 @@ const Questions = () => {
                     else setOtherAnswers(false);
                     setAnswers({
                       ...answers,
-                      [currentQuestion.question_id]: opt,
+                      [currentQuestion.question_text]: opt,
                     });
                     setSelectedOption({
                       ...selectedOption,
-                      [currentQuestion.question_id]: opt,
+                      [currentQuestion.question_text]: opt,
                     });
                   }}
                   style={{
                     width: width * 0.85,
                     padding: 15,
                     backgroundColor:
-                      selectedOption[currentQuestion.question_id] === opt
+                      selectedOption[currentQuestion.question_text] === opt
                         ? "#7b117fff"
                         : "#fff",
                     borderRadius: 12,
@@ -224,7 +229,7 @@ const Questions = () => {
                   <Text
                     style={{
                       color:
-                        selectedOption[currentQuestion.question_id] === opt
+                        selectedOption[currentQuestion.question_text] === opt
                           ? "#fff"
                           : "#5f0557ff",
                       fontWeight: "700",
@@ -250,14 +255,14 @@ const Questions = () => {
                     }}
                     placeholder="Please specify your answer"
                     value={
-                      answers[currentQuestion.question_id] === "Other"
+                      answers[currentQuestion.question_text] === "Other"
                         ? ""
-                        : currentQuestion.question_id
+                        : currentQuestion.question_text
                     }
                     onChangeText={(text) =>
                       setAnswers({
                         ...answers,
-                        [currentQuestion.question_id]: text,
+                        [currentQuestion.question_text]: text,
                       })
                     }
                   />
