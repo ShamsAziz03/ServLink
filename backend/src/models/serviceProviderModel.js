@@ -51,7 +51,7 @@ where sp.provider_id= ? ;
     return result;
   }
 
-   static async getProvidersSchedule(ids) {
+  static async getProvidersSchedule(ids) {
     const providersArray = ids.map(() => "?").join(",");
     const query = `SELECT sp.provider_id,ps.day_of_week,ps.start_time,ps.end_time
  FROM service_providers sp
@@ -59,6 +59,83 @@ where sp.provider_id= ? ;
  WHERE sp.provider_id IN (${providersArray});`;
     const [result] = await db.promise().execute(query, ids);
     return result;
+  }
+
+  static async addBooking(
+    providerId,
+    hourlyRate,
+    expectedTime,
+    serviceDate,
+    serviceTime,
+    typeOfPayment,
+    userId,
+    serviceId,
+    location
+  ) {
+    const psSql = `
+  SELECT Provider_Services_id, base_price
+  FROM provider_services
+  WHERE provider_id = ? AND service_id = ?
+  LIMIT 1
+`;
+
+    const [rows] = await db.promise().execute(psSql, [providerId, serviceId]);
+
+    if (!rows.length) {
+      throw new Error("Provider does not offer this service");
+    }
+
+    const providerServiceId = rows[0].Provider_Services_id;
+    const totalPrice = hourlyRate * expectedTime;
+
+    const insertSql = `
+  INSERT INTO bookings (
+    user_id,
+    Provider_Services_id,
+    status,
+    booking_date,
+    service_date,
+    service_time,
+    total_price,
+    payment_method,
+    address,
+    created_at,
+    is_accept
+  )
+  VALUES (?, ?, 'pending', CURDATE(), ?, ?, ?, ?, ?, NOW(), 'pending')
+`;
+
+    const [result] = await db
+      .promise()
+      .execute(insertSql, [
+        userId,
+        providerServiceId,
+        serviceDate,
+        serviceTime,
+        totalPrice,
+        typeOfPayment,
+        location,
+      ]);
+
+    return result;
+  }
+  static async addTransaction(walletId = 0, bookingId, type, amount) {
+    const sql = `
+    INSERT INTO transactions (
+      wallet_id,
+      booking_id,
+      type,
+      amount,
+      created_at
+    )
+    VALUES (?, ?, ?, ?, NOW());
+  `;
+
+    const values = [walletId, bookingId, type, amount];
+
+    const [result] = await db.promise().execute(sql, values);
+
+    return { insertId: result.insertId }; // return insertId
   }
 }
 module.exports = ServiceProvider;

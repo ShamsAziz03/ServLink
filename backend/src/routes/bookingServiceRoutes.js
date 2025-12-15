@@ -39,5 +39,8 @@ router.post(
   bookingServiceController.getProvidersSchedule
 );
 
+router.post("/addBooking", bookingServiceController.addBooking);
+
+router.post("/addTransaction", bookingServiceController.addTransaction);
 
 module.exports = router;

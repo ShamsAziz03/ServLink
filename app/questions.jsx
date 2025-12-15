@@ -55,24 +55,6 @@ const Questions = () => {
     }
   };
 
-  const fetchStoreAnswers = async () => {
-    const response = await fetch(
-      `http://10.0.2.2:5000/serviceQuestions/storeAnswers`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ answers }),
-      }
-    );
-    const result = await response.json();
-    if (response.ok) {
-      console.log(result.message);
-    } else {
-      console.warn(result.message);
-    }
-  };
 
   const handleNext = () => {
     const q = currentQuestion;

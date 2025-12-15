@@ -14,6 +14,16 @@ const AppProvider = ({ children }) => {
   const [loggedUser, setLoggedUser] = useState({});
   const [questionsAnswers, setQuestionsAnswers] = useState({});
   const [choosedDate, setChoosedDate] = useState("");
+  const [bookingObject, setBookingObject] = useState({
+    providerId: 2,
+    hourlyRate: 12.0,
+    expectedTime: 2,
+    serviceDate: "30-12-2025",
+    serviceTime: "10:00:00",
+    bookingId: 20,
+    walletId: 2,
+    typeOfPayment: "cache",
+  });
 
   return (
     <AppContext.Provider
@@ -28,6 +38,8 @@ const AppProvider = ({ children }) => {
         setQuestionsAnswers,
         choosedDate,
         setChoosedDate,
+        bookingObject,
+        setBookingObject,
       }}
     >
       {children}

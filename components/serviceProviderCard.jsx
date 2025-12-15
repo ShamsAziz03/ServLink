@@ -115,7 +115,7 @@ const ServiceProviderCard = ({ serviceProviderInfo }) => {
       <BookingConfirmation
         visible={showBookingConfirmation}
         onClose={() => setShowBookingConfirmation(false)}
-        providerId={serviceProviderInfo.provider_id}
+        provider={serviceProviderInfo}
       />
 
       {/* to show the provider profile page */}

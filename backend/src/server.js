@@ -13,6 +13,7 @@ const db = require("./config/db");
 const ratingRoutes = require("./routes/ratingRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // Middleware
 app.use(cors());
@@ -39,6 +40,9 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/favorites", favoriteRoutes);
 //for service booking
 app.use("/bookingService", bookingServiceRoutes);
+
+//for payment
+app.use("/payment", paymentRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -12,8 +12,9 @@ import { Calendar } from "react-native-calendars";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AppContext } from "../context/AppContext";
+import { useNavigation } from "@react-navigation/native";
 
-const BookingConfirmation = ({ visible, onClose, providerId }) => {
+const BookingConfirmation = ({ visible, onClose, provider }) => {
   const [time, setTime] = useState("2:45:00");
   const [selectedDay, setSelectedDay] = useState(""); //for calender
   const [showClock, setShowClock] = useState(false); //for calender
@@ -22,13 +23,16 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   const [providerUnavailableDates, setProviderUnavailableDates] = useState([]);
   const [providerBookings, setProviderBookings] = useState([]);
   const [dateHasBooks, setDateHasBooks] = useState([]); //to check if choosed date from user has bookes for SP
-  const { questionsAnswers } = useContext(AppContext); //to take how many hours the task will be
+  const { questionsAnswers, setBookingObject } = useContext(AppContext); //to take how many hours the task will be
   const [day, setDay] = useState(""); //when user set date so we split day to see day schedule
+  const navigation = useNavigation();
+
+  const { provider_id, base_price } = provider;
 
   const fetchServiceProviderSchedule = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderSchedule/${providerId}`
+        `http://10.0.2.2:5000/bookingService/getServiceProviderSchedule/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderSchedule(fetchedData);
@@ -40,7 +44,7 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   const fetchServiceProviderBookings = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderBookings/${providerId}`
+        `http://10.0.2.2:5000/bookingService/getServiceProviderBookings/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderBookings(fetchedData);
@@ -53,7 +57,7 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   const fetchServiceProviderUnavailableDates = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderUnavailableDates/${providerId}`
+        `http://10.0.2.2:5000/bookingService/getServiceProviderUnavailableDates/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderUnavailableDates(fetchedData);
@@ -70,7 +74,7 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
       await fetchServiceProviderUnavailableDates();
     };
     fetchAll();
-  }, [providerId]);
+  }, [provider_id]);
 
   useEffect(() => {
     if (!providerUnavailableDates) return;
@@ -90,15 +94,37 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
       const v = answer.toString().trim().toLowerCase();
       if (questionText.toLowerCase().includes("big")) {
         const m = v.match(/(\d+)/);
-        if (m) return parseInt(m[1], 10) * 60;
+        if (m) {
+          setBookingObject((prev) => ({
+            ...prev,
+            expectedTime: parseInt(m[1], 10),
+          }));
+          return parseInt(m[1], 10) * 60;
+        }
       }
 
       if (questionText.toLowerCase().includes("hours")) {
         if (/^\d+$/.test(v)) {
+          setBookingObject((prev) => ({
+            ...prev,
+            expectedTime: parseInt(v, 10),
+          }));
           return parseInt(v, 10) * 60;
         }
-        if (v.includes("Full day")) return 8 * 60;
-        if (v.includes("Live-in")) return 24 * 60;
+        if (v.includes("Full day")) {
+          setBookingObject((prev) => ({
+            ...prev,
+            expectedTime: 8,
+          }));
+          return 8 * 60;
+        }
+        if (v.includes("Live-in")) {
+          setBookingObject((prev) => ({
+            ...prev,
+            expectedTime: 24,
+          }));
+          return 24 * 60;
+        }
       }
     }
     return 0;
@@ -107,6 +133,17 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
   const toMinutes = (t) => {
     const [h, m, s] = t.split(":").map(Number);
     return h * 60 + m + Math.floor(s / 60);
+  };
+
+  const handlePayment = () => {
+    setBookingObject((prev) => ({
+      ...prev,
+      providerId: provider_id,
+      hourlyRate: base_price,
+      serviceDate: selectedDay,
+      serviceTime: time,
+    }));
+    navigation.navigate("payment");
   };
 
   return (
@@ -304,7 +341,7 @@ const BookingConfirmation = ({ visible, onClose, providerId }) => {
           </Text>
           <Pressable
             onPress={() => {
-              console.log(selectedDay + ", " + time);
+              handlePayment();
             }}
           >
             <View

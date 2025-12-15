@@ -22,22 +22,29 @@ WHERE service_id= ?
 });
 
 router.post("/storeAnswers", async (req, res) => {
-  const answers = req.body.answers;
+  const { answers, bookId } = req.body;
 
   const values = [];
-  for (const question_id in answers) {
-    values.push([2, question_id, answers[question_id]]);
+  for (const question_text in answers) {
+    values.push([bookId, question_text, answers[question_text]]);
+  }
+
+  if (!values.length) {
+    return res.status(400).json({ message: "No answers to insert" });
   }
 
   const query =
     "INSERT INTO booking_answers (booking_id, question_id, answer_value) VALUES ?";
 
   try {
-    const [results] = await db.promise().query(query, [values]);
-    res.status(200).send({ message: "Questions added successfully" });
+    const [results] = await db.promise().query(query, [values]); // <-- use query() not execute()
+    res.json({
+      message: "Questions added successfully",
+      inserted: results.affectedRows,
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Database error");
+    console.error("MySQL error:", err);
+    res.status(500).json({ message: "Database error", details: err.message });
   }
 });
 
