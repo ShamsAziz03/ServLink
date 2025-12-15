@@ -21,7 +21,7 @@ const AppProvider = ({ children }) => {
     serviceDate: "30-12-2025",
     serviceTime: "10:00:00",
     bookingId: 20,
-    walletId: 2,
+    walletId: 10,
     typeOfPayment: "cache",
   });
 

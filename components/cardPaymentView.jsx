@@ -13,7 +13,14 @@ const API_URL = "http://10.0.2.2:5000";
 const CardPayment = () => {
   const [cardDetails, setCardDetails] = useState();
   const { loading } = useConfirmPayment();
-  const { loggedUser, bookingObject } = useContext(AppContext);
+  const {
+    loggedUser,
+    bookingObject,
+    questionsAnswers,
+    currentService,
+    userCurrentLocation,
+    setBookingObject,
+  } = useContext(AppContext);
   const [email, setEmail] = useState(loggedUser.email);
   const { confirmSetupIntent } = useStripe();
   const navigation = useNavigation();
@@ -69,6 +76,69 @@ const CardPayment = () => {
     }
   };
 
+  const fetchStoreAnswers = async (bookId) => {
+    try {
+      const response = await fetch(`${API_URL}/serviceQuestions/storeAnswers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          answers: questionsAnswers,
+          bookId: bookId,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.warn("Failed to store answers:", result.message);
+        return false;
+      }
+
+      console.log(result.message);
+      return true; // return success
+    } catch (err) {
+      console.error("Error storing answers:", err);
+      return false;
+    }
+  };
+
+  const addBookAndAnswers = async () => {
+    const bookingRes = await fetch(`${API_URL}/bookingService/addBooking`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        providerId: bookingObject.providerId,
+        hourlyRate: bookingObject.hourlyRate,
+        expectedTime: bookingObject.expectedTime,
+        serviceDate: bookingObject.serviceDate,
+        serviceTime: bookingObject.serviceTime,
+        typeOfPayment: "card",
+        userId: loggedUser.user_id,
+        serviceId: currentService.service_id,
+        location: userCurrentLocation.display_name,
+        estimated_time: bookingObject.expectedTime,
+      }),
+    });
+
+    const bookingData = await bookingRes.json();
+    const bookingId = bookingData.insertId;
+    setBookingObject((prev) => ({
+      ...prev,
+      bookingId: bookingId,
+    }));
+
+    if (!bookingId) console.error("can't added new book to db");
+
+    console.log("Booking ID:", bookingId);
+
+    const answersResult = await fetchStoreAnswers(bookingId);
+    if (bookingId && answersResult) {
+      console.log("add new book and answers success");
+    } else {
+      console.error("Booking, transaction, or answers failed");
+    }
+  };
+
   const handlePayPress = async () => {
     if (!cardDetails?.complete || !email) {
       alert("Please enter Complete card details and Email");
@@ -82,6 +152,7 @@ const CardPayment = () => {
       //exist in db
       console.log("customer exist in db  = ", customer);
       alert("Success - (from DB)");
+      await addBookAndAnswers();
       return;
     } else if (customer.id) {
       //does not exist in db
@@ -99,6 +170,7 @@ const CardPayment = () => {
       console.log("Payment method ID:", paymentMethodId);
       const result = await updatePaymentMethod(paymentMethodId.id, customer.id);
       if (result.success) {
+        await addBookAndAnswers();
         alert("Success, ", result.message);
       } else {
         alert("Bad not Success, ", result.message);
@@ -124,7 +196,7 @@ const CardPayment = () => {
 
   const updateAmongWallet = async (among) => {
     const response = await fetch(`${API_URL}/payment/updateAmongWallet`, {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -145,6 +217,7 @@ const CardPayment = () => {
     );
     const result = await response.json();
     if (result.userWallet) {
+      const walletId = result.userWallet.wallet_id;
       const among = bookingObject.hourlyRate * bookingObject.expectedTime;
       const userWallet = result.userWallet;
       const status = await fetchPaymentIntent(
@@ -155,6 +228,22 @@ const CardPayment = () => {
       if (status === "succeeded") {
         const result = await updateAmongWallet(among);
         if (result) {
+          const result = await fetch(
+            `${API_URL}/bookingService/addTransaction`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                wallet_id: walletId,
+                booking_id: bookingObject.bookingId,
+                type: bookingObject.typeOfPayment,
+                amount: bookingObject.hourlyRate * bookingObject.expectedTime,
+              }),
+            }
+          );
+          const transactionData = await result.json();
+          console.log("Transaction:", transactionData);
+
           alert("payment success");
         } else {
           alert("payment not success !");
@@ -218,6 +307,7 @@ const CardPayment = () => {
       </Pressable>
 
       <Pressable
+        style={{ padding: 20, backgroundColor: "#888" }}
         onPress={() => {
           pay();
         }}

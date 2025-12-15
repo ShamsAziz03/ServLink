@@ -28,6 +28,7 @@ const Payment = () => {
   const [selectedOption, setSelectedOption] = useState("cache");
   const [confirmed, setConfirmed] = useState(false);
   const API_URL = "http://10.0.2.2:5000";
+
   const fetchStoreAnswers = async (bookId) => {
     console.log("questionsAnswers:", questionsAnswers);
 
@@ -72,6 +73,7 @@ const Payment = () => {
         userId: loggedUser.user_id,
         serviceId: currentService.service_id,
         location: userCurrentLocation.display_name,
+        estimated_time: bookingObject.expectedTime,
       }),
     });
 
@@ -226,6 +228,9 @@ const Payment = () => {
               </Text>
             </Pressable>
           </View>
+          <Text style={styles.notLogText}>
+            {"Pay /hour: " + bookingObject.hourlyRate + " ₪"}
+          </Text>
           <Text style={styles.notLogText}>
             {"Your final amount: " +
               bookingObject.hourlyRate * bookingObject.expectedTime +

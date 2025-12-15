@@ -110,6 +110,7 @@ exports.addBooking = async (req, res) => {
       userId,
       serviceId,
       location,
+      estimated_time,
     } = req.body;
     const result = await ServiceProviderModel.addBooking(
       providerId,
@@ -120,7 +121,8 @@ exports.addBooking = async (req, res) => {
       typeOfPayment,
       userId,
       serviceId,
-      location
+      location,
+      estimated_time
     );
     res.json(result);
   } catch (err) {

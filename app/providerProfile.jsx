@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   StyleSheet,
@@ -16,6 +16,7 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import ImageModal from "../components/imageModal";
+import { AppContext } from "../context/AppContext";
 
 function getStars(rating) {
   const stars = [];
@@ -47,6 +48,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
     "http://10.0.2.2:5000/assets/Mounting_TV_on_wall.png",
   ]);
   const [feedbacks, setFeedbakcs] = useState([]);
+  const { loggedUser } = useContext(AppContext);
 
   const {
     id_card_photo,
@@ -87,6 +89,27 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
       }
     }
   };
+
+  const addToFav = async () => {
+    const result = await fetch(
+      `http://10.0.2.2:5000/api/favorites/addFavProvider`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: loggedUser.user_id,
+          providerId: providerInfo.provider_id,
+        }),
+      }
+    );
+
+    const response = await result.json();
+    if(response.success){alert("Added Providers To Fav")}
+    else {alert("Can't Add Providers To Fav")}
+
+    if (!bookingId) console.error("can't added new book to db");
+  };
+
   useEffect(() => {
     const imagesArray = images.split(",");
     setProviderExpImages(imagesArray);
@@ -94,6 +117,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
     fetchProviderRating();
     fetchFeedbacks();
   }, []);
+
   return (
     <Modal
       animationType="fade"
@@ -145,7 +169,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
 
                 <Text style={styles.title}>{getStars(rating)}</Text>
               </View>
-              <Pressable style={{ marginTop: 20 }}>
+              <Pressable style={{ marginTop: 20 }} onPress={() => addToFav()}>
                 <Ionicons
                   name="heart-circle-outline"
                   size={40}
@@ -277,7 +301,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                       <Text style={styles.msg}>{feedback.feedback_text}</Text>
                     </View>
                     <View style={styles.dateRate}>
-                      <Text style={styles.date}>on   {feedback.rated_at}</Text>
+                      <Text style={styles.date}>on {feedback.rated_at}</Text>
                       <Text style={styles.title}>
                         {getStars(feedback.score)}
                       </Text>

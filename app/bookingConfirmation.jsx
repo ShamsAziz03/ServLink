@@ -99,7 +99,6 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
             ...prev,
             expectedTime: parseInt(m[1], 10),
           }));
-          return parseInt(m[1], 10) * 60;
         }
       }
 
@@ -116,18 +115,16 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
             ...prev,
             expectedTime: 8,
           }));
-          return 8 * 60;
         }
         if (v.includes("Live-in")) {
           setBookingObject((prev) => ({
             ...prev,
             expectedTime: 24,
           }));
-          return 24 * 60;
         }
       }
     }
-    return 0;
+    return;
   };
 
   const toMinutes = (t) => {
@@ -135,7 +132,12 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
     return h * 60 + m + Math.floor(s / 60);
   };
 
+  const decimalHoursToMinutes = (hours) => {
+    return Math.round(hours * 60);
+  };
+
   const handlePayment = () => {
+    getTaskDuration();
     setBookingObject((prev) => ({
       ...prev,
       providerId: provider_id,
@@ -287,13 +289,14 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
                   }
                   //to check if time selected is not on range that sp has sth booked
                   if (dateHasBooks.length !== 0) {
-                    const taskDuration = getTaskDuration(); //in mins
                     const selectedMins = toMinutes(selectedTime);
 
                     for (const db of dateHasBooks) {
                       const bookedStart = toMinutes(db.service_time) - 60; // 1 hour before, cause SP can't do task since next book has 1 hour
                       const bookedEnd =
-                        toMinutes(db.service_time) + taskDuration + 30; // 30 min after
+                        toMinutes(db.service_time) +
+                        decimalHoursToMinutes(db.estimated_time) +
+                        30; // 30 min after
 
                       if (
                         selectedMins >= bookedStart &&

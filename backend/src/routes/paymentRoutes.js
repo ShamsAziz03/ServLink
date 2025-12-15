@@ -11,7 +11,7 @@ router.post(
 router.get("/getUserWallet", paymentController.getUserWallet);
 
 router.post("/paymentIntent", paymentController.paymentIntent);
-router.put("/updateAmongWallet", paymentController.updateAmongWallet);
+router.post("/updateAmongWallet", paymentController.updateAmongWallet);
 
 
 module.exports = router;

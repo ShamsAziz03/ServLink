@@ -70,7 +70,8 @@ where sp.provider_id= ? ;
     typeOfPayment,
     userId,
     serviceId,
-    location
+    location,
+    estimated_time
   ) {
     const psSql = `
   SELECT Provider_Services_id, base_price
@@ -100,9 +101,10 @@ where sp.provider_id= ? ;
     payment_method,
     address,
     created_at,
-    is_accept
+    is_accept,
+    estimated_time
   )
-  VALUES (?, ?, 'pending', CURDATE(), ?, ?, ?, ?, ?, NOW(), 'pending')
+  VALUES (?, ?, 'pending', CURDATE(), ?, ?, ?, ?, ?, NOW(), 'pending', ?)
 `;
 
     const [result] = await db
@@ -115,6 +117,7 @@ where sp.provider_id= ? ;
         totalPrice,
         typeOfPayment,
         location,
+        estimated_time,
       ]);
 
     return result;

@@ -125,8 +125,8 @@ exports.paymentIntent = async (req, res) => {
 
 exports.updateAmongWallet = async (req, res) => {
   try {
-    const {user_id,among} = req.body;
-    const result = await PaymentModel.updateAmongWallet(user_id,among);
+    const {userId,among} = req.body;
+    const result = await PaymentModel.updateAmongWallet(userId,among);
     return res.json(result);
   } catch (err) {
     res.status(500).json({
