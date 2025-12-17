@@ -1,312 +1,428 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  TouchableOpacity,
+  ScrollView,
+  Image,
+  Pressable,
+  Alert,
   Modal,
   TextInput,
-  Alert,
-  Image,
-  ScrollView,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
 
-/* ===== MOCK DATA FROM DB ===== */
+const screenWidth = Dimensions.get("window").width;
 
-const provider = {
-  provider_id: 1,
-  service_locations: ["Amman", "Zarqa", "Irbid"],
-};
-
-const servicesTable = [
-  { service_id: 1, name: "Plumbing" },
-  { service_id: 2, name: "Electrical Repair" },
-  { service_id: 3, name: "AC Maintenance" },
+const categories = [
+  "Electricity",
+  "Plumbing",
+  "Carpentry",
+  "Cleaning",
+  "Painting",
+  "Other",
 ];
 
-const providerServicesInitial = [
+const mockServices = [
   {
-    Provider_Services_id: 1,
-    service_id: 1,
-    service_name: "Plumbing",
-    base_price: 25,
-    images: [
-      "https://10.0.2.2:5000/assets/Babysitting.jpg",
-      "https://10.0.2.2:5000/assets/Babysitting.jpg",
-    ],
+    id: "1",
+    title: "AC Installation & Repair",
+    category: "Electricity",
+    description:
+      "Installation and repair of all residential and commercial AC units.",
+    price: 120,
+    priceType: "hourly",
+    rating: 4.8,
+    completedOrders: 45,
+    status: "active",
+    locations: ["Ramallah", "Al-Bireh", "Beitunia"],
+    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400",
+  },
+  {
+    id: "2",
+    title: "Plumbing & Leak Repair",
+    category: "Plumbing",
+    description:
+      "Fixing leaks, plumbing issues, faucet installation and maintenance.",
+    price: 80,
+    priceType: "hourly",
+    rating: 4.6,
+    completedOrders: 32,
+    status: "active",
+    locations: ["Ramallah", "Al-Bireh"],
+    image: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400",
   },
 ];
 
-/* ===== COMPONENT ===== */
-
-export default function MyServices() {
-  const [services, setServices] = useState(providerServicesInitial);
-  const [modalVisible, setModalVisible] = useState(false);
+export default function ProviderServices() {
+  const [services, setServices] = useState(mockServices);
   const [editingService, setEditingService] = useState(null);
+  const [isAddService, setIsAddService] = useState(false);
 
-  const [serviceType, setServiceType] = useState("");
+  // Form state
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState(categories[0]);
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [locations, setLocations] = useState("");
 
-  const openAdd = () => {
-    setEditingService(null);
-    setServiceType("");
+  const resetForm = () => {
+    setTitle("");
+    setCategory(categories[0]);
+    setDescription("");
     setPrice("");
-    setModalVisible(true);
+    setLocations("");
   };
 
-  const openEdit = (item) => {
-    setEditingService(item);
-    setServiceType(item.service_name);
-    setPrice(item.base_price.toString());
-    setModalVisible(true);
+  const openEdit = (service) => {
+    setEditingService(service);
+    setTitle(service.title);
+    setCategory(service.category);
+    setDescription(service.description);
+    setPrice(service.price.toString());
+    setLocations(service.locations.join(", "));
   };
 
-  const saveService = () => {
-    if (!serviceType || !price) {
-      Alert.alert("Error", "All fields required");
-      return;
-    }
+  const saveEdit = () => {
+    setServices((prev) =>
+      prev.map((s) =>
+        s.id === editingService.id
+          ? {
+              ...s,
+              title,
+              category,
+              description,
+              price: parseFloat(price),
+              locations: locations.split(",").map((l) => l.trim()),
+            }
+          : s
+      )
+    );
+    setEditingService(null);
+    resetForm();
+  };
 
-    if (editingService) {
-      setServices((prev) =>
-        prev.map((s) =>
-          s.Provider_Services_id === editingService.Provider_Services_id
-            ? { ...s, service_name: serviceType, base_price: price }
-            : s
-        )
-      );
-    } else {
-      setServices((prev) => [
-        ...prev,
-        {
-          Provider_Services_id: Date.now(),
-          service_id: Date.now(),
-          service_name: serviceType,
-          base_price: price,
-          images: [],
-        },
-      ]);
-    }
+  const saveNewService = () => {
+    const newService = {
+      id: Date.now().toString(),
+      title,
+      category,
+      description,
+      price: parseFloat(price),
+      priceType: "hourly",
+      rating: 0,
+      completedOrders: 0,
+      status: "active",
+      locations: locations.split(",").map((l) => l.trim()),
+      image: "https://via.placeholder.com/400",
+    };
+    setServices((prev) => [newService, ...prev]);
+    setIsAddService(false);
+    resetForm();
+  };
 
-    setModalVisible(false);
+  const toggleStatus = (id) => {
+    setServices((prev) =>
+      prev.map((s) =>
+        s.id === id
+          ? { ...s, status: s.status === "active" ? "inactive" : "active" }
+          : s
+      )
+    );
   };
 
   const deleteService = (id) => {
-    Alert.alert("Delete Service", "Are you sure?", [
-      { text: "Cancel" },
-      {
-        text: "Delete",
-        onPress: () =>
-          setServices((prev) =>
-            prev.filter((s) => s.Provider_Services_id !== id)
-          ),
-      },
-    ]);
+    Alert.alert(
+      "Delete Service",
+      "Are you sure you want to delete this service?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => setServices((prev) => prev.filter((s) => s.id !== id)),
+        },
+      ]
+    );
   };
 
-  const renderCard = ({ item }) => (
-    <LinearGradient colors={["#ffffff", "#f5f0fa"]} style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.title}>{item.service_name}</Text>
-        <Text style={styles.price}>${item.base_price}</Text>
-      </View>
-
-      <Text style={styles.sub}>Locations:</Text>
-      <Text style={styles.text}>{provider.service_locations.join(", ")}</Text>
-
-      <ScrollView horizontal style={{ marginTop: 10 }}>
-        {item.images.map((img, i) => (
-          <Image key={i} source={{ uri: img }} style={styles.image} />
-        ))}
-      </ScrollView>
-
-      <View style={styles.actions}>
-        <ActionButton
-          icon="edit"
-          text="Edit"
-          color="#8e44ad"
-          onPress={() => openEdit(item)}
-        />
-        <ActionButton
-          icon="delete"
-          text="Delete"
-          color="#c0392b"
-          onPress={() => deleteService(item.Provider_Services_id)}
-        />
-      </View>
-    </LinearGradient>
-  );
-
   return (
-    <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
-      <TouchableOpacity
-        style={styles.statsBtn}
-        onPress={() => router.push("/ProviderPages/favTaskerss")}
+    <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={{ flex: 1 }}>
+      {/* Modal */}
+      <Modal
+        visible={!!editingService || isAddService}
+        animationType="slide"
+        transparent
       >
-        <MaterialIcons name="bar-chart" size={22} color="#fff" />
-        <Text style={styles.statsText}>View Statistics</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.addBtn} onPress={openAdd}>
-        <MaterialIcons name="add" size={22} color="#fff" />
-        <Text style={styles.addText}>Add Service</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={services}
-        keyExtractor={(item) => item.Provider_Services_id.toString()}
-        renderItem={renderCard}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
-
-      {/* MODAL */}
-      <Modal transparent animationType="slide" visible={modalVisible}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>
-              {editingService ? "Edit Service" : "Add Service"}
+              {editingService ? "Edit Service" : "Add New Service"}
             </Text>
 
-            <Text style={styles.label}>Service Type</Text>
             <TextInput
+              placeholder="Title"
               style={styles.input}
-              value={serviceType}
-              onChangeText={setServiceType}
-              placeholder="Plumbing"
+              value={title}
+              onChangeText={setTitle}
             />
 
-            <Text style={styles.label}>Base Price ($)</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker selectedValue={category} onValueChange={setCategory}>
+                {categories.map((cat) => (
+                  <Picker.Item key={cat} label={cat} value={cat} />
+                ))}
+              </Picker>
+            </View>
+
             <TextInput
+              placeholder="Description"
+              style={[styles.input, { height: 80 }]}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+            />
+
+            <TextInput
+              placeholder="Price"
               style={styles.input}
-              keyboardType="numeric"
               value={price}
               onChangeText={setPrice}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Locations (comma separated)"
+              style={styles.input}
+              value={locations}
+              onChangeText={setLocations}
             />
 
-            <Text style={styles.label}>Service Locations</Text>
-            <Text style={styles.locations}>
-              {provider.service_locations.join(", ")}
-            </Text>
-
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#750d83" }]}
-                onPress={saveService}
-              >
-                <Text style={styles.btnText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#dc3545" }]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.btnText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.saveBtn}
+              onPress={editingService ? saveEdit : saveNewService}
+            >
+              <Text style={styles.saveBtnText}>
+                {editingService ? "Save Changes" : "Add Service"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => {
+                setEditingService(null);
+                setIsAddService(false);
+                resetForm();
+              }}
+            >
+              <Text style={styles.cancelBtnText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      <View style={{ flex: 1, padding: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 20,
+          }}
+        >
+          <Text style={styles.title}>My Services</Text>
+          <TouchableOpacity
+            style={styles.addBtn}
+            onPress={() => setIsAddService(true)}
+          >
+            <Ionicons name="add-circle" size={20} color="#fff" />
+            <Text style={styles.addBtnText}>Add Service</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {services.map((service) => (
+            <View key={service.id} style={styles.card}>
+              <Image source={{ uri: service.image }} style={styles.image} />
+              <View
+                style={[
+                  styles.badge,
+                  {
+                    backgroundColor:
+                      service.status === "active" ? "#16a34a" : "#9ca3af",
+                  },
+                ]}
+              >
+                <Text style={styles.badgeText}>
+                  {service.status === "active" ? "Active" : "Inactive"}
+                </Text>
+              </View>
+
+              <Text style={styles.serviceTitle}>{service.title}</Text>
+              <Text style={styles.category}>{service.category}</Text>
+              <Text style={styles.description} numberOfLines={2}>
+                {service.description}
+              </Text>
+
+              <View style={styles.row}>
+                <FontAwesome5 name="star" size={14} color="#f59e0b" />
+                <Text style={styles.metaText}>{service.rating}</Text>
+
+                <Ionicons
+                  name="eye"
+                  size={16}
+                  color="#555"
+                  style={{ marginLeft: 10 }}
+                />
+                <Text style={styles.metaText}>
+                  {service.completedOrders} orders
+                </Text>
+              </View>
+
+              <View style={styles.row}>
+                <Ionicons name="location" size={16} color="#555" />
+                <Text style={styles.metaText}>
+                  {service.locations.join(", ")}
+                </Text>
+              </View>
+
+              <View style={styles.priceRow}>
+                <FontAwesome5 name="dollar-sign" size={18} color="#16a34a" />
+                <Text style={styles.price}>${service.price}</Text>
+                <Text style={styles.priceUnit}>/ hour</Text>
+              </View>
+
+              <View style={styles.actions}>
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  onPress={() => openEdit(service)}
+                >
+                  <Ionicons name="create-outline" size={18} color="#601d77ff" />
+                  <Text>Edit</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  onPress={() => toggleStatus(service.id)}
+                >
+                  <Text>
+                    {service.status === "active" ? "Deactivate" : "Activate"}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.actionBtn, styles.deleteBtn]}
+                  onPress={() => deleteService(service.id)}
+                >
+                  <Ionicons name="trash" size={18} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </LinearGradient>
   );
 }
 
-/* ===== REUSABLE ===== */
-
-const ActionButton = ({ icon, text, color, onPress }) => (
-  <TouchableOpacity
-    style={[styles.actionBtn, { backgroundColor: color }]}
-    onPress={onPress}
-  >
-    <MaterialIcons name={icon} size={18} color="#fff" />
-    <Text style={styles.btnText}>{text}</Text>
-  </TouchableOpacity>
-);
-
-/* ===== STYLES ===== */
-
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 40 },
+  title: { fontSize: 26, fontWeight: "900", color: "#601d77ff" },
   addBtn: {
     flexDirection: "row",
-    backgroundColor: "#750d83",
-    margin: 15,
-    padding: 12,
-    borderRadius: 10,
-    justifyContent: "center",
+    backgroundColor: "#601d77ff",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
     alignItems: "center",
+    gap: 6,
   },
-  addText: { color: "#fff", fontWeight: "bold", marginLeft: 5 },
-  card: {
-    padding: 20,
-    marginHorizontal: 15,
-    marginVertical: 8,
-    borderRadius: 15,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  title: { fontSize: 18, fontWeight: "bold", color: "#37043a" },
-  price: { fontWeight: "bold", color: "#750d83" },
-  sub: { marginTop: 10, fontWeight: "bold" },
-  text: { color: "#4b4453" },
-  image: { width: 80, height: 80, borderRadius: 8, marginRight: 10 },
-  actions: { flexDirection: "row", marginTop: 15 },
-  actionBtn: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 10,
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  btnText: { color: "#fff", fontWeight: "bold", marginLeft: 5 },
+  addBtnText: { color: "#fff", fontWeight: "700" },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    borderRadius: 15,
     padding: 20,
-    width: "85%",
   },
-  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  modalContent: { backgroundColor: "#fff", borderRadius: 12, padding: 20 },
+  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 10 },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
+    padding: 8,
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    marginVertical: 6,
   },
-  label: { fontWeight: "bold", marginBottom: 5 },
-  locations: { color: "#750d83", marginBottom: 10 },
-  modalActions: { flexDirection: "row" },
-  modalBtn: {
-    flex: 1,
-    padding: 10,
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 8,
+    marginVertical: 6,
+  },
+  saveBtn: {
+    backgroundColor: "#601d77ff",
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 10,
     alignItems: "center",
-    marginHorizontal: 5,
   },
-
-  statsBtn: {
+  saveBtnText: { color: "#fff", fontWeight: "700" },
+  cancelBtn: {
+    backgroundColor: "#f1e4f5",
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 6,
+    alignItems: "center",
+  },
+  cancelBtnText: { color: "#601d77ff", fontWeight: "700" },
+  card: {
+    backgroundColor: "#fdf1ffff",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 18,
+  },
+  image: { width: "100%", height: 160, borderRadius: 12, marginBottom: 10 },
+  badge: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  badgeText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+  serviceTitle: { fontSize: 18, fontWeight: "800", color: "#3f043bff" },
+  category: { color: "#7b3685ff", fontWeight: "700", marginBottom: 4 },
+  description: { color: "#555", marginBottom: 8 },
+  row: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
+  metaText: { color: "#555", fontWeight: "600" },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingTop: 8,
+    marginTop: 8,
+  },
+  price: { fontSize: 20, fontWeight: "900", color: "#16a34a" },
+  priceUnit: { color: "#555" },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  actionBtn: {
+    flex: 1,
+    backgroundColor: "#f1e4f5",
+    padding: 8,
+    borderRadius: 10,
+    alignItems: "center",
+    marginHorizontal: 4,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#750d83",
-    margin: 15,
-    padding: 12,
-    borderRadius: 10,
+    gap: 4,
   },
-  statsText: {
-    color: "#fff",
-    fontWeight: "bold",
-    marginLeft: 5,
-  },
+  deleteBtn: { backgroundColor: "#dc2626" },
 });

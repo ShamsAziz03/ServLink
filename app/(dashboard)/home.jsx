@@ -253,7 +253,10 @@ const home = () => {
         </Pressable>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Link
-          href="/searchPage"
+          href={{
+            pathname: "/searchPage",
+            params: { pageToBack: "/home" },
+          }}
         >
           <Ionicons name="search" size={30} color="#601d77ff" />
         </Link>

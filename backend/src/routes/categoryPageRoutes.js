@@ -64,4 +64,28 @@ router.get("/feedback/:category_id", async (req, res) => {
   }
 });
 
+router.get("/serviceFromSearch/:service_id", async (req, res) => {
+  const serviceId = req.params.service_id;
+
+  const query = `
+    SELECT 
+      s.service_id,
+      s.name AS service_name,
+      s.image,
+      s.description AS service_description,
+      s.category_id
+    FROM services s
+    JOIN categories c ON s.category_id = c.category_id
+    WHERE s.service_id = ?;
+  `;
+
+  try {
+    const [results] = await db.promise().execute(query, [serviceId]);
+    res.json(results[0]);
+  } catch (err) {
+    console.error(err);
+    res.json("Database error");
+  }
+});
+
 module.exports = router;

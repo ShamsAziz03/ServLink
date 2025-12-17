@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import { Link } from "expo-router";
 import {
   View,
@@ -22,39 +22,45 @@ const ProviderDashboard = () => {
   const insets = useSafeAreaInsets();
   const { loggedUser } = useContext(AppContext);
   const [visible, setVisibility] = useState(false);
+  const API_ADDRESS = "http://10.0.2.2:5000";
+  const [providerStats, setProviderStats] = useState({
+    rating: 0,
+    numOfCompletedOrders: 0,
+    numOfPendingOrders: 0,
+    numOfCancelledOrders: 0,
+    profits: 0.0,
+  });
 
   const stats = [
     {
       title: "Earnings",
-      value: "$3,450",
-      change: "+12.5%",
-      trend: "up",
+      value: providerStats.profits,
       icon: "dollar-sign",
       color: "#16a34a",
     },
     {
-      title: "Orders",
-      value: "42",
-      change: "+8",
-      trend: "up",
+      title: "Completed Orders",
+      value: providerStats.numOfCompletedOrders,
       icon: "check-circle",
       color: "#2563eb",
     },
     {
       title: "Rating",
-      value: "4.8",
-      change: "+0.2",
-      trend: "up",
+      value: providerStats.rating,
       icon: "star",
       color: "#f59e0b",
     },
     {
-      title: "Pending",
-      value: "5",
-      change: "-2",
-      trend: "down",
+      title: "Pending Orders",
+      value: providerStats.numOfPendingOrders,
       icon: "clock",
       color: "#ea580c",
+    },
+    {
+      title: "Cancelled Orders",
+      value: providerStats.numOfCancelledOrders,
+      icon: "times-circle",
+      color: "#db3218ff",
     },
   ];
 
@@ -106,6 +112,29 @@ const ProviderDashboard = () => {
     strokeWidth: 2,
   };
 
+  const fetch_rating_orders_earnings = async () => {
+    try {
+      const response = await fetch(
+        // `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/${loggedUser.user_id}`////////////////////////////////to change
+        `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/3`
+      );
+      const fetchedData = await response.json();
+      setProviderStats((prev) => ({
+        ...prev,
+        rating: fetchedData.rating,
+        profits: fetchedData.totalProfits,
+        numOfCompletedOrders: fetchedData.numOfOrders,
+      }));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  useEffect(() => {
+    fetch_rating_orders_earnings();
+  }, []);
+  useEffect(() => {
+    console.log("Stats are : " + JSON.stringify(providerStats));
+  }, [providerStats]);
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
       <View
@@ -140,7 +169,12 @@ const ProviderDashboard = () => {
             >
               ServLink
             </Text>
-            <Link href="/searchPage">
+            <Link
+              href={{
+                pathname: "/searchPage",
+                params: { pageToBack: "/ProviderPages/providerDashboard" },
+              }}
+            >
               <Ionicons name="search" size={30} color="#601d77ff" />
             </Link>
           </View>
@@ -148,27 +182,29 @@ const ProviderDashboard = () => {
           {/* Header */}
           <Text style={styles.title}>Dashboard</Text>
           <Text style={styles.subtitle}>
-            {"Welcome back, " +
-              loggedUser.first_name +
-              " " +
-              loggedUser.last_name}
+            {loggedUser &&
+              "Welcome back, " +
+                loggedUser.first_name +
+                " " +
+                loggedUser.last_name}
           </Text>
 
           {/* Stats */}
           <View style={styles.statsRow}>
             {stats.map((item, index) => (
               <View key={index} style={styles.statCard}>
-                <FontAwesome5 name={item.icon} size={22} color={item.color} />
-                <Text style={styles.statTitle}>{item.title}</Text>
-                <Text style={styles.statValue}>{item.value}</Text>
-                <Text
-                  style={[
-                    styles.statChange,
-                    { color: item.trend === "up" ? "#16a34a" : "#dc2626" },
-                  ]}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    marginBottom: 10,
+                    marginRight: 30,
+                  }}
                 >
-                  {item.change}
-                </Text>
+                  <FontAwesome5 name={item.icon} size={22} color={item.color} />
+                  <Text style={styles.statTitle}>{item.title}</Text>
+                </View>
+                <Text style={styles.statValue}>{item.value}</Text>
               </View>
             ))}
           </View>
@@ -254,16 +290,14 @@ const styles = StyleSheet.create({
   statTitle: {
     color: "#7b3685ff",
     fontWeight: "700",
-    marginTop: 8,
+    marginTop: 4,
+    fontSize: 15,
   },
   statValue: {
     fontSize: 20,
     fontWeight: "900",
     color: "#3f043bff",
-  },
-  statChange: {
-    marginTop: 4,
-    fontWeight: "700",
+    textAlign: "center",
   },
   card: {
     backgroundColor: "#fdf1ffff",

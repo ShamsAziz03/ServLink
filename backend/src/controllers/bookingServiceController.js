@@ -144,3 +144,19 @@ exports.addTransaction = async (req, res) => {
     res.json({ error: err.message });
   }
 };
+
+exports.providerFromSearch = async (req, res) => {
+  const providerId = req.params.providerId;
+  try {
+    console.log(providerId);
+    const results = await ServiceProviderModel.providerFromSearch(providerId);
+    if (!results.length) {
+      res.json({ message: "Provider not found" });
+    }
+
+    res.json(results[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.json("Database error");
+  }
+};

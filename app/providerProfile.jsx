@@ -104,19 +104,23 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
     );
 
     const response = await result.json();
-    if(response.success){alert("Added Providers To Fav")}
-    else {alert("Can't Add Providers To Fav")}
+    if (response.success) {
+      alert("Added Providers To Fav");
+    } else {
+      alert("Can't Add Providers To Fav");
+    }
 
     if (!bookingId) console.error("can't added new book to db");
   };
 
   useEffect(() => {
+    if (!images) return;
     const imagesArray = images.split(",");
     setProviderExpImages(imagesArray);
     setRating(0);
     fetchProviderRating();
     fetchFeedbacks();
-  }, []);
+  }, [providerInfo.provider_id]);
 
   return (
     <Modal

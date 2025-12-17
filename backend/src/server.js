@@ -15,6 +15,7 @@ const favoriteRoutes = require("./routes/favoriteRoutes");
 const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
+const serviceProviderStats = require("./routes/serviceProvider/serviceProviderStatsRoutes");
 
 // Middleware
 app.use(cors());
@@ -45,6 +46,9 @@ app.use("/api/services", serviceRoutes);
 
 //for payment
 app.use("/payment", paymentRoutes);
+
+//for SP
+app.use("/serviceProviderStats", serviceProviderStats);
 
 // Start server
 const PORT = process.env.PORT || 5000;

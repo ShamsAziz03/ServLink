@@ -140,5 +140,52 @@ where sp.provider_id= ? ;
 
     return { insertId: result.insertId }; // return insertId
   }
+
+  static async getProviderRatingOrdersEarning(userId) {
+    const query = `SELECT u.email,
+SUM(total_price) as totalProfits,
+AVG(score) as rating,
+COUNT(b.booking_id) as numOfOrders
+ FROM servlink.service_providers sp
+ join users u on sp.user_id= u.user_id
+ join provider_services ps on sp.provider_id=ps.provider_id
+ join bookings b on ps.Provider_Services_id=b.Provider_Services_id
+ join ratings r on b.booking_id=r.booking_id
+ where sp.user_id= ? &&status='Completed'
+  group by u.email
+
+`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result;
+  }
+
+  static async providerFromSearch(providerId) {
+    const query = `
+    SELECT 
+      sp.provider_id,
+      sp.aboutProvider,
+      sp.description,
+      sp.certifications,
+      sp.years_of_experience,
+      sp.service_locations,
+      sp.field_of_work,
+      ps.base_price,
+      ps.images,
+      u.first_name,
+      u.last_name,
+      u.phone,
+      u.email,
+      sp.id_card_photo
+    FROM service_providers sp
+    JOIN provider_services ps 
+      ON sp.provider_id = ps.provider_id
+    JOIN users u 
+      ON sp.user_id = u.user_id
+    WHERE sp.provider_id = ?;
+  `;
+
+    const [result] = await db.promise().execute(query, [providerId]);
+    return result;
+  }
 }
 module.exports = ServiceProvider;
