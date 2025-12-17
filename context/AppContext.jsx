@@ -24,6 +24,8 @@ const AppProvider = ({ children }) => {
     walletId: 10,
     typeOfPayment: "cache",
   });
+  const [selected_from_searchPage, setSelected_from_searchPage] =
+    useState(null);
 
   return (
     <AppContext.Provider
@@ -40,6 +42,8 @@ const AppProvider = ({ children }) => {
         setChoosedDate,
         bookingObject,
         setBookingObject,
+        selected_from_searchPage,
+        setSelected_from_searchPage,
       }}
     >
       {children}

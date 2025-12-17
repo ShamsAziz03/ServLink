@@ -14,6 +14,7 @@ const ratingRoutes = require("./routes/ratingRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const serviceRoutes = require("./routes/serviceRoutes");
 
 // Middleware
 app.use(cors());
@@ -40,6 +41,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/favorites", favoriteRoutes);
 //for service booking
 app.use("/bookingService", bookingServiceRoutes);
+app.use("/api/services", serviceRoutes);
 
 //for payment
 app.use("/payment", paymentRoutes);

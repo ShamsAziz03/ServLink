@@ -8,7 +8,7 @@ const Favorite = {
       p.provider_id,
       CONCAT(u.first_name, ' ', u.last_name) AS provider_name,
       p.field_of_work,
-      p.description,
+      p.aboutProvider,
       p.hourly_rate
    FROM favorites f
    JOIN service_providers p ON f.provider_id = p.provider_id

@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Image,
@@ -348,7 +348,8 @@ export default function App() {
 
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("(dashboard)", { screen: "home" })
+              // navigation.navigate("(dashboard)", { screen: "home" })
+              router.push("/ProviderPages/providerDashboard")
             }
           >
             <Text style={styles.switchText}>GO TO HOME</Text>
