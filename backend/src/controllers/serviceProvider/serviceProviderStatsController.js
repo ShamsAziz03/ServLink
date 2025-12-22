@@ -33,3 +33,18 @@ exports.getProviderCancelledPendingOrders = async (req, res) => {
     });
   }
 };
+
+exports.getProviderServicePerformance = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const result = await ServiceProviderModel.getProviderServicePerformance(
+      userId
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching service performence",
+      error: err.message,
+    });
+  }
+};

@@ -215,5 +215,20 @@ WHERE
     const [result] = await db.promise().execute(query, [userId]);
     return result;
   }
+
+  static async getProviderServicePerformance(userId) {
+    const query = `SELECT u.user_id,s.name,
+ COUNT(b.booking_id) AS totalBookings 
+ FROM servlink.users u 
+ join service_providers sp on u.user_id=sp.user_id 
+ join provider_services ps on sp.provider_id=ps.provider_id 
+ join services s on ps.service_id=s.service_id 
+ join bookings b on ps.Provider_Services_id=b.Provider_Services_id 
+ where u.user_id= ?
+ GROUP BY u.user_id, s.name;
+`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result;
+  }
 }
 module.exports = ServiceProvider;

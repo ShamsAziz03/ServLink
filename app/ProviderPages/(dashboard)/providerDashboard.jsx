@@ -31,6 +31,14 @@ const ProviderDashboard = () => {
     profits: 0.0,
   });
 
+  //for service performence, each service that sp produce and how many bookings for each one
+  const [servicesData, setServicesData] = useState([
+    { name: "Electricity", orders: 45 },
+    { name: "Plumbing", orders: 32 },
+    { name: "Carpentry", orders: 28 },
+    { name: "Cleaning", orders: 25 },
+  ]);
+
   const stats = [
     {
       title: "Earnings",
@@ -73,31 +81,24 @@ const ProviderDashboard = () => {
     { month: "Jun", earnings: 3800 },
   ];
 
-  const servicesData = [
-    { name: "Electricity", orders: 45 },
-    { name: "Plumbing", orders: 32 },
-    { name: "Carpentry", orders: 28 },
-    { name: "Cleaning", orders: 25 },
-  ];
-
   const orderStatusData = [
     {
       name: "Completed",
-      value: 42,
+      value: Number(providerStats.numOfCompletedOrders),
       color: "#16a34a",
       legendFontColor: "#333",
       legendFontSize: 12,
     },
     {
-      name: "In Progress",
-      value: 8,
-      color: "#2563eb",
+      name: "Cancelled",
+      value: Number(providerStats.numOfCancelledOrders),
+      color: "#de1212ff",
       legendFontColor: "#333",
       legendFontSize: 12,
     },
     {
       name: "Pending",
-      value: 5,
+      value: Number(providerStats.numOfPendingOrders),
       color: "#f59e0b",
       legendFontColor: "#333",
       legendFontSize: 12,
@@ -106,10 +107,15 @@ const ProviderDashboard = () => {
 
   const chartConfig = {
     backgroundGradientFrom: "#ffffffff",
-    backgroundGradientTo: "#f4def7ff",
+    backgroundGradientTo: "#fdf0ffff",
     color: (opacity = 1) => `rgba(123, 54, 133, ${opacity})`,
-    labelColor: () => "#6c0268ff",
-    strokeWidth: 2,
+    labelColor: () => "#5b0258ff",
+    fillShadowGradientOpacity: 0.7,
+    strokeWidth: 3,
+    propsForLabels: {
+      fontSize: 12,
+      fontWeight: "900",
+    },
   };
 
   const fetch_rating_orders_earnings = async () => {
@@ -147,9 +153,23 @@ const ProviderDashboard = () => {
     }
   };
 
+  const fetch_service_performance = async () => {
+    try {
+      const response = await fetch(
+        // `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`////////////////////////////////to change
+        `${API_ADDRESS}/serviceProviderStats/getProviderServicePerformance/1`
+      );
+      const fetchedData = await response.json();
+      setServicesData(fetchedData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetch_rating_orders_earnings();
     fetch_pending_cancelled_orders();
+    fetch_service_performance();
   }, []);
 
   return (
@@ -246,16 +266,22 @@ const ProviderDashboard = () => {
             <Text style={styles.cardTitle}>Services Performance</Text>
             <BarChart
               data={{
-                labels: servicesData.map((s) => s.name),
-                datasets: [{ data: servicesData.map((s) => s.orders) }],
+                labels: servicesData.map((s) => s.name.length > 12 ? s.name.slice(0, 12) + "..." : s.name),
+                datasets: [
+                  { data: servicesData.map((s) => parseInt(s.totalBookings)) },
+                ],
               }}
               width={screenWidth - 80}
-              height={220}
+              height={240}
               chartConfig={chartConfig}
+              fromZero={true}
+              showValuesOnTopOfBars={true}
+              formatYLabel={(yValue) => parseInt(yValue, 10).toString()}
             />
           </View>
 
           {/* Order Status */}
+
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Order Status</Text>
             <PieChart

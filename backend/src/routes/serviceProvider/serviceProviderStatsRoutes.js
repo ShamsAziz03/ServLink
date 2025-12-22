@@ -13,4 +13,9 @@ router.get(
   serviceProviderStatsController.getProviderCancelledPendingOrders
 );
 
+router.get(
+  "/getProviderServicePerformance/:userId",
+  serviceProviderStatsController.getProviderServicePerformance
+);
+
 module.exports = router;
