@@ -344,7 +344,7 @@ export default function MyTasks() {
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40 },
   filterRow: { flexDirection: "row", justifyContent: "center", marginBottom: 20, flexWrap: "wrap" },
-  filterBtn: { backgroundColor: "#d9c7e8", paddingHorizontal: 15, paddingVertical: 8, marginHorizontal: 5, marginVertical: 5, borderRadius: 20 },
+  filterBtn: { backgroundColor: "#c89bcbff", paddingHorizontal: 15, paddingVertical: 8, marginHorizontal: 5, marginVertical: 5, borderRadius: 20 },
   activeFilter: { backgroundColor: "#750d83" },
   filterText: { color: "#fff", fontWeight: "bold" },
   card: { padding: 20, marginHorizontal: 15, marginVertical: 8, borderRadius: 15, shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 5 },

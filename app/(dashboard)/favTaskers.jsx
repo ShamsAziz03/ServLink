@@ -63,7 +63,7 @@ setFavorites(data);
   };
 
   const renderCard = ({ item }) => (
-    <LinearGradient colors={["#ffffff", "#f0e6fa"]} style={styles.card}>
+    <LinearGradient colors={["#ffffff", "#fcfaffff"]} style={styles.card}>
       {/* Name */}
       <View style={styles.row}>
         <MaterialCommunityIcons name="account" size={22} color="#750d83" />
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginBottom: 10,
+    marginVertical: 20,
   },
   headerText: { fontSize: 24, fontWeight: "bold", color: "#750d83" },
   card: {

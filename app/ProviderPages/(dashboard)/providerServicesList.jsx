@@ -38,7 +38,6 @@ const mockServices = [
     priceType: "hourly",
     rating: 4.8,
     completedOrders: 45,
-    status: "active",
     locations: ["Ramallah", "Al-Bireh", "Beitunia"],
     image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400",
   },
@@ -52,7 +51,6 @@ const mockServices = [
     priceType: "hourly",
     rating: 4.6,
     completedOrders: 32,
-    status: "active",
     locations: ["Ramallah", "Al-Bireh"],
     image: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400",
   },
@@ -116,23 +114,12 @@ export default function ProviderServices() {
       priceType: "hourly",
       rating: 0,
       completedOrders: 0,
-      status: "active",
       locations: locations.split(",").map((l) => l.trim()),
       image: "https://via.placeholder.com/400",
     };
     setServices((prev) => [newService, ...prev]);
     setIsAddService(false);
     resetForm();
-  };
-
-  const toggleStatus = (id) => {
-    setServices((prev) =>
-      prev.map((s) =>
-        s.id === id
-          ? { ...s, status: s.status === "active" ? "inactive" : "active" }
-          : s
-      )
-    );
   };
 
   const deleteService = (id) => {
@@ -223,42 +210,37 @@ export default function ProviderServices() {
         </View>
       </Modal>
 
-      <View style={{ flex: 1, padding: 20 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 20,
-          }}
-        >
-          <Text style={styles.title}>My Services</Text>
-          <TouchableOpacity
-            style={styles.addBtn}
-            onPress={() => setIsAddService(true)}
-          >
-            <Ionicons name="add-circle" size={20} color="#fff" />
-            <Text style={styles.addBtnText}>Add Service</Text>
-          </TouchableOpacity>
-        </View>
-
+      <View
+        style={{
+          flex: 1,
+          padding: 20,
+          marginBottom: 50,
+          marginTop: 40,
+        }}
+      >
         <ScrollView showsVerticalScrollIndicator={false}>
+          {/* for my services and add service */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Text style={styles.title}>My Services</Text>
+            <TouchableOpacity
+              style={styles.addBtn}
+              onPress={() => setIsAddService(true)}
+            >
+              <Ionicons name="add-circle" size={20} color="#fff" />
+              <Text style={styles.addBtnText}>Add Service</Text>
+            </TouchableOpacity>
+          </View>
+          {/* for list services */}
           {services.map((service) => (
             <View key={service.id} style={styles.card}>
               <Image source={{ uri: service.image }} style={styles.image} />
-              <View
-                style={[
-                  styles.badge,
-                  {
-                    backgroundColor:
-                      service.status === "active" ? "#16a34a" : "#9ca3af",
-                  },
-                ]}
-              >
-                <Text style={styles.badgeText}>
-                  {service.status === "active" ? "Active" : "Inactive"}
-                </Text>
-              </View>
 
               <Text style={styles.serviceTitle}>{service.title}</Text>
               <Text style={styles.category}>{service.category}</Text>
@@ -289,8 +271,7 @@ export default function ProviderServices() {
               </View>
 
               <View style={styles.priceRow}>
-                <FontAwesome5 name="dollar-sign" size={18} color="#16a34a" />
-                <Text style={styles.price}>${service.price}</Text>
+                <Text style={styles.price}>{service.price} ₪</Text>
                 <Text style={styles.priceUnit}>/ hour</Text>
               </View>
 
@@ -299,16 +280,15 @@ export default function ProviderServices() {
                   style={styles.actionBtn}
                   onPress={() => openEdit(service)}
                 >
-                  <Ionicons name="create-outline" size={18} color="#601d77ff" />
-                  <Text>Edit</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.actionBtn}
-                  onPress={() => toggleStatus(service.id)}
-                >
-                  <Text>
-                    {service.status === "active" ? "Deactivate" : "Activate"}
+                  <Ionicons name="create-outline" size={20} color="#f1d5faff" />
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: "900",
+                      color: "#f7e2feff",
+                    }}
+                  >
+                    Edit
                   </Text>
                 </TouchableOpacity>
 
@@ -316,7 +296,7 @@ export default function ProviderServices() {
                   style={[styles.actionBtn, styles.deleteBtn]}
                   onPress={() => deleteService(service.id)}
                 >
-                  <Ionicons name="trash" size={18} color="#fff" />
+                  <Ionicons name="trash" size={22} color="#fff" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -332,13 +312,13 @@ const styles = StyleSheet.create({
   addBtn: {
     flexDirection: "row",
     backgroundColor: "#601d77ff",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
     borderRadius: 12,
     alignItems: "center",
     gap: 6,
   },
-  addBtnText: { color: "#fff", fontWeight: "700" },
+  addBtnText: { color: "#fff", fontWeight: "700", fontSize: 15 },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -383,15 +363,6 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   image: { width: "100%", height: 160, borderRadius: 12, marginBottom: 10 },
-  badge: {
-    position: "absolute",
-    top: 15,
-    right: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  badgeText: { color: "#fff", fontSize: 12, fontWeight: "700" },
   serviceTitle: { fontSize: 18, fontWeight: "800", color: "#3f043bff" },
   category: { color: "#7b3685ff", fontWeight: "700", marginBottom: 4 },
   description: { color: "#555", marginBottom: 8 },
@@ -407,7 +378,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   price: { fontSize: 20, fontWeight: "900", color: "#16a34a" },
-  priceUnit: { color: "#555" },
+  priceUnit: { color: "#390747ff", fontSize: 15 },
   actions: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -415,11 +386,11 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: "#f1e4f5",
+    backgroundColor: "#6b1e85ff",
     padding: 8,
     borderRadius: 10,
     alignItems: "center",
-    marginHorizontal: 4,
+    marginHorizontal: 6,
     flexDirection: "row",
     justifyContent: "center",
     gap: 4,

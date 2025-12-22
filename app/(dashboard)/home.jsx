@@ -351,21 +351,23 @@ const home = () => {
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
-                  padding: 20,
+                  padding: 10,
                   borderRadius: 10,
                   shadowColor: "#593962ff",
                   shadowOffset: { width: 0, height: 12 },
                   shadowOpacity: 0.6,
                   shadowRadius: 16,
                   elevation: 10,
+                  width: width / 2.3,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 24,
+                    fontSize: 20,
                     textAlign: "center",
                     color: "#4d045d88",
                     fontWeight: "bold",
+                    marginBottom: 10,
                   }}
                 >
                   {category.name}
@@ -373,17 +375,17 @@ const home = () => {
                 <Image
                   source={{ uri: category.cover_image }}
                   resizeMode="contain"
-                  style={{ width: 200, height: 200 }}
+                  style={{ width: 120, height: 120 }}
                 />
                 <Link
                   href="/categoryPage"
                   style={{
-                    marginTop: 20,
+                    marginTop: 15,
                     padding: 5,
                     backgroundColor: "#893696ff",
                     borderRadius: 10,
                     textAlign: "center",
-                    width: width / 4,
+                    width: width / 5,
                   }}
                 >
                   <Text
@@ -408,9 +410,9 @@ const home = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              gap: 40,
-              padding: 40,
-              paddingHorizontal: 30,
+              gap: 20,
+              padding: 30,
+              paddingHorizontal: 10,
             }}
           >
             {suggested.map((suggest, index) => (
@@ -439,9 +441,9 @@ const home = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              gap: 40,
-              padding: 40,
-              paddingHorizontal: 30,
+              gap: 20,
+              padding: 30,
+              paddingHorizontal: 10,
             }}
           >
             {mostBooked.map((book, index) => (
@@ -470,9 +472,9 @@ const home = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              gap: 40,
-              padding: 40,
-              paddingHorizontal: 30,
+              gap: 20,
+              padding: 30,
+              paddingHorizontal: 10,
             }}
           >
             {topProviders.map((provider, index) => (
@@ -481,7 +483,7 @@ const home = () => {
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
-                  padding: 20,
+                  padding: 10,
                   borderRadius: 10,
                   shadowColor: "#593962ff",
                   shadowOffset: { width: 0, height: 12 },
@@ -500,15 +502,15 @@ const home = () => {
                   style={{
                     flex: 1,
                     justifyContent: "center",
-                    width: 250,
-                    height: 220,
+                    width: 220,
+                    height: 200,
                     alignItems: "center",
                   }}
                 >
                   <Text
                     style={{
                       flexWrap: "wrap",
-                      fontSize: 24,
+                      fontSize: 22,
                       textAlign: "center",
                       color: "#17041c",
                       fontWeight: "700",
@@ -517,17 +519,18 @@ const home = () => {
                       textShadowRadius: 2,
                       letterSpacing: 1,
                       lineHeight: 28,
+                      marginTop: 10,
                     }}
                   >
                     {provider.first_name + " " + provider.last_name}
                   </Text>
                   <Text
                     style={{
-                      fontSize: 20,
+                      fontSize: 18,
                       textAlign: "center",
                       color: "#1c032188",
                       fontWeight: "bold",
-                      paddingTop: 10,
+                      paddingTop: 5,
                       flexWrap: "wrap",
                       textShadowColor: "#d8a3ff",
                       textShadowOffset: { width: 1, height: 1 },
@@ -538,16 +541,15 @@ const home = () => {
                   </Text>
                   <Text
                     style={{
-                      fontSize: 18,
+                      fontSize: 16,
                       textAlign: "center",
                       color: "#653470",
                       fontWeight: "500",
-                      marginVertical: 15,
+                      marginVertical: 10,
                       letterSpacing: 0.5,
                       backgroundColor: "#f0e0f5",
                       borderRadius: 6,
                       paddingHorizontal: 6,
-                      paddingVertical: 5,
                       alignSelf: "center",
                       shadowColor: "#000",
                       shadowOpacity: 0.1,
@@ -580,7 +582,7 @@ const home = () => {
                       style={{
                         color: "#ffffffff",
                         fontWeight: "bold",
-                        size: 16,
+                        size: 14,
                       }}
                     >
                       Book
@@ -599,9 +601,9 @@ const home = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              gap: 40,
-              padding: 40,
-              paddingHorizontal: 30,
+              gap: 20,
+              padding: 30,
+              paddingHorizontal: 10,
             }}
           >
             {offersData.map((offer, index) => (
@@ -610,7 +612,7 @@ const home = () => {
                 style={{
                   alignItems: "center",
                   backgroundColor: "#f3e8f7ff",
-                  padding: 20,
+                  padding: 10,
                   borderRadius: 10,
                   shadowColor: "#593962ff",
                   shadowOffset: { width: 0, height: 12 },
@@ -629,7 +631,7 @@ const home = () => {
                   style={{
                     flex: 1,
                     justifyContent: "center",
-                    width: 250,
+                    width: 220,
                     height: 200,
                     alignItems: "center",
                   }}
@@ -637,7 +639,7 @@ const home = () => {
                   <Text
                     style={{
                       flexWrap: "wrap",
-                      fontSize: 24,
+                      fontSize: 20,
                       textAlign: "center",
                       color: "#17041c",
                       fontWeight: "700",
@@ -652,7 +654,7 @@ const home = () => {
                   </Text>
                   <Text
                     style={{
-                      fontSize: 20,
+                      fontSize: 18,
                       textAlign: "center",
                       color: "#1c032188",
                       fontWeight: "bold",
@@ -668,7 +670,7 @@ const home = () => {
                   <View style={{ flex: 1, flexDirection: "row", gap: 20 }}>
                     <Text
                       style={{
-                        fontSize: 24,
+                        fontSize: 18,
                         textAlign: "center",
                         color: "#6d377588",
                         fontWeight: "bold",
@@ -681,7 +683,7 @@ const home = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: 24,
+                        fontSize: 19,
                         textAlign: "center",
                         color: "#1e022588",
                         fontWeight: "bold",
@@ -711,7 +713,7 @@ const home = () => {
                       style={{
                         color: "#ffffffff",
                         fontWeight: "bold",
-                        size: 16,
+                        size: 14,
                       }}
                     >
                       Book
@@ -723,13 +725,12 @@ const home = () => {
           </ScrollView>
 
           {/* our social media  */}
-          <View style={{ paddingTop: 40, paddingBottom: 10 }}>
+          <View style={{ paddingTop: 40 }}>
             <Text
               style={{
                 color: "#3b2d4bff",
                 fontSize: 24,
                 textAlign: "center",
-                paddingTop: 10,
               }}
             >
               FOLLOW US ON
@@ -738,21 +739,21 @@ const home = () => {
               style={{
                 flex: 1,
                 flexDirection: "row",
-                margin: 20,
+                margin: 15,
                 justifyContent: "space-evenly",
               }}
             >
               <Link href="https://www.instagram.com/">
-                <Ionicons name="logo-instagram" size={35} color="#57096fff" />
+                <Ionicons name="logo-instagram" size={30} color="#57096fff" />
               </Link>
               <Link href="https://www.youtube.com/">
-                <Ionicons name="logo-youtube" size={35} color="#57096fff" />
+                <Ionicons name="logo-youtube" size={30} color="#57096fff" />
               </Link>
               <Link href="https://www.facebook.com/">
-                <Ionicons name="logo-facebook" size={35} color="#57096fff" />
+                <Ionicons name="logo-facebook" size={30} color="#57096fff" />
               </Link>
               <Link href="https://www.linkedin.com/">
-                <Ionicons name="logo-linkedin" size={35} color="#57096fff" />
+                <Ionicons name="logo-linkedin" size={30} color="#57096fff" />
               </Link>
             </View>
             <Text

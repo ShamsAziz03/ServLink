@@ -96,7 +96,7 @@ export default function ProfileScreen() {
           <Ionicons
             name="person-off-outline"
             size={80}
-            color="#7b3685ff"
+            color="#804f88ff"
             style={{ marginBottom: 20 }}
           />
           <Text
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <LinearGradient
-            colors={["#b57edcff", "#750d83ff"]}
+            colors={["#a468aaff", "#682471ff"]}
             style={styles.logoutGradient}
           >
             <Text style={styles.logoutText}>Logout</Text>
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 55,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: "#9333ea",
+    borderColor: "#5f196bff",
   },
   name: { fontSize: 22, fontWeight: "bold", color: "#37043a" },
   email: { color: "#6a5c7b", marginBottom: 3, fontSize: 15 },

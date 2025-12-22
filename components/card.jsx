@@ -13,7 +13,7 @@ const Card = ({ id, img, title, category, price }) => {
         shadowOpacity: 0.15,
         shadowRadius: 10,
         elevation: 8,
-        width: 280,
+        width: 250,
       }}
     >
       <Image
@@ -29,12 +29,13 @@ const Card = ({ id, img, title, category, price }) => {
           flex: 1,
           justifyContent: "center",
           width: 250,
-          height: 170,
+          height: 140,
+          padding: 10,
         }}
       >
         <Text
           style={{
-            fontSize: 24,
+            fontSize: 20,
             textAlign: "center",
             color: "#17041c",
             fontWeight: "700",
@@ -50,7 +51,7 @@ const Card = ({ id, img, title, category, price }) => {
 
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 16,
             textAlign: "center",
             color: "#5b106b",
             fontWeight: "600",
@@ -67,7 +68,7 @@ const Card = ({ id, img, title, category, price }) => {
 
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 14,
             textAlign: "center",
             color: "#653470",
             fontWeight: "500",
@@ -95,6 +96,7 @@ export default Card;
 const styles = StyleSheet.create({
   img: {
     width: "100%",
-    height: 150,
+    height: 170,
+    marginBottom: 10,
   },
 });
