@@ -18,4 +18,9 @@ router.get(
   serviceProviderStatsController.getProviderServicePerformance
 );
 
+router.get(
+  "/getProviderMonthlyEarnings/:userId",
+  serviceProviderStatsController.getProviderMonthlyEarnings
+);
+
 module.exports = router;

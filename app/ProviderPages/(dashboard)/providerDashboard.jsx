@@ -39,6 +39,24 @@ const ProviderDashboard = () => {
     { name: "Cleaning", orders: 25 },
   ]);
 
+  const [earningsData, setEarningsData] = useState([
+    {
+      name: "Helping disabled at home",
+      service_date: "2025-09-20",
+      total_price: "1000.00",
+      user_id: 1,
+    },
+    {
+      name: "Baby Sitting",
+      service_date: "2025-02-01",
+      total_price: "1200.00",
+      user_id: 1,
+    },
+  ]);
+  const [earningsData2, setEarningsData2] = useState([
+    { month: "Jan", earnings: 240 },
+    { month: "Mar", earnings: 320 },
+  ]);
   const stats = [
     {
       title: "Earnings",
@@ -70,15 +88,6 @@ const ProviderDashboard = () => {
       icon: "times-circle",
       color: "#db3218ff",
     },
-  ];
-
-  const earningsData = [
-    { month: "Jan", earnings: 2400 },
-    { month: "Feb", earnings: 2800 },
-    { month: "Mar", earnings: 3200 },
-    { month: "Apr", earnings: 2900 },
-    { month: "May", earnings: 3450 },
-    { month: "Jun", earnings: 3800 },
   ];
 
   const orderStatusData = [
@@ -166,11 +175,71 @@ const ProviderDashboard = () => {
     }
   };
 
+  const fetch_provider_monthly_earnings = async () => {
+    try {
+      const response = await fetch(
+        // `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/${loggedUser.user_id}`////////////////////////////////to change
+        `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/1`
+      );
+      const fetchedData = await response.json();
+      const formattedData = fetchedData.map((d) => ({
+        ...d,
+        service_date: d.service_date.split("T")[0],
+      }));
+      setEarningsData(formattedData);
+      console.log(earningsData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetch_rating_orders_earnings();
     fetch_pending_cancelled_orders();
     fetch_service_performance();
+    fetch_provider_monthly_earnings();
   }, []);
+
+  const getEarningsByMonth = () => {
+    let arr = [];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const earningsByMonth = {};
+    for (let i = 0; i < earningsData.length; i++) {
+      const bookMonth = new Date(earningsData[i].service_date).getMonth();
+      const monthString = monthNames[bookMonth];
+      if (!earningsByMonth[monthString]) earningsByMonth[monthString] = 0;
+      earningsByMonth[monthString] += parseFloat(earningsData[i].total_price);
+    }
+
+    for (const month in earningsByMonth) {
+      if (earningsByMonth.hasOwnProperty(month)) {
+        const obj = {
+          month: month,
+          earnings: earningsByMonth[month],
+        };
+        arr.push(obj);
+      }
+    }
+    console.log(arr);
+    setEarningsData2(arr);
+  };
+
+  useEffect(() => {
+    getEarningsByMonth();
+  }, [earningsData]);
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
@@ -219,7 +288,7 @@ const ProviderDashboard = () => {
           {/* Header */}
           <Text style={styles.title}>Dashboard</Text>
           <Text style={styles.subtitle}>
-            {loggedUser &&
+            {loggedUser.first_name &&
               "Welcome back, " +
                 loggedUser.first_name +
                 " " +
@@ -246,27 +315,14 @@ const ProviderDashboard = () => {
             ))}
           </View>
 
-          {/* Monthly Earnings */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Monthly Earnings</Text>
-            <LineChart
-              data={{
-                labels: earningsData.map((e) => e.month),
-                datasets: [{ data: earningsData.map((e) => e.earnings) }],
-              }}
-              width={screenWidth - 80}
-              height={220}
-              chartConfig={chartConfig}
-              bezier
-            />
-          </View>
-
           {/* Services Performance */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Services Performance</Text>
             <BarChart
               data={{
-                labels: servicesData.map((s) => s.name.length > 12 ? s.name.slice(0, 12) + "..." : s.name),
+                labels: servicesData.map((s) =>
+                  s.name.length > 12 ? s.name.slice(0, 12) + "..." : s.name
+                ),
                 datasets: [
                   { data: servicesData.map((s) => parseInt(s.totalBookings)) },
                 ],
@@ -280,8 +336,22 @@ const ProviderDashboard = () => {
             />
           </View>
 
-          {/* Order Status */}
+          {/* Monthly Earnings */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Monthly Earnings</Text>
+            <LineChart
+              data={{
+                labels: earningsData2.map((e) => e.month),
+                datasets: [{ data: earningsData2.map((e) => e.earnings) }],
+              }}
+              width={screenWidth - 80}
+              height={240}
+              chartConfig={chartConfig}
+              bezier
+            />
+          </View>
 
+          {/* Order Status */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Order Status</Text>
             <PieChart

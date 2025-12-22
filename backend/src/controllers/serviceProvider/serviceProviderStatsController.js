@@ -48,3 +48,18 @@ exports.getProviderServicePerformance = async (req, res) => {
     });
   }
 };
+
+exports.getProviderMonthlyEarnings = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const result = await ServiceProviderModel.getProviderMonthlyEarnings(
+      userId
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching monthly earnings",
+      error: err.message,
+    });
+  }
+};
