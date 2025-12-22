@@ -196,7 +196,7 @@ const Payment = () => {
                   selectedOption !== "cache" && { color: "#561062ff" },
                 ]}
               >
-                Cache
+                Cash
               </Text>
             </Pressable>
             <Pressable
@@ -224,7 +224,7 @@ const Payment = () => {
                   selectedOption !== "card" && { color: "#561062ff" },
                 ]}
               >
-                Cridet Card
+                Credit Card
               </Text>
             </Pressable>
           </View>

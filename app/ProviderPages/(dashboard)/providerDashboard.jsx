@@ -129,12 +129,29 @@ const ProviderDashboard = () => {
       console.error(error.message);
     }
   };
+
+  const fetch_pending_cancelled_orders = async () => {
+    try {
+      const response = await fetch(
+        // `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`////////////////////////////////to change
+        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/1`
+      );
+      const fetchedData = await response.json();
+      setProviderStats((prev) => ({
+        ...prev,
+        numOfPendingOrders: fetchedData.numOfPendingsOrders,
+        numOfCancelledOrders: fetchedData.numOfCancelledOrders,
+      }));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetch_rating_orders_earnings();
+    fetch_pending_cancelled_orders();
   }, []);
-  useEffect(() => {
-    console.log("Stats are : " + JSON.stringify(providerStats));
-  }, [providerStats]);
+
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
       <View

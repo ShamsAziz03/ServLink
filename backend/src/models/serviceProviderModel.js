@@ -187,5 +187,33 @@ COUNT(b.booking_id) as numOfOrders
     const [result] = await db.promise().execute(query, [providerId]);
     return result;
   }
+
+  static async getProviderCancelledPendingOrders(userId) {
+    const query = `SELECT 
+    u.email,
+    SUM(CASE
+        WHEN b.status = 'Pending' THEN 1
+        ELSE 0
+    END) AS numOfPendingsOrders,
+      SUM(CASE
+        WHEN b.status = 'Cancelled' THEN 1
+        ELSE 0
+    END) AS numOfCancelledOrders
+FROM
+    users u
+        JOIN
+   service_providers sp on u.user_id=sp.user_id
+        JOIN
+    provider_services ps ON sp.provider_id = ps.provider_id
+        JOIN
+    bookings b ON ps.Provider_Services_id = b.Provider_Services_id
+WHERE
+    u.user_id = ?
+       group by u.email
+
+`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result;
+  }
 }
 module.exports = ServiceProvider;

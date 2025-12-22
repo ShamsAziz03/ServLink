@@ -7,4 +7,10 @@ router.get(
   serviceProviderStatsController.getProviderRatingOrdersEarning
 );
 
+
+router.get(
+  "/getProviderCancelledPendingOrders/:userId",
+  serviceProviderStatsController.getProviderCancelledPendingOrders
+);
+
 module.exports = router;
