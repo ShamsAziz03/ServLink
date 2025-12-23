@@ -311,25 +311,47 @@ const home = () => {
               marginBottom: 40,
             }}
           >
-            <Link
-              href="/login"
-              style={{
-                marginTop: 20,
-                backgroundColor: "#750d83ff",
-                padding: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Text
+            {loggedUser.user_id ? (
+              <Link
+                href="/login"
                 style={{
-                  color: "#e4e0e6ff",
-                  fontSize: 20,
-                  fontFamily: "Inter-Black",
+                  marginTop: 20,
+                  backgroundColor: "#750d83ff",
+                  padding: 10,
+                  borderRadius: 10,
                 }}
               >
-                Join Us Now
-              </Text>
-            </Link>
+                <Text
+                  style={{
+                    color: "#e4e0e6ff",
+                    fontSize: 20,
+                    fontFamily: "Inter-Black",
+                  }}
+                >
+                  Join Us Now
+                </Text>
+              </Link>
+            ) : (
+              <Link
+                href="/categoryPage"
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#750d83ff",
+                  padding: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#e4e0e6ff",
+                    fontSize: 20,
+                    fontFamily: "Inter-Black",
+                  }}
+                >
+                  Go to services
+                </Text>
+              </Link>
+            )}
           </View>
 
           {/* view for catigories */}

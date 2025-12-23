@@ -180,11 +180,11 @@ export default function ProfileScreen() {
           text="Change Password"
           onPress={() => router.push("/changePass")}
         />
-        <SettingItem
+        {/* <SettingItem
           iconLib="Ionicons"
           icon="notifications-outline"
           text="Notification Settings"
-        />
+        /> */}
         <SettingItem
           iconLib="Ionicons"
           icon="briefcase-outline"
@@ -243,8 +243,18 @@ const styles = StyleSheet.create({
     borderColor: "#5f196bff",
   },
   name: { fontSize: 22, fontWeight: "bold", color: "#37043a" },
-  email: { color: "#6a5c7b", marginBottom: 3, fontSize: 15 },
-  city: { color: "#6a5c7b", marginBottom: 6, fontSize: 15 },
+  email: {
+    color: "#5f3966ff",
+    marginBottom: 3,
+    fontSize: 16,
+    fontWeight: "400",
+  },
+  city: {
+    color: "#5a4b6cff",
+    marginBottom: 6,
+    fontSize: 16,
+    fontWeight: "400",
+  },
   divider: {
     height: 1,
     width: "90%",

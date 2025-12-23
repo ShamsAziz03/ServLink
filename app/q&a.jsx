@@ -13,7 +13,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-
+import { Link } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -57,10 +58,13 @@ export default function FAQScreen() {
   const router = useRouter();
   return (
     <LinearGradient
-      colors={["#fcf4fcff", "#94469dff"]}
+      colors={["#fcf4fcff", "#bd88c3ff"]}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
+        <Link href="/profileUser" style={{ marginRight: 220, marginTop: 20 }}>
+          <Ionicons name="arrow-back-outline" size={35} color={"#7b3685ff"} />
+        </Link>
         <View style={styles.header}>
           <Text style={styles.title}>Frequently Asked Questions </Text>
           <Image
@@ -116,7 +120,7 @@ export default function FAQScreen() {
             onPress={() => router.push("/contact")}
           >
             <LinearGradient
-              colors={["#bd68bdff", "#7d138bff"]}
+              colors={["#965296ff", "#6e3975ff"]}
               style={styles.contactButton}
             >
               <Text style={styles.contactButtonText}>Contact Support</Text>
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardOpen: {
-    backgroundColor: "#f3e2f7ff",
+    backgroundColor: "#fef8ffff",
   },
   questionRow: {
     flexDirection: "row",
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   question: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "600",
     flex: 1,
     marginRight: 10,
@@ -166,23 +170,25 @@ const styles = StyleSheet.create({
   },
   answer: {
     marginTop: 10,
-    color: "#750d83ff",
-    fontSize: 15,
+    color: "#90339cff",
+    fontSize: 17,
     lineHeight: 22,
     borderTopWidth: 1,
     borderTopColor: "#c9b7e2",
     paddingTop: 10,
+    fontWeight: "600",
   },
   contactSection: {
     alignItems: "center",
     marginTop: 40,
   },
   contactText: {
-    color: "#f8f0f9ff",
+    color: "#fef9ffff",
     fontSize: 16,
     textAlign: "center",
     marginBottom: 15,
     lineHeight: 22,
+    fontWeight: "500",
   },
   contactButton: {
     paddingHorizontal: 30,
@@ -204,6 +210,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20,
-    marginTop: 20,
   },
 });

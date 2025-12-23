@@ -156,7 +156,15 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
                 marginVertical: 20,
               }}
             >
-              <Image source={{ uri: id_card_photo }} style={styles.img} />
+              {id_card_photo ? (
+                <Image source={{ uri: id_card_photo }} style={styles.img} />
+              ) : (
+                <Ionicons
+                  name="person-circle-outline"
+                  size={80}
+                  color="#55024bff"
+                />
+              )}
               <View
                 style={{
                   flexDirection: "column",

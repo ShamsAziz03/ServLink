@@ -13,6 +13,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 export default function ContactUsScreen() {
   const [name, setName] = useState("");
@@ -58,6 +59,9 @@ export default function ContactUsScreen() {
           style={styles.card}
         >
           {/* Illustration */}
+          <Link href="/profileUser" style={{ marginRight: 220 }}>
+            <Ionicons name="arrow-back-outline" size={35} color={"#7b3685ff"} />
+          </Link>
           <Image
             source={{
               uri: "https://cdn-icons-png.flaticon.com/128/8747/8747881.png",
