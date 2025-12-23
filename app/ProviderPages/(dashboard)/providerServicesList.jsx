@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,10 +13,9 @@ import {
   Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-
-const screenWidth = Dimensions.get("window").width;
+import ServiceInfoModal from "../serviceInfoModal";
 
 const categories = [
   "Electricity",
@@ -27,37 +26,21 @@ const categories = [
   "Other",
 ];
 
-const mockServices = [
-  {
-    id: "1",
-    title: "AC Installation & Repair",
-    category: "Electricity",
-    description:
-      "Installation and repair of all residential and commercial AC units.",
-    price: 120,
-    priceType: "hourly",
-    rating: 4.8,
-    completedOrders: 45,
-    locations: ["Ramallah", "Al-Bireh", "Beitunia"],
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400",
-  },
-  {
-    id: "2",
-    title: "Plumbing & Leak Repair",
-    category: "Plumbing",
-    description:
-      "Fixing leaks, plumbing issues, faucet installation and maintenance.",
-    price: 80,
-    priceType: "hourly",
-    rating: 4.6,
-    completedOrders: 32,
-    locations: ["Ramallah", "Al-Bireh"],
-    image: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400",
-  },
-];
-
 export default function ProviderServices() {
-  const [services, setServices] = useState(mockServices);
+  const [services, setServices] = useState([
+    {
+      Provider_Services_id: "1",
+      serviceName: "AC Installation & Repair",
+      categoryName: "Electricity",
+      description:
+        "Installation and repair of all residential and commercial AC units.",
+      base_price: 120,
+      rating: 4,
+      completedOrders: 45,
+      service_location: "Ramallah,Al-Bireh,Beitunia",
+      image: "http://10.0.2.2:5000/assets/Tree_trimming.jpg",
+    },
+  ]);
   const [editingService, setEditingService] = useState(null);
   const [isAddService, setIsAddService] = useState(false);
 
@@ -67,6 +50,9 @@ export default function ProviderServices() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [locations, setLocations] = useState("");
+
+  const [selectedService, setSelectedService] = useState(null);
+  const API_ADDRESS = "http://10.0.2.2:5000";
 
   const resetForm = () => {
     setTitle("");
@@ -136,6 +122,24 @@ export default function ProviderServices() {
       ]
     );
   };
+
+  const fetchProviderListServicesInfo = async () => {
+    try {
+      const response = await fetch(
+        // `${API_ADDRESS}/serviceProviderServiceList/getProviderListServicesInfo/${loggedUser.user_id}`////////////////////////////////to change
+        `${API_ADDRESS}/serviceProviderServiceList/getProviderListServicesInfo/1`
+      );
+      const fetchedData = await response.json();
+      setServices(fetchedData);
+      console.log("Services: ", services);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchProviderListServicesInfo();
+  }, []);
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={{ flex: 1 }}>
@@ -210,6 +214,12 @@ export default function ProviderServices() {
         </View>
       </Modal>
 
+      <ServiceInfoModal
+        visible={!!selectedService}
+        service={selectedService}
+        onClose={() => setSelectedService(null)}
+      />
+
       <View
         style={{
           flex: 1,
@@ -239,39 +249,38 @@ export default function ProviderServices() {
           </View>
           {/* for list services */}
           {services.map((service) => (
-            <View key={service.id} style={styles.card}>
-              <Image source={{ uri: service.image }} style={styles.image} />
-
-              <Text style={styles.serviceTitle}>{service.title}</Text>
-              <Text style={styles.category}>{service.category}</Text>
-              <Text style={styles.description} numberOfLines={2}>
-                {service.description}
-              </Text>
-
+            <View key={service.Provider_Services_id} style={styles.card}>
+              {service.image ? (
+                <Image source={{ uri: service.image }} style={styles.image} />
+              ) : (
+                <View
+                  style={{
+                    width: "80%",
+                    height: 120,
+                    borderRadius: 12,
+                    marginLeft: 100,
+                    marginTop: 20,
+                  }}
+                >
+                  <FontAwesome name="photo" size={100} color="#5e0352ff" />
+                </View>
+              )}
+              <Text style={styles.serviceTitle}>{service.serviceName}</Text>
+              <Text style={styles.category}>{service.categoryName}</Text>
               <View style={styles.row}>
-                <FontAwesome5 name="star" size={14} color="#f59e0b" />
-                <Text style={styles.metaText}>{service.rating}</Text>
-
-                <Ionicons
-                  name="eye"
-                  size={16}
-                  color="#555"
-                  style={{ marginLeft: 10 }}
-                />
+                <Ionicons name="eye" size={16} color="#555" />
                 <Text style={styles.metaText}>
-                  {service.completedOrders} orders
+                  {service.completedOrders ? service.completedOrders : 0} orders
                 </Text>
               </View>
-
+              {/* service locations */}
               <View style={styles.row}>
                 <Ionicons name="location" size={16} color="#555" />
-                <Text style={styles.metaText}>
-                  {service.locations.join(", ")}
-                </Text>
+                <Text style={styles.metaText}>{service.service_location}</Text>
               </View>
 
               <View style={styles.priceRow}>
-                <Text style={styles.price}>{service.price} ₪</Text>
+                <Text style={styles.price}>{service.base_price} ₪</Text>
                 <Text style={styles.priceUnit}>/ hour</Text>
               </View>
 
@@ -283,7 +292,7 @@ export default function ProviderServices() {
                   <Ionicons name="create-outline" size={20} color="#f1d5faff" />
                   <Text
                     style={{
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: "900",
                       color: "#f7e2feff",
                     }}
@@ -294,9 +303,27 @@ export default function ProviderServices() {
 
                 <TouchableOpacity
                   style={[styles.actionBtn, styles.deleteBtn]}
-                  onPress={() => deleteService(service.id)}
+                  onPress={() => deleteService(service.Provider_Services_id)}
                 >
-                  <Ionicons name="trash" size={22} color="#fff" />
+                  <Ionicons name="trash" size={20} color="#fff" />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  onPress={() => setSelectedService(service)}
+                >
+                  <View style={{ flexDirection: "row", gap: 5 }}>
+                    <Ionicons name="eye" size={21} color="#fff" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "900",
+                        color: "#f7e2feff",
+                      }}
+                    >
+                      View
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
@@ -362,12 +389,16 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 18,
   },
-  image: { width: "100%", height: 160, borderRadius: 12, marginBottom: 10 },
-  serviceTitle: { fontSize: 18, fontWeight: "800", color: "#3f043bff" },
-  category: { color: "#7b3685ff", fontWeight: "700", marginBottom: 4 },
-  description: { color: "#555", marginBottom: 8 },
+  image: { width: "100%", height: 150, borderRadius: 12, marginBottom: 10 },
+  serviceTitle: { fontSize: 19, fontWeight: "800", color: "#3f043bff" },
+  category: {
+    color: "#7b3685ff",
+    fontWeight: "700",
+    marginBottom: 4,
+    fontSize: 16,
+  },
   row: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
-  metaText: { color: "#555", fontWeight: "600" },
+  metaText: { color: "#555", fontWeight: "600", fontSize: 14 },
   priceRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -377,7 +408,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     marginTop: 8,
   },
-  price: { fontSize: 20, fontWeight: "900", color: "#16a34a" },
+  price: { fontSize: 18, fontWeight: "700", color: "#16a34a" },
   priceUnit: { color: "#390747ff", fontSize: 15 },
   actions: {
     flexDirection: "row",
@@ -387,7 +418,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     flex: 1,
     backgroundColor: "#6b1e85ff",
-    padding: 8,
+    padding: 5,
     borderRadius: 10,
     alignItems: "center",
     marginHorizontal: 6,

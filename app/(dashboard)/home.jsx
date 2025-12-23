@@ -313,26 +313,6 @@ const home = () => {
           >
             {loggedUser.user_id ? (
               <Link
-                href="/login"
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Join Us Now
-                </Text>
-              </Link>
-            ) : (
-              <Link
                 href="/categoryPage"
                 style={{
                   marginTop: 20,
@@ -349,6 +329,26 @@ const home = () => {
                   }}
                 >
                   Go to services
+                </Text>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#750d83ff",
+                  padding: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#e4e0e6ff",
+                    fontSize: 20,
+                    fontFamily: "Inter-Black",
+                  }}
+                >
+                  Join Us Now
                 </Text>
               </Link>
             )}

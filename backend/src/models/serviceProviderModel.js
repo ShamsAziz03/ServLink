@@ -231,7 +231,7 @@ WHERE
     return result;
   }
 
-    static async getProviderMonthlyEarnings(userId) {
+  static async getProviderMonthlyEarnings(userId) {
     const query = `SELECT u.user_id,s.name,b.service_date,b.total_price
  FROM servlink.users u 
  join service_providers sp on u.user_id=sp.user_id 
@@ -242,6 +242,54 @@ WHERE
  GROUP BY u.user_id, s.name,b.service_date,b.total_price;
 `;
     const [result] = await db.promise().execute(query, [userId]);
+    return result;
+  }
+
+  static async getProviderListServicesInfo(userId) {
+    const query = `SELECT 
+    u.user_id,
+    s.name AS serviceName,
+    ps.Provider_Services_id,
+    s.description,
+    s.image,
+    c.name AS categoryName,
+    ps.base_price,
+    ps.images,
+    ps.service_location
+FROM
+    servlink.users u
+        JOIN
+    service_providers sp ON u.user_id = sp.user_id
+        JOIN
+    provider_services ps ON sp.provider_id = ps.provider_id
+        JOIN
+    services s ON ps.service_id = s.service_id
+        JOIN
+    categories c ON s.category_id = c.category_id
+WHERE
+    u.user_id = ?
+
+`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result;
+  }
+
+  static async getProviderServiceFeedbacks(Provider_Services_id) {
+    const query = `SELECT 
+    u.first_name, u.last_name, r.*
+FROM
+    provider_services ps
+        JOIN
+    bookings b ON ps.Provider_Services_id = b.Provider_Services_id
+        JOIN
+    ratings r ON b.booking_id = r.booking_id
+        JOIN
+    users u ON b.user_id = u.user_id
+WHERE
+    ps.Provider_Services_id = ?
+
+`;
+    const [result] = await db.promise().execute(query, [Provider_Services_id]);
     return result;
   }
 }
