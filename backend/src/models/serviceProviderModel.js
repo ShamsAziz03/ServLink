@@ -255,7 +255,19 @@ WHERE
     c.name AS categoryName,
     ps.base_price,
     ps.images,
-    ps.service_location
+    ps.service_location,
+    SUM(CASE
+        WHEN b.status = 'Pending' THEN 1
+        ELSE 0
+    END) AS numOfPendingsOrders,
+    SUM(CASE
+        WHEN b.status = 'Cancelled' THEN 1
+        ELSE 0
+    END) AS numOfCancelledOrders,
+    SUM(CASE
+        WHEN b.status = 'Completed' THEN 1
+        ELSE 0
+    END) AS numOfCompletedOrders
 FROM
     servlink.users u
         JOIN
@@ -266,8 +278,11 @@ FROM
     services s ON ps.service_id = s.service_id
         JOIN
     categories c ON s.category_id = c.category_id
+        JOIN
+    bookings b ON ps.Provider_Services_id = b.Provider_Services_id
 WHERE
     u.user_id = ?
+GROUP BY u.user_id , s.name , ps.Provider_Services_id , s.description , s.image , c.name , ps.base_price , ps.images , ps.service_location
 
 `;
     const [result] = await db.promise().execute(query, [userId]);
@@ -288,6 +303,24 @@ FROM
 WHERE
     ps.Provider_Services_id = ?
 
+`;
+    const [result] = await db.promise().execute(query, [Provider_Services_id]);
+    return result;
+  }
+
+  static async getProviderServiceAvgRating(Provider_Services_id) {
+    const query = `SELECT 
+    AVG(score) as avgScore
+FROM
+    provider_services ps
+        JOIN
+    bookings b ON ps.Provider_Services_id = b.Provider_Services_id
+        JOIN
+    ratings r ON b.booking_id = r.booking_id
+        JOIN
+    users u ON b.user_id = u.user_id
+WHERE
+    ps.Provider_Services_id = ? && b.status='Completed'
 `;
     const [result] = await db.promise().execute(query, [Provider_Services_id]);
     return result;

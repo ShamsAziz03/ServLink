@@ -12,6 +12,11 @@ router.get(
   serviceProviderServiceListController.getProviderServiceFeedbacks
 );
 
+router.get(
+  "/getProviderServiceAvgRating/:Provider_Services_id",
+  serviceProviderServiceListController.getProviderServiceAvgRating
+);
+
 
 
 

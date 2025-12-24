@@ -30,3 +30,18 @@ exports.getProviderServiceFeedbacks = async (req, res) => {
     });
   }
 };
+
+exports.getProviderServiceAvgRating = async (req, res) => {
+  try {
+    const Provider_Services_id = req.params.Provider_Services_id;
+    const result = await ServiceProviderModel.getProviderServiceAvgRating(
+      Provider_Services_id
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching provider avg rating for service",
+      error: err.message,
+    });
+  }
+};

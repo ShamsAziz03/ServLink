@@ -13,21 +13,33 @@ import ImageModal from "../../components/imageModal";
 
 function getStars(rating) {
   const stars = [];
+  const clamped = Math.max(0, Math.min(5, rating));
+
   for (let i = 0; i < 5; i++) {
-    if (rating - 1 < i) {
-      stars.push(
-        <Text key={i} style={{ fontSize: 22, color: "#000000ff" }}>
-          ☆
-        </Text>
-      );
-    } else {
+    if (clamped >= i + 1) {
+      // full star
       stars.push(
         <Text key={i} style={{ fontSize: 22, color: "#f2ea0dff" }}>
           ★
         </Text>
       );
+    } else if (clamped >= i + 0.5) {
+      // half star
+      stars.push(
+        <Text key={i} style={{ fontSize: 22, color: "#f2ea0dff" }}>
+          ⯪
+        </Text>
+      );
+    } else {
+      // empty star
+      stars.push(
+        <Text key={i} style={{ fontSize: 22, color: "#000000ff" }}>
+          ☆
+        </Text>
+      );
     }
   }
+
   return stars;
 }
 
@@ -61,6 +73,7 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
       score: 3,
     },
   ]);
+  const [avgRating, setAvgRating] = useState(0);
 
   const fetchFeedbacks = async () => {
     const result = await fetch(
@@ -77,11 +90,22 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
     }
   };
 
+  const fetchAvgRating = async () => {
+    const result = await fetch(
+      `http://10.0.2.2:5000/serviceProviderServiceList/getProviderServiceAvgRating/${service.Provider_Services_id}`
+    );
+    const data = await result.json(); //{avgScore: }
+    if (data[0]?.avgScore) {
+      setAvgRating(data[0].avgScore);
+    }
+  };
+
   useEffect(() => {
     if (!service?.images) return;
     const imagesArray = service.images.split(",");
     setProviderExpImages(imagesArray);
     fetchFeedbacks();
+    fetchAvgRating();
   }, [service?.Provider_Services_id]);
 
   if (!service) return;
@@ -91,7 +115,6 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
     categoryName,
     description,
     base_price,
-    rating,
     service_location,
   } = service;
 
@@ -126,9 +149,7 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
                 <Text style={styles.serviceTitle}>{serviceName}</Text>
               </View>
               <Text style={styles.category}>{categoryName}</Text>
-              <View style={styles.rating}>
-                {rating ? getStars(rating) : getStars(0)}
-              </View>
+              <View style={styles.rating}>{getStars(avgRating)}</View>
             </View>
             <View
               style={{

@@ -13,7 +13,7 @@ import {
   Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import ServiceInfoModal from "../serviceInfoModal";
 
@@ -35,8 +35,9 @@ export default function ProviderServices() {
       description:
         "Installation and repair of all residential and commercial AC units.",
       base_price: 120,
-      rating: 4,
-      completedOrders: 45,
+      numOfPendingsOrders: 0,
+      numOfCancelledOrders: 45,
+      numOfCompletedOrders: 45,
       service_location: "Ramallah,Al-Bireh,Beitunia",
       image: "http://10.0.2.2:5000/assets/Tree_trimming.jpg",
     },
@@ -98,7 +99,6 @@ export default function ProviderServices() {
       description,
       price: parseFloat(price),
       priceType: "hourly",
-      rating: 0,
       completedOrders: 0,
       locations: locations.split(",").map((l) => l.trim()),
       image: "https://via.placeholder.com/400",
@@ -267,11 +267,50 @@ export default function ProviderServices() {
               )}
               <Text style={styles.serviceTitle}>{service.serviceName}</Text>
               <Text style={styles.category}>{service.categoryName}</Text>
-              <View style={styles.row}>
-                <Ionicons name="eye" size={16} color="#555" />
-                <Text style={styles.metaText}>
-                  {service.completedOrders ? service.completedOrders : 0} orders
-                </Text>
+              {/* for orders stats */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  gap: 30,
+                  paddingVertical: 5,
+                }}
+              >
+                <View style={styles.row}>
+                  <MaterialIcons
+                    name="check-circle"
+                    size={16}
+                    color="#04661bff"
+                  />
+                  <Text style={styles.metaText}>
+                    {service.numOfCompletedOrders
+                      ? service.numOfCompletedOrders + " "
+                      : 0 + " "}
+                    orders
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <MaterialIcons
+                    name="hourglass-empty"
+                    size={16}
+                    color="#a86106ff"
+                  />
+                  <Text style={styles.metaText}>
+                    {service.numOfPendingsOrders
+                      ? service.numOfPendingsOrders + " "
+                      : 0 + " "}
+                    orders
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <MaterialIcons name="cancel" size={16} color="#b50303ff" />
+                  <Text style={styles.metaText}>
+                    {service.numOfCancelledOrders
+                      ? service.numOfCancelledOrders + " "
+                      : 0 + " "}
+                    orders
+                  </Text>
+                </View>
               </View>
               {/* service locations */}
               <View style={styles.row}>
@@ -398,7 +437,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   row: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
-  metaText: { color: "#555", fontWeight: "600", fontSize: 14 },
+  metaText: { color: "#3f3a3aff", fontWeight: "700", fontSize: 15 },
   priceRow: {
     flexDirection: "row",
     alignItems: "center",
