@@ -65,11 +65,11 @@ export default function ProviderServices() {
 
   const openEdit = (service) => {
     setEditingService(service);
-    setTitle(service.title);
-    setCategory(service.category);
+    setTitle(service.serviceName);
+    setCategory(service.categoryName);
     setDescription(service.description);
-    setPrice(service.price.toString());
-    setLocations(service.locations.join(", "));
+    setPrice(service.base_price.toString());
+    setLocations(service.service_location);
   };
 
   const saveEdit = () => {
@@ -108,19 +108,25 @@ export default function ProviderServices() {
     resetForm();
   };
 
-  const deleteService = (id) => {
-    Alert.alert(
-      "Delete Service",
-      "Are you sure you want to delete this service?",
-      [
-        { text: "Cancel", style: "cancel" },
+  const deleteProviderService = async (Provider_Service_id) => {
+    try {
+      const response = await fetch(
+        `${API_ADDRESS}/serviceProviderServiceList/deleteProviderService/${Provider_Service_id}`,
         {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => setServices((prev) => prev.filter((s) => s.id !== id)),
-        },
-      ]
-    );
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const fetchedData = await response.json();
+      if (fetchedData.affectedRows > 0) {
+        fetchProviderListServicesInfo();
+        alert("Delete Done.");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   const fetchProviderListServicesInfo = async () => {
@@ -135,6 +141,23 @@ export default function ProviderServices() {
     } catch (error) {
       console.error(error.message);
     }
+  };
+
+  const deleteService = (id) => {
+    Alert.alert(
+      "Delete Service",
+      "Are you sure you want to delete this service?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteProviderService(id);
+          },
+        },
+      ]
+    );
   };
 
   useEffect(() => {

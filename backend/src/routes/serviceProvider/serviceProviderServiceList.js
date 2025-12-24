@@ -17,7 +17,9 @@ router.get(
   serviceProviderServiceListController.getProviderServiceAvgRating
 );
 
-
-
+router.delete(
+  "/deleteProviderService/:Provider_Services_id",
+  serviceProviderServiceListController.deleteProviderService
+);
 
 module.exports = router;

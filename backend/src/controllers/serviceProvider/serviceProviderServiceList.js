@@ -1,6 +1,5 @@
 const ServiceProviderModel = require("../../models/serviceProviderModel");
 
-
 exports.getProviderListServicesInfo = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -41,6 +40,21 @@ exports.getProviderServiceAvgRating = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Error fetching provider avg rating for service",
+      error: err.message,
+    });
+  }
+};
+
+exports.deleteProviderService = async (req, res) => {
+  try {
+    const Provider_Services_id = req.params.Provider_Services_id;
+    const result = await ServiceProviderModel.deleteProviderService(
+      Provider_Services_id
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error delete provider service",
       error: err.message,
     });
   }

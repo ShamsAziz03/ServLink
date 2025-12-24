@@ -325,5 +325,31 @@ WHERE
     const [result] = await db.promise().execute(query, [Provider_Services_id]);
     return result;
   }
+
+  static async deleteProviderService(Provider_Services_id) {
+    try {
+      const query = `
+    DELETE FROM provider_services
+    WHERE Provider_Services_id = ?;
+  `;
+      const [result] = await db
+        .promise()
+        .execute(query, [Provider_Services_id]);
+
+      const secQry =
+        "SELECT IFNULL(MAX(Provider_Services_id), 0) + 1 AS maxId FROM provider_services";
+      const [data] = await db.promise().execute(secQry);
+      const nextId = data[0].maxId;
+      const thirdQry = `
+  ALTER TABLE provider_services
+  AUTO_INCREMENT = ${nextId};
+`;
+      await db.promise().query(thirdQry);
+
+      return result;
+    } catch (err) {
+      console.error("DB ERROR:", err);
+    }
+  }
 }
 module.exports = ServiceProvider;
