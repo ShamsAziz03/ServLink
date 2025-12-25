@@ -22,4 +22,15 @@ router.delete(
   serviceProviderServiceListController.deleteProviderService
 );
 
+router.get(
+  "/getAllCategories",
+  serviceProviderServiceListController.getAllCategories
+);
+
+router.put(
+  "/updateServiceInfo",
+  serviceProviderServiceListController.updateServiceInfo
+);
+
+
 module.exports = router;

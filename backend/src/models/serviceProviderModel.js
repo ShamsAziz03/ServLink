@@ -351,5 +351,55 @@ WHERE
       console.error("DB ERROR:", err);
     }
   }
+
+  static async getAllCategories() {
+    const query = `SELECT name from categories;`;
+    const [result] = await db.promise().execute(query);
+    return result;
+  }
+
+  static async updateServiceInfo(
+    base_price,
+    service_location,
+    Provider_Services_id,
+    serviceName,
+    categoryName,
+    description
+  ) {
+    try {
+      const query = `
+  UPDATE provider_services
+SET 
+    base_price = ?,
+    service_location = ?
+WHERE Provider_Services_id = ?;
+  `;
+      const [result] = await db
+        .promise()
+        .execute(query, [base_price, service_location, Provider_Services_id]);
+
+      const secQry = `UPDATE services s
+JOIN provider_services ps ON ps.service_id = s.service_id
+JOIN categories c ON c.name = ?
+SET
+    s.name = ?,
+    s.description = ?,
+    s.category_id = c.category_id
+WHERE ps.Provider_Services_id = ?;`;
+      const [data] = await db
+        .promise()
+        .execute(secQry, [
+          categoryName,
+          serviceName,
+          description,
+          Provider_Services_id,
+        ]);
+      if (result.affectedRows > 0 && data.affectedRows > 0)
+        return { success: "Update Success" };
+      else return { error: "Can't Update" };
+    } catch (err) {
+      console.error("DB ERROR:", err);
+    }
+  }
 }
 module.exports = ServiceProvider;

@@ -59,3 +59,42 @@ exports.deleteProviderService = async (req, res) => {
     });
   }
 };
+
+exports.getAllCategories = async (req, res) => {
+  try {
+    const result = await ServiceProviderModel.getAllCategories();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching all categories",
+      error: err.message,
+    });
+  }
+};
+
+exports.updateServiceInfo = async (req, res) => {
+  try {
+    const {
+      base_price,
+      service_location,
+      Provider_Services_id,
+      serviceName,
+      categoryName,
+      description,
+    } = req.body;
+    const result = await ServiceProviderModel.updateServiceInfo(
+      base_price,
+      service_location,
+      Provider_Services_id,
+      serviceName,
+      categoryName,
+      description
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error update provider service",
+      error: err.message,
+    });
+  }
+};

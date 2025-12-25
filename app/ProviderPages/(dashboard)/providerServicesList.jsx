@@ -16,15 +16,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import ServiceInfoModal from "../serviceInfoModal";
-
-const categories = [
-  "Electricity",
-  "Plumbing",
-  "Carpentry",
-  "Cleaning",
-  "Painting",
-  "Other",
-];
+import EditServiceModal from "../editServiceModal";
+import AddNewServiceModal from "../addNewServiceModal";
 
 export default function ProviderServices() {
   const [services, setServices] = useState([
@@ -42,72 +35,13 @@ export default function ProviderServices() {
       image: "http://10.0.2.2:5000/assets/Tree_trimming.jpg",
     },
   ]);
-  const [editingService, setEditingService] = useState(null);
-  const [isAddService, setIsAddService] = useState(false);
-
-  // Form state
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(categories[0]);
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [locations, setLocations] = useState("");
-
   const [selectedService, setSelectedService] = useState(null);
   const API_ADDRESS = "http://10.0.2.2:5000";
+  const [showEditForm, setShowEditForm] = useState(false); //for edit form modal
+  const [showAddForm, setShowAddForm] = useState(false); //for add form modal
+  const [currentService, setCurrentService] = useState(null);
 
-  const resetForm = () => {
-    setTitle("");
-    setCategory(categories[0]);
-    setDescription("");
-    setPrice("");
-    setLocations("");
-  };
-
-  const openEdit = (service) => {
-    setEditingService(service);
-    setTitle(service.serviceName);
-    setCategory(service.categoryName);
-    setDescription(service.description);
-    setPrice(service.base_price.toString());
-    setLocations(service.service_location);
-  };
-
-  const saveEdit = () => {
-    setServices((prev) =>
-      prev.map((s) =>
-        s.id === editingService.id
-          ? {
-              ...s,
-              title,
-              category,
-              description,
-              price: parseFloat(price),
-              locations: locations.split(",").map((l) => l.trim()),
-            }
-          : s
-      )
-    );
-    setEditingService(null);
-    resetForm();
-  };
-
-  const saveNewService = () => {
-    const newService = {
-      id: Date.now().toString(),
-      title,
-      category,
-      description,
-      price: parseFloat(price),
-      priceType: "hourly",
-      completedOrders: 0,
-      locations: locations.split(",").map((l) => l.trim()),
-      image: "https://via.placeholder.com/400",
-    };
-    setServices((prev) => [newService, ...prev]);
-    setIsAddService(false);
-    resetForm();
-  };
-
+  //to delete a service
   const deleteProviderService = async (Provider_Service_id) => {
     try {
       const response = await fetch(
@@ -166,81 +100,30 @@ export default function ProviderServices() {
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={{ flex: 1 }}>
-      {/* Modal */}
-      <Modal
-        visible={!!editingService || isAddService}
-        animationType="slide"
-        transparent
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {editingService ? "Edit Service" : "Add New Service"}
-            </Text>
-
-            <TextInput
-              placeholder="Title"
-              style={styles.input}
-              value={title}
-              onChangeText={setTitle}
-            />
-
-            <View style={styles.pickerWrapper}>
-              <Picker selectedValue={category} onValueChange={setCategory}>
-                {categories.map((cat) => (
-                  <Picker.Item key={cat} label={cat} value={cat} />
-                ))}
-              </Picker>
-            </View>
-
-            <TextInput
-              placeholder="Description"
-              style={[styles.input, { height: 80 }]}
-              value={description}
-              onChangeText={setDescription}
-              multiline
-            />
-
-            <TextInput
-              placeholder="Price"
-              style={styles.input}
-              value={price}
-              onChangeText={setPrice}
-              keyboardType="numeric"
-            />
-            <TextInput
-              placeholder="Locations (comma separated)"
-              style={styles.input}
-              value={locations}
-              onChangeText={setLocations}
-            />
-
-            <TouchableOpacity
-              style={styles.saveBtn}
-              onPress={editingService ? saveEdit : saveNewService}
-            >
-              <Text style={styles.saveBtnText}>
-                {editingService ? "Save Changes" : "Add Service"}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelBtn}
-              onPress={() => {
-                setEditingService(null);
-                setIsAddService(false);
-                resetForm();
-              }}
-            >
-              <Text style={styles.cancelBtnText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
       <ServiceInfoModal
         visible={!!selectedService}
         service={selectedService}
-        onClose={() => setSelectedService(null)}
+        onClose={() => {
+          setSelectedService(null);
+          fetchProviderListServicesInfo();
+        }}
+      />
+
+      <EditServiceModal
+        visible={showEditForm}
+        service={currentService}
+        onClose={() => {
+          setShowEditForm(false);
+          fetchProviderListServicesInfo();
+        }}
+      />
+
+      <AddNewServiceModal
+        visible={showAddForm}
+        onClose={() => {
+          setShowAddForm(false);
+          fetchProviderListServicesInfo();
+        }}
       />
 
       <View
@@ -264,7 +147,9 @@ export default function ProviderServices() {
             <Text style={styles.title}>My Services</Text>
             <TouchableOpacity
               style={styles.addBtn}
-              onPress={() => setIsAddService(true)}
+              onPress={() => {
+                setShowAddForm(true);
+              }}
             >
               <Ionicons name="add-circle" size={20} color="#fff" />
               <Text style={styles.addBtnText}>Add Service</Text>
@@ -349,7 +234,10 @@ export default function ProviderServices() {
               <View style={styles.actions}>
                 <TouchableOpacity
                   style={styles.actionBtn}
-                  onPress={() => openEdit(service)}
+                  onPress={() => {
+                    setCurrentService(service);
+                    setShowEditForm(true);
+                  }}
                 >
                   <Ionicons name="create-outline" size={20} color="#f1d5faff" />
                   <Text
