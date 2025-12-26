@@ -364,19 +364,26 @@ WHERE
     Provider_Services_id,
     serviceName,
     categoryName,
-    description
+    description,
+    images
   ) {
     try {
       const query = `
   UPDATE provider_services
 SET 
     base_price = ?,
-    service_location = ?
+    service_location = ?,
+    images = ?
 WHERE Provider_Services_id = ?;
   `;
       const [result] = await db
         .promise()
-        .execute(query, [base_price, service_location, Provider_Services_id]);
+        .execute(query, [
+          base_price,
+          service_location,
+          images,
+          Provider_Services_id,
+        ]);
 
       const secQry = `UPDATE services s
 JOIN provider_services ps ON ps.service_id = s.service_id

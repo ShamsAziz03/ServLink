@@ -81,6 +81,7 @@ exports.updateServiceInfo = async (req, res) => {
       serviceName,
       categoryName,
       description,
+      images,
     } = req.body;
     const result = await ServiceProviderModel.updateServiceInfo(
       base_price,
@@ -88,7 +89,8 @@ exports.updateServiceInfo = async (req, res) => {
       Provider_Services_id,
       serviceName,
       categoryName,
-      description
+      description,
+      images
     );
     res.json(result);
   } catch (err) {

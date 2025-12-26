@@ -15,6 +15,7 @@ import { Picker } from "@react-native-picker/picker";
 import ImageModal from "../../components/imageModal";
 import { Checkbox } from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
+import ChooseImageModal from "./chooseImageModal";
 
 const API_ADDRESS = "http://10.0.2.2:5000";
 
@@ -57,48 +58,7 @@ const EditServiceModel = ({ visible, onClose, service }) => {
 
   const [showOther, setShowOther] = useState(false);
   const [addNewCity, setAddNewCity] = useState("");
-
-  const [image, setImage] = useState(null);
-
-  const pickImage = async () => {
-    // const permissionResult =
-    //   await ImagePicker.requestMediaLibraryPermissionsAsync();
-    // if (!permissionResult.granted) {
-    //   Alert.alert(
-    //     "Permission required",
-    //     "Permission to access the media library is required."
-    //   );
-    //   return;
-    // }
-
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   allowsEditing: true,
-    //   aspect: [1, 1],
-    //   quality: 1,
-    // });
-
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert(
-        "Permission required",
-        "Permission to access the media library is required."
-      );
-      return;
-    }
-    let result = await ImagePicker.launchCameraAsync({
-      cameraType: ImagePicker.CameraType.front,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
+  const [showChooseMode, setShowChooseMode] = useState(false); //to let user choose camera or gallary
 
   //to fetch categories
   const fetchCategories = async () => {
@@ -186,6 +146,22 @@ const EditServiceModel = ({ visible, onClose, service }) => {
       console.error(error.message);
     }
   };
+
+  //to add new images to images
+  const addToImages = (newImage) => {
+    const newImages = [...providerExpImages];
+    newImages.push(newImage);
+    setProviderExpImages(newImages);
+    // console.log(newImages.toString());
+  };
+
+  const removeImage = (img) => {
+    let newImages;
+    newImages = providerExpImages.filter((i) => i !== img);
+    setProviderExpImages(newImages);
+    // console.log("new images: ",newImages.toString());
+  };
+
   //to save edits
   const saveEdit = () => {
     let finalCities = [...selectedCities];
@@ -199,6 +175,7 @@ const EditServiceModel = ({ visible, onClose, service }) => {
       description: fullFormData.description,
       base_price: fullFormData.base_price.toString(),
       service_location: finalCities.toString(),
+      images: providerExpImages.toString(),
     };
     console.log("obj ", obj);
     updateServiceInfo(obj);
@@ -219,6 +196,12 @@ const EditServiceModel = ({ visible, onClose, service }) => {
             visible={showImage}
             img={currentImage}
             onClose={() => setShowImage(false)}
+          />
+
+          <ChooseImageModal
+            visible={showChooseMode}
+            onClose={() => setShowChooseMode(false)}
+            addToImages={addToImages}
           />
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -395,12 +378,24 @@ const EditServiceModel = ({ visible, onClose, service }) => {
                     setCurrentImage(img);
                     setShowImage(true);
                   }}
+                  style={{ position: "relative" }}
                 >
+                  <Pressable
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      right: 12,
+                      backgroundColor: "#fff",
+                      borderRadius: 50,
+                      zIndex: 1,
+                    }}
+                    onPress={() => removeImage(img)}
+                  >
+                    <MaterialIcons name="cancel" size={25} color="#8d2007ff" />
+                  </Pressable>
                   <Image source={{ uri: img }} style={styles.image} />
                 </Pressable>
               ))}
-              {image && <Image source={{ uri: image }} style={styles.image} />}
-
               <TouchableOpacity
                 style={{
                   paddingTop: 20,
@@ -408,7 +403,7 @@ const EditServiceModel = ({ visible, onClose, service }) => {
                   backgroundColor: "#ecc4e6ff",
                   borderRadius: 10,
                 }}
-                onPress={() => pickImage()}
+                onPress={() => setShowChooseMode(true)}
               >
                 <Ionicons name="add-circle-sharp" size={40} color="#430549ff" />
               </TouchableOpacity>
