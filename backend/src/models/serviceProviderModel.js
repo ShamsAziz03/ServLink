@@ -278,7 +278,7 @@ FROM
     services s ON ps.service_id = s.service_id
         JOIN
     categories c ON s.category_id = c.category_id
-        JOIN
+       left JOIN
     bookings b ON ps.Provider_Services_id = b.Provider_Services_id
 WHERE
     u.user_id = ?
@@ -404,6 +404,85 @@ WHERE ps.Provider_Services_id = ?;`;
       if (result.affectedRows > 0 && data.affectedRows > 0)
         return { success: "Update Success" };
       else return { error: "Can't Update" };
+    } catch (err) {
+      console.error("DB ERROR:", err);
+    }
+  }
+
+  static async addService(
+    base_price,
+    service_location,
+    serviceName,
+    categoryName,
+    description,
+    images,
+    user_id,
+    service_cover_image
+  ) {
+    try {
+      const query = ` SELECT category_id from categories where name = ?;
+  `;
+      const [result] = await db.promise().execute(query, [categoryName]);
+
+      const query2 = `
+INSERT INTO services (
+  category_id, name, description, image
+)
+VALUES (?, ?, ?, ?);
+  `;
+      const [result2] = await db
+        .promise()
+        .execute(query2, [
+          result[0].category_id,
+          serviceName,
+          description,
+          service_cover_image,
+        ]);
+      const serviceId = result2.insertId;
+
+      const query3 = `
+           select provider_id from service_providers where service_providers.user_id= ?;
+  `;
+      const [result3] = await db.promise().execute(query3, [user_id]);
+      const providerId = result3[0].provider_id;
+
+      const query4 = `
+INSERT INTO provider_services (
+ provider_id, service_id, base_price, images, service_location
+)
+VALUES (?, ?, ?, ?, ?);
+  `;
+      const [result4] = await db
+        .promise()
+        .execute(query4, [
+          providerId,
+          serviceId,
+          base_price,
+          images,
+          service_location,
+        ]);
+
+      if (result2.affectedRows > 0 && result4.affectedRows > 0)
+        return { success: "Add Success" };
+      else return { error: "Can't Add" };
+    } catch (err) {
+      console.error("DB ERROR:", err);
+    }
+  }
+
+  static async addCategory(name, description, cover_image) {
+    try {
+      const query = ` INSERT INTO categories (
+  name, description, cover_image
+)
+VALUES (?, ?, ?);
+  `;
+      const [result] = await db
+        .promise()
+        .execute(query, [name, description, cover_image]);
+
+      if (result.affectedRows > 0) return { success: "Add category Success" };
+      else return { error: "Can't Add new category" };
     } catch (err) {
       console.error("DB ERROR:", err);
     }

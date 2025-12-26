@@ -32,5 +32,8 @@ router.put(
   serviceProviderServiceListController.updateServiceInfo
 );
 
+router.post("/addService", serviceProviderServiceListController.addService);
+
+router.post("/addCategory", serviceProviderServiceListController.addCategory);
 
 module.exports = router;

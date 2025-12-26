@@ -100,3 +100,51 @@ exports.updateServiceInfo = async (req, res) => {
     });
   }
 };
+
+exports.addService = async (req, res) => {
+  try {
+    const {
+      base_price,
+      service_location,
+      serviceName,
+      categoryName,
+      description,
+      images,
+      user_id,
+      service_cover_image,
+    } = req.body;
+    const result = await ServiceProviderModel.addService(
+      base_price,
+      service_location,
+      serviceName,
+      categoryName,
+      description,
+      images,
+      user_id,
+      service_cover_image
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error add new service",
+      error: err.message,
+    });
+  }
+};
+
+exports.addCategory = async (req, res) => {
+  try {
+    const { name, description, cover_image } = req.body;
+    const result = await ServiceProviderModel.addCategory(
+      name,
+      description,
+      cover_image
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error add new category",
+      error: err.message,
+    });
+  }
+};
