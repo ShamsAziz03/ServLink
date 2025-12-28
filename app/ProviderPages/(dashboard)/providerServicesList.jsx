@@ -35,11 +35,14 @@ export default function ProviderServices() {
       image: "http://10.0.2.2:5000/assets/Tree_trimming.jpg",
     },
   ]);
+  const [originalServices, setOriginalServices] = useState(services);
   const [selectedService, setSelectedService] = useState(null);
   const API_ADDRESS = "http://10.0.2.2:5000";
   const [showEditForm, setShowEditForm] = useState(false); //for edit form modal
   const [showAddForm, setShowAddForm] = useState(false); //for add form modal
   const [currentService, setCurrentService] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   //to delete a service
   const deleteProviderService = async (Provider_Service_id) => {
@@ -63,6 +66,16 @@ export default function ProviderServices() {
     }
   };
 
+  const addCategories = (fetchedData) => {
+    let providerServicesCategories = [];
+    providerServicesCategories.push("All");
+    fetchedData.forEach((s) => {
+      if (!providerServicesCategories.includes(s.categoryName))
+        providerServicesCategories.push(s.categoryName);
+    });
+    setCategories(providerServicesCategories);
+  };
+
   const fetchProviderListServicesInfo = async () => {
     try {
       const response = await fetch(
@@ -71,7 +84,9 @@ export default function ProviderServices() {
       );
       const fetchedData = await response.json();
       setServices(fetchedData);
-      console.log("Services: ", services);
+      setOriginalServices(fetchedData);
+      addCategories(fetchedData);
+      setSelectedCategory("All");
     } catch (error) {
       console.error(error.message);
     }
@@ -97,6 +112,15 @@ export default function ProviderServices() {
   useEffect(() => {
     fetchProviderListServicesInfo();
   }, []);
+
+  useEffect(() => {
+    if (selectedCategory === "All") {
+      setServices([...originalServices]);
+    } else {
+      const x = [...originalServices];
+      setServices(x.filter((c) => c.categoryName === selectedCategory));
+    }
+  }, [selectedCategory]);
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={{ flex: 1 }}>
@@ -154,6 +178,43 @@ export default function ProviderServices() {
               <Ionicons name="add-circle" size={20} color="#fff" />
               <Text style={styles.addBtnText}>Add Service</Text>
             </TouchableOpacity>
+          </View>
+          {/* for filters */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: 20,
+              backgroundColor: "#e4c1eaff",
+              borderRadius: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            {categories.map((c, index) => {
+              const isActive = selectedCategory === c;
+
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => setSelectedCategory(c)}
+                  style={{
+                    padding: 15,
+                    backgroundColor: isActive ? "#631176ff" : "#e4c1eaff",
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: isActive ? "#ffffffff" : "#3d045bff",
+                      fontSize: 15,
+                      fontWeight: "700",
+                    }}
+                  >
+                    {c}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
           {/* for list services */}
           {services.map((service) => (
