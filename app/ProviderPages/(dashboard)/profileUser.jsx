@@ -183,8 +183,11 @@ export default function ProfileScreen() {
           />
           <SettingItem
             iconLib="Ionicons"
-            icon="notifications-outline"
-            text="Notification Settings"
+            icon="time-outline"
+            text="My Schedule & Unavailable dates"
+            onPress={() =>
+              router.push("/ProviderPages/providerScheduleUnavailableDates")
+            }
           />
           <SettingItem
             iconLib="Ionicons"
