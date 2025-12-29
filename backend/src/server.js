@@ -17,6 +17,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const serviceProviderStats = require("./routes/serviceProvider/serviceProviderStatsRoutes");
 const serviceProviderServiceListRoutes = require("./routes/serviceProvider/serviceProviderServiceList");
+const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceProvider/serviceProviderScheduleUnavailableDates");
 
 // Middleware
 app.use(cors());
@@ -51,6 +52,10 @@ app.use("/payment", paymentRoutes);
 //for SP role
 app.use("/serviceProviderStats", serviceProviderStats);
 app.use("/serviceProviderServiceList", serviceProviderServiceListRoutes);
+app.use(
+  "/providerScheduleUnavailableDates",
+  serviceProviderScheduleUnavailableDatesRoutes
+);
 
 // Start server
 const PORT = process.env.PORT || 5000;

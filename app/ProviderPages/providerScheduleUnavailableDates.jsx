@@ -15,113 +15,187 @@ import { Checkbox } from "expo-checkbox";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Calendar } from "react-native-calendars";
 import AddUnavailableDateModal from "./addUnavailableDate";
+import { AppContext } from "../../context/AppContext";
 
 const ProviderScheduleUnavailableDates = () => {
+  const API_ADDRESS = "http://10.0.2.2:5000";
+
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [selectedChoice, setSelectedChoice] = useState("Week Work Schedule");
   const [activePicker, setActivePicker] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const { loggedUser } = useContext(AppContext);
 
+  const daysOfWeek = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
   const [schedule, setSchedule] = useState({
-    Sunday: { start: "08:00", end: "09:00" },
-    Monday: { start: "08:00", end: "10:00" },
-    Tuesday: { start: "10:00", end: "09:00" },
-    Wednesday: { start: "08:00", end: "09:00" },
-    Thursday: { start: "08:00", end: "09:00" },
-    Friday: { start: "08:00", end: "12:00" },
-    Saturday: { start: "12:00", end: "09:00" },
+    sunday: { start: "08:00", end: "09:00" },
+    monday: { start: "08:00", end: "10:00" },
+    tuesday: { start: "10:00", end: "09:00" },
+    wednesday: { start: "08:00", end: "09:00" },
+    thursday: { start: "08:00", end: "09:00" },
+    friday: { start: "08:00", end: "12:00" },
+    saturday: { start: "12:00", end: "09:00" },
   });
+  const [selectedDays, setSelectedDays] = useState(["sunday"]);
 
-  const API_ADDRESS = "http://10.0.2.2:5000";
+  const [unavailableDates, setUnavailableDates] = useState([]);
+  const [marked, setMarked] = useState({});
 
   const stats = [
     {
       title: "Work days/Week",
-      value: 6,
+      value: Object.keys(schedule).length,
       icon: "calendar-alt",
       color: "#2a41d8ff",
     },
     {
       title: "Work Hours/Week",
       //   value: providerStats.numOfCompletedOrders,
-      value: 20,
+      value: Object.values(schedule).reduce((total, day) => {
+        const s = parseInt(day.start);
+        const e = parseInt(day.end);
+        return total + Math.max(e - s, 0);
+      }, 0),
       icon: "clock",
       color: "#059134ff",
     },
     {
       title: "Unavailable Days",
-      value: 3,
+      value: unavailableDates.length,
       icon: "exclamation-circle",
       color: "#f50b0bff",
     },
   ];
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
 
-  const [selectedDays, setSelectedDays] = useState(["Sunday"]);
+  const fetchSchedule = async () => {
+    try {
+      const userId = loggedUser.user_id ? loggedUser.user_id : 1;
+      const response = await fetch(
+        `${API_ADDRESS}/providerScheduleUnavailableDates/getProviderSchedule/${userId}`
+      );
+      const fetchedData = await response.json();
+      let obj = {};
+      fetchedData.forEach((data) => {
+        obj = {
+          ...obj,
+          [data.day_of_week]: {
+            start: data.start_time.slice(0, 5),
+            end: data.end_time.slice(0, 5),
+          },
+        };
+      });
+      setSchedule(obj);
 
-  const [unavailableDates, setUnavailableDates] = useState([
-    {
-      id: 1,
-      date: "2025-12-20",
-      note: "Booked: Furniture assembly",
-      created_at: "2025-12-04 15:48:50",
-    },
-    {
-      id: 2,
-      date: "2025-12-27",
-      note: "Vacation",
-      created_at: "2025-12-04 15:48:50",
-    },
-    {
-      id: 3,
-      date: "2025-12-19",
-      note: "Vacation",
-      created_at: "2025-12-04 15:48:50",
-    },
-    {
-      id: 4,
-      date: "2025-12-29",
-      note: "Sick leave",
-      created_at: "2025-12-04 15:48:50",
-    },
-  ]);
-
-  const marked = {
-    "2025-12-29": {
-      dotColor: "black",
-      selected: true,
-      marked: true,
-      selectedColor: "red",
-    },
-    "2025-12-30": {
-      dotColor: "black",
-      selected: true,
-      marked: true,
-      selectedColor: "red",
-    },
+      const days = fetchedData.map((d) => d.day_of_week);
+      setSelectedDays(days);
+    } catch (error) {
+      console.error(error.massege);
+    }
   };
 
+  const fetchUnavailableDates = async () => {
+    try {
+      const userId = loggedUser.user_id ? loggedUser.user_id : 1;
+      const response = await fetch(
+        `${API_ADDRESS}/providerScheduleUnavailableDates/getProviderUnavailableDates/${userId}`
+      );
+      const fetchedData = await response.json();
+      setUnavailableDates(fetchedData);
+    } catch (error) {
+      console.error(error.massege);
+    }
+  };
   //to toggle day on select from check box
   const toggleDay = (day) => {
     if (selectedDays.includes(day)) {
       const newSelectedDays = selectedDays.filter((d) => d !== day);
       setSelectedDays(newSelectedDays);
+      if (schedule[day]) {
+        let obj = schedule;
+        delete obj[day];
+        setSchedule(obj);
+      }
     } else {
       setSelectedDays((prev) => [...prev, day]);
+      if (!schedule[day]) {
+        setSchedule({
+          ...schedule,
+          [day]: { start: "00:00", end: "00:00" },
+        });
+      }
     }
   };
 
-  const saveChanges = () => {
-    console.log(schedule);
+  const updateUnavailableDates = async () => {
+    try {
+      const userId = loggedUser.user_id ? loggedUser.user_id : 1;
+      const response = await fetch(
+        `${API_ADDRESS}/providerScheduleUnavailableDates/updateProviderUnavailableDates`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, incomingDates: unavailableDates }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert(data.success);
+        fetchUnavailableDates();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error.massege);
+    }
+  };
+
+  const updateSchedule = async () => {
+    try {
+      const userId = loggedUser.user_id ? loggedUser.user_id : 1;
+      const response = await fetch(
+        `${API_ADDRESS}/providerScheduleUnavailableDates/updateProviderSchedule`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, incomingSchedule: schedule }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert(data.success);
+        fetchSchedule();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error.massege);
+    }
+  };
+
+  const saveChangesSchedule = () => {
+    console.log("new schedule:*************************", schedule);
+    updateSchedule();
+  };
+
+  const saveChangesUnavailableDates = () => {
+    console.log("new Unavailable Dates:****************", unavailableDates);
+    updateUnavailableDates();
+  };
+
+  const handleDeleteUnavailableDate = (id) => {
+    const arr = unavailableDates.filter((d) => d.id != id);
+    setUnavailableDates(arr);
   };
 
   const setPageContent = () => {
@@ -240,7 +314,7 @@ const ProviderScheduleUnavailableDates = () => {
                           },
                         ]}
                       >
-                        {schedule[day].start}
+                        {schedule[day] ? schedule[day].start : "00:00"}
                       </Text>
                     </Pressable>
                   </View>
@@ -278,7 +352,7 @@ const ProviderScheduleUnavailableDates = () => {
                           },
                         ]}
                       >
-                        {schedule[day].end}
+                        {schedule[day] ? schedule[day].end : "00:00"}
                       </Text>
                     </Pressable>
                   </View>
@@ -324,7 +398,7 @@ const ProviderScheduleUnavailableDates = () => {
               width: "35%",
               alignSelf: "center",
             }}
-            onPress={() => saveChanges()}
+            onPress={() => saveChangesSchedule()}
           >
             <Text
               style={{
@@ -380,7 +454,6 @@ const ProviderScheduleUnavailableDates = () => {
               </Text>
             </View>
           </Pressable>
-
           {/* to show dates */}
           {/* title */}
           <View style={{ flexDirection: "row", gap: 10 }}>
@@ -432,12 +505,15 @@ const ProviderScheduleUnavailableDates = () => {
                         color: "#4f0351ff",
                       }}
                     >
-                      {new Date(item.date).toLocaleDateString("EG-EG", {
-                        weekday: "short",
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {new Date(item.date + "T00:00:00Z").toLocaleDateString(
+                        "EG-EG",
+                        {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
                     </Text>
                     <Text
                       style={{
@@ -477,22 +553,117 @@ const ProviderScheduleUnavailableDates = () => {
               </View>
             ))}
           </View>
+          <View style={{ flexDirection: "row", gap: 40, marginTop: 15 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: "red",
+                  borderRadius: 3,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#490841ff",
+                  fontSize: 18,
+                  fontWeight: "800",
+                }}
+              >
+                Unavailable
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: "white",
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderRadius: 3,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#490841ff",
+                  fontSize: 18,
+                  fontWeight: "800",
+                }}
+              >
+                Available
+              </Text>
+            </View>
+          </View>
           <Calendar
             minDate={new Date().toISOString().split("T")[0]}
-            onDayPress={(day) => {
-              console.log(day.dateString);
-            }}
-            markedDates={{ ...marked }}
+            markedDates={marked}
           />
           <AddUnavailableDateModal
             visible={showAddForm}
             onClose={() => setShowAddForm(false)}
             UnavailableDate={marked}
+            setUnavailableDates={(newDate) => {
+              const arr = unavailableDates.map((item) => item.id);
+              const maxId = Math.max(...arr) + 1;
+              const obj = {
+                id: maxId,
+                ...newDate,
+              };
+              setUnavailableDates([...unavailableDates, obj]);
+            }}
           />
+          <Pressable
+            style={{
+              marginTop: 10,
+              backgroundColor: "#700578ff",
+              padding: 10,
+              borderRadius: 10,
+              width: "35%",
+              alignSelf: "center",
+            }}
+            onPress={() => saveChangesUnavailableDates()}
+          >
+            <Text
+              style={{
+                color: "#e4e0e6ff",
+                fontSize: 15,
+                fontWeight: "900",
+              }}
+            >
+              Save Changes
+            </Text>
+          </Pressable>
         </View>
       );
     }
   };
+
+  useEffect(() => {
+    fetchSchedule();
+    fetchUnavailableDates();
+  }, []);
+
+  useEffect(() => {
+    // for marked dates
+    let obj = {};
+    unavailableDates.forEach((data) => {
+      obj = {
+        ...obj,
+        [data.date]: {
+          dotColor: "black",
+          selected: true,
+          marked: true,
+          selectedColor: "red",
+        },
+      };
+    });
+    setMarked(obj);
+  }, [unavailableDates]);
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>

@@ -11,13 +11,30 @@ import {
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 
-const API_ADDRESS = "http://10.0.2.2:5000";
-
-const AddUnavailableDateModal = ({ visible, onClose, UnavailableDate }) => {
+const AddUnavailableDateModal = ({
+  visible,
+  onClose,
+  UnavailableDate,
+  setUnavailableDates,
+}) => {
   const [showCalender, setShowCalender] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(" mm/dd/yyyy");
+  const [selectedDate, setSelectedDate] = useState("mm/dd/yyyy");
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
+  const [note, setNote] = useState("");
+
+  const addUnavailableDate = () => {
+    if (note === "") {
+      alert("Fill All Fields!");
+      return;
+    }
+    let obj = {
+      date: selectedDate,
+      note: note,
+    };
+    setUnavailableDates(obj);
+    onClose();
+  };
 
   return (
     <Modal transparent visible={visible} animationType="fade">
@@ -42,7 +59,12 @@ const AddUnavailableDateModal = ({ visible, onClose, UnavailableDate }) => {
           >
             Date :
           </Text>
-          <Pressable onPress={() => setShowCalender(true)}>
+          <Pressable
+            onPress={() => {
+              setSelectedDate("mm/dd/yyyy");
+              setShowCalender(true);
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -133,14 +155,16 @@ const AddUnavailableDateModal = ({ visible, onClose, UnavailableDate }) => {
                 padding: 10,
               },
             ]}
-            onChangeText={(text) => {}}
+            onChangeText={(text) => {
+              setNote(text);
+            }}
             multiline
           />
 
           <Pressable
             style={styles.saveBtn}
             onPress={() => {
-              console.log(UnavailableDate);
+              addUnavailableDate();
             }}
           >
             <Text style={styles.saveBtnText}>Add Date</Text>
