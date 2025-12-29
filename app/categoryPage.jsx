@@ -360,7 +360,7 @@ const CategoryPage = () => {
                     >
                       <Text
                         style={{
-                          fontSize: 18,
+                          fontSize: 16,
                           textAlign: "center",
                           color: "#faf1ffff",
                           fontWeight: "900",
@@ -385,7 +385,7 @@ const CategoryPage = () => {
                     >
                       <FontAwesome
                         name="shopping-cart"
-                        size={23}
+                        size={20}
                         color="#f3eeeeff"
                         style={{
                           backgroundColor: "#682972ff",

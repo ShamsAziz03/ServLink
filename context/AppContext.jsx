@@ -14,6 +14,18 @@ const AppProvider = ({ children }) => {
   const [loggedUser, setLoggedUser] = useState({});
   const [questionsAnswers, setQuestionsAnswers] = useState({});
   const [choosedDate, setChoosedDate] = useState("");
+  const [bookingObject, setBookingObject] = useState({
+    providerId: 2,
+    hourlyRate: 12.0,
+    expectedTime: 2,
+    serviceDate: "30-12-2025",
+    serviceTime: "10:00:00",
+    bookingId: 20,
+    walletId: 10,
+    typeOfPayment: "cache",
+  });
+  const [selected_from_searchPage, setSelected_from_searchPage] =
+    useState(null);
   const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
 
   return (
@@ -29,6 +41,8 @@ const AppProvider = ({ children }) => {
         setQuestionsAnswers,
         choosedDate,
         setChoosedDate,
+        bookingObject,
+        setBookingObject,
         selected_from_searchPage,
         setSelected_from_searchPage,
       }}

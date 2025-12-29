@@ -63,7 +63,7 @@ setFavorites(data);
   };
 
   const renderCard = ({ item }) => (
-    <LinearGradient colors={["#ffffff", "#f0e6fa"]} style={styles.card}>
+    <LinearGradient colors={["#ffffff", "#fcfaffff"]} style={styles.card}>
       {/* Name */}
       <View style={styles.row}>
         <MaterialCommunityIcons name="account" size={22} color="#750d83" />
@@ -79,11 +79,11 @@ setFavorites(data);
         <Text style={styles.text}>{item.field_of_work}</Text>
       </View>
 
-      {/* Description */}
-      {item.description ? (
+      {/* aboutProvider */}
+      {item.aboutProvider ? (
         <View style={styles.row}>
           <MaterialCommunityIcons name="text-box-outline" size={22} color="#750d83" />
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.aboutProvider}>{item.aboutProvider}</Text>
         </View>
       ) : null}
 
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginBottom: 10,
+    marginVertical: 20,
   },
   headerText: { fontSize: 24, fontWeight: "bold", color: "#750d83" },
   card: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
   text: { marginLeft: 8, fontSize: 16, color: "#333", fontWeight: "bold", flex: 1 },
-  description: { marginLeft: 8, fontSize: 14, color: "#555", flex: 1, flexWrap: "wrap" },
+  aboutProvider: { marginLeft: 8, fontSize: 14, color: "#555", flex: 1, flexWrap: "wrap" },
   rate: { marginLeft: 8, fontSize: 15, fontWeight: "bold", color: "#750d83" },
   deleteIcon: { marginLeft: 10 },
   noData: { textAlign: "center", color: "#750d83", fontSize: 16, marginTop: 100 },

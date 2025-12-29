@@ -20,6 +20,16 @@ const favoriteController = {
       res.status(500).json({ message: "Error deleting favorite", error: err });
     }
   },
+
+  addFavProvider: async (req, res) => {
+    const { userId, providerId } = req.body;
+    try {
+      const result = await Favorite.addFavProvider(userId, providerId);
+      res.json(result);
+    } catch (err) {
+      res.json({ message: "Error fetching favorites", error: err });
+    }
+  },
 };
 
 module.exports = favoriteController;

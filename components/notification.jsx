@@ -103,10 +103,10 @@ const Notification = ({ visible, onClose, user_id }) => {
             {notifications.length == 0 ? (
               <Text
                 style={{
-                  fontSize: 25,
+                  fontSize: 20,
                   color: "#340235ff",
-                  marginVertical: 200,
-                  marginHorizontal: 50,
+                  marginVertical: 225,
+                  marginHorizontal: 70,
                 }}
               >
                 No Notifications
@@ -184,7 +184,7 @@ const Notification = ({ visible, onClose, user_id }) => {
           >
             <Text
               style={{
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: "bold",
                 backgroundColor: "#4c025cff",
                 color: "#ffffffff",

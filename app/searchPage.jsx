@@ -14,15 +14,41 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Menu, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from "../context/AppContext";
+import { Link } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+import ProviderProfile from "../app/providerProfile";
 
-// ------------------------------------------------------------------
-// CARD COMPONENT
-// ------------------------------------------------------------------
 const SearchItem = ({ item }) => {
   const navigation = useNavigation();
   const { setSelected_from_searchPage } = useContext(AppContext);
+  const [showProviderProfile, setShowProviderProfile] = useState(false);
+  const [serviceProviderInfo, setServiceProviderInfo] = useState({});
 
   const locationArray = item.service_locations?.split(",") || [];
+
+  const goToServicePage = async (serviceId) => {
+    try {
+      const res = await fetch(
+        `http://10.0.2.2:5000/categoryPage/serviceFromSearch/${serviceId}`
+      );
+      const serviceInfo = await res.json();
+
+      if (!serviceInfo) return;
+      console.log(JSON.stringify(serviceInfo));
+
+      navigation.navigate("servicePage", {
+        serviceInfo: {
+          service_id: serviceInfo.service_id,
+          category_id: serviceInfo.category_id,
+          title: serviceInfo.service_name,
+          image: serviceInfo.image,
+          description: serviceInfo.service_description,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleCardPress = () => {
     const selected = {
@@ -41,6 +67,21 @@ const SearchItem = ({ item }) => {
     setSelected_from_searchPage(selected);
 
     console.log("SELECTED FROM SEARCH:", selected);
+    goToServicePage(selected.service_id);
+  };
+
+  const goToProviderPage = async (providerId) => {
+    try {
+      const res = await fetch(
+        `http://10.0.2.2:5000/bookingService/providerFromSearch/${providerId}`
+      );
+      const providerInfo = await res.json();
+      if (!providerInfo) return;
+      setServiceProviderInfo(providerInfo);
+      console.log("test     " + JSON.stringify(providerInfo));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleProviderPress = () => {
@@ -48,12 +89,14 @@ const SearchItem = ({ item }) => {
       providerId: item.provider_id,
       name: `${item.first_name} ${item.last_name}`,
     });
+    goToProviderPage(item.provider_id);
+    setShowProviderProfile(true);
   };
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={handleCardPress}>
       <LinearGradient
-        colors={["#f0d8ff", "#e6cef8", "#dcc5ff"]}
+        colors={["#ffffffff", "#feecffff"]}
         start={[0, 0]}
         end={[1, 1]}
         style={styles.card}
@@ -90,9 +133,7 @@ const SearchItem = ({ item }) => {
           />
           <Text style={styles.price}>
             Hourly Rate:{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.hourly_rate}₪
-            </Text>
+            <Text style={{ fontWeight: "bold" }}>{item.hourly_rate}₪</Text>
           </Text>
         </View>
 
@@ -102,7 +143,10 @@ const SearchItem = ({ item }) => {
           <Text style={styles.locationTitle}>Locations:</Text>
           <View style={styles.badgeContainer}>
             {locationArray.map((loc, idx) => (
-              <View key={`${item.service_id}-${loc}-${idx}`} style={styles.badge}>
+              <View
+                key={`${item.service_id}-${loc}-${idx}`}
+                style={styles.badge}
+              >
                 <Text style={styles.badgeText}>{loc.trim()}</Text>
               </View>
             ))}
@@ -118,14 +162,16 @@ const SearchItem = ({ item }) => {
             </Text>
           </TouchableOpacity>
         </View>
+        <ProviderProfile
+          visible={showProviderProfile}
+          onClose={() => setShowProviderProfile(false)}
+          providerInfo={serviceProviderInfo}
+        />
       </LinearGradient>
     </TouchableOpacity>
   );
 };
 
-// ------------------------------------------------------------------
-// MAIN SEARCH SCREEN
-// ------------------------------------------------------------------
 const SearchScreen = () => {
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
@@ -133,11 +179,12 @@ const SearchScreen = () => {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
+  const { pageToBack } = useLocalSearchParams();
 
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const url = `http://192.168.1.14:5000/api/services/search?q=${encodeURIComponent(
+      const url = `http://10.0.2.2:5000/api/services/search?q=${encodeURIComponent(
         query
       )}&sort=${sort}`;
       const res = await fetch(url);
@@ -166,19 +213,38 @@ const SearchScreen = () => {
       ]}
     >
       {/* Search Bar */}
-      <View style={styles.searchBar}>
-        <Ionicons name="search-sharp" size={24} color="#63036aff" />
-        <TextInput
-          placeholder="Search by service, category, or provider"
-          value={query}
-          onChangeText={setQuery}
-          style={styles.input}
-        />
-        {query.length > 0 && (
-          <TouchableOpacity onPress={() => setQuery("")}>
-            <Ionicons name="close-circle" size={22} color="#63036aff" />
-          </TouchableOpacity>
-        )}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          paddingHorizontal: 10,
+          backgroundColor: "#f7eaf9ff",
+          marginBottom: 5,
+        }}
+      >
+        <Link href={pageToBack}>
+          <Ionicons
+            name="arrow-back-outline"
+            size={30}
+            color={"#63036aff"}
+            style={{ padding: 10 }}
+          />
+        </Link>
+        <View style={styles.searchBar}>
+          <Ionicons name="search-sharp" size={24} color="#63036aff" />
+          <TextInput
+            placeholder="Search by service, category, or provider"
+            value={query}
+            onChangeText={setQuery}
+            style={styles.input}
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery("")}>
+              <Ionicons name="close-circle" size={22} color="#63036aff" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Sort */}
@@ -202,15 +268,37 @@ const SearchScreen = () => {
             </Button>
           }
         >
-          <Menu.Item title="None" onPress={() => { setSort(""); setMenuVisible(false); }} />
-          <Menu.Item title="Low → High" onPress={() => { setSort("asc"); setMenuVisible(false); }} />
-          <Menu.Item title="High → Low" onPress={() => { setSort("desc"); setMenuVisible(false); }} />
+          <Menu.Item
+            title="None"
+            onPress={() => {
+              setSort("");
+              setMenuVisible(false);
+            }}
+          />
+          <Menu.Item
+            title="Low → High"
+            onPress={() => {
+              setSort("asc");
+              setMenuVisible(false);
+            }}
+          />
+          <Menu.Item
+            title="High → Low"
+            onPress={() => {
+              setSort("desc");
+              setMenuVisible(false);
+            }}
+          />
         </Menu>
       </View>
 
       {/* Results */}
       {loading ? (
-        <ActivityIndicator size="large" color="#63036aff" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="#63036aff"
+          style={{ marginTop: 20 }}
+        />
       ) : (
         <FlatList
           data={results}
@@ -232,9 +320,6 @@ const SearchScreen = () => {
 
 export default SearchScreen;
 
-// ------------------------------------------------------------------
-// STYLES
-// ------------------------------------------------------------------
 const styles = StyleSheet.create({
   fullView: { flex: 1, backgroundColor: "#f7eaf9ff" },
   searchBar: {
@@ -246,9 +331,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    marginRight: 30,
   },
-  input: { flex: 1, fontSize: 16, paddingVertical: 8 },
-  card: { padding: 15, borderRadius: 15 },
+  input: { flex: 1, fontSize: 16, paddingVertical: 8, height: 40 },
+  card: { padding: 15, borderRadius: 15, backgroundColor: "#ffffffff" },
   cardHeader: { flexDirection: "row", justifyContent: "space-between" },
   cardRow: { flexDirection: "row", alignItems: "center", gap: 5 },
   title: { fontSize: 16, fontWeight: "bold", color: "#3a0350ff" },
@@ -272,6 +358,16 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textDecorationLine: "underline",
   },
-  sortContainer: { marginHorizontal: 20, marginBottom: 10 },
-  sortLabel: { fontSize: 14, fontWeight: "600", color: "#63036aff" },
+  sortContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginHorizontal: 20,
+    gap: 20,
+  },
+  sortLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#63036aff",
+    marginTop: 7,
+  },
 });
