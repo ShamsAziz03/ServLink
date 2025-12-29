@@ -13,6 +13,7 @@ const db = require("./config/db");
 const ratingRoutes = require("./routes/ratingRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
+const serviceRoutes = require("./routes/serviceRoutes");
 
 // Middleware
 app.use(cors());
@@ -27,7 +28,6 @@ app.use("/servicePage", servicePageRoutes);
 app.use("/serviceQuestions", serviceQuestionsRoutes);
 app.use("/assets", express.static("D:/ServLink/assets"));
 app.use("/api/ratings", ratingRoutes);
-
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
@@ -39,6 +39,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/favorites", favoriteRoutes);
 //for service booking
 app.use("/bookingService", bookingServiceRoutes);
+app.use("/api/services", serviceRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

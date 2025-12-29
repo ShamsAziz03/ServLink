@@ -1,3 +1,4 @@
+const db = require("../config/db");
 const getAllServices = async () => {
   const [rows] = await db.promise().query(`
     SELECT s.service_id, s.name AS service_name, s.description AS service_description,

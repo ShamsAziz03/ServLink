@@ -1,42 +1,36 @@
-import { getAllServices } from "../models/ServiceModel.js";
-import Fuse from "fuse.js";
+const Fuse = require("fuse.js");
+const { getAllServices } = require("../models/ServiceModel");
 
-export const searchServices = async (req, res) => {
+exports.searchServices = async (req, res) => {
   try {
     const query = req.query.q || "";
-    const sort = req.query.sort || ""; // asc | desc | ""
+    const sort = req.query.sort || "";
 
     const services = await getAllServices();
-
     let results = services;
 
-    
     if (query) {
       const fuse = new Fuse(services, {
         keys: [
           "service_name",
           "service_description",
           "category_name",
-          "category_description",
           "first_name",
-          "last_name"
+          "last_name",
         ],
-        threshold: 0.3,
-        ignoreLocation: true,
+        threshold: 0.4,
       });
 
-      results = fuse.search(query).map((r) => r.item);
+      results = fuse.search(query).map(r => r.item);
     }
 
-    
     if (sort === "asc") {
-      results.sort((a, b) => a.hourly_rate - b.hourly_rate);
+      results.sort((a, b) => Number(a.hourly_rate) - Number(b.hourly_rate));
     } else if (sort === "desc") {
-      results.sort((a, b) => b.hourly_rate - a.hourly_rate);
+      results.sort((a, b) => Number(b.hourly_rate) - Number(a.hourly_rate));
     }
 
     res.json(results);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server Error" });

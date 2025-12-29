@@ -14,6 +14,7 @@ const AppProvider = ({ children }) => {
   const [loggedUser, setLoggedUser] = useState({});
   const [questionsAnswers, setQuestionsAnswers] = useState({});
   const [choosedDate, setChoosedDate] = useState("");
+  const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
 
   return (
     <AppContext.Provider
@@ -28,6 +29,8 @@ const AppProvider = ({ children }) => {
         setQuestionsAnswers,
         choosedDate,
         setChoosedDate,
+        selected_from_searchPage,
+        setSelected_from_searchPage,
       }}
     >
       {children}

@@ -2,21 +2,44 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const axios = require('axios');
 
+const ServiceProvider = require("../models/ProviderModel");
+
 exports.register = async (req, res) => {
-  const { first_name, last_name, email, phone, password, city, interests, birth_date, role } = req.body;
+  const { 
+    first_name, last_name, email, phone, password, city, interests, birth_date, role,
+    isProvider, providerData 
+  } = req.body;
+
   try {
     const [existingUser] = await User.getUserByEmail(email);
     if (existingUser.length > 0) return res.status(400).json({ message: "User already exists" });
 
     const password_hash = await bcrypt.hash(password, 10);
-    await User.createUser({ first_name, last_name, email, phone, password_hash, city, interests, birth_date, role });
 
-    res.status(201).json({ message: "User registered successfully" });
+    const [result] = await User.createUser({ first_name, last_name, email, phone, password_hash, city, interests, birth_date, role });
+    const user_id = result.insertId;
+
+    if (isProvider && providerData) {
+      await ServiceProvider.create({
+        user_id,
+        field_of_work: providerData.serviceType,
+        aboutProvider: providerData.aboutYou,
+        id_card_number: Number(providerData.id_card_number),
+        certifications: providerData.certifications,
+        experience_photos: providerData.images.join(","), 
+        hourly_rate: providerData.hourlyRate,
+        service_locations: providerData.serviceLocations,
+        years_of_experience: providerData.experienceYears,
+        languages: providerData.languages,
+        description: providerData.Description
+      });
+    }
+
+    res.status(201).json({ message: "User registered successfully", user_id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
