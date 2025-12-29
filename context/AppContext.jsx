@@ -24,8 +24,6 @@ const AppProvider = ({ children }) => {
     walletId: 10,
     typeOfPayment: "cache",
   });
-  const [selected_from_searchPage, setSelected_from_searchPage] =
-    useState(null);
   const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
 
   return (

@@ -13,12 +13,12 @@ const db = require("./config/db");
 const ratingRoutes = require("./routes/ratingRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const bookingServiceRoutes = require("./routes/bookingServiceRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
+// const paymentRoutes = require("./routes/paymentRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const serviceProviderStats = require("./routes/serviceProvider/serviceProviderStatsRoutes");
 const serviceProviderServiceListRoutes = require("./routes/serviceProvider/serviceProviderServiceList");
 const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceProvider/serviceProviderScheduleUnavailableDates");
-const serviceRoutes = require("./routes/serviceRoutes");
+
 
 // Middleware
 app.use(cors());
@@ -47,7 +47,7 @@ app.use("/bookingService", bookingServiceRoutes);
 app.use("/api/services", serviceRoutes);
 
 //for payment
-app.use("/payment", paymentRoutes);
+// app.use("/payment", paymentRoutes);
 
 //for SP role
 app.use("/serviceProviderStats", serviceProviderStats);
