@@ -26,7 +26,7 @@ export default function ContactUsScreen() {
     }
 
     try {
-      const response = await fetch("http://10.0.0.2:5000/contact-us", {
+      const response = await fetch("http://ip:5000/contact-us", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),

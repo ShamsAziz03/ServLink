@@ -18,6 +18,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const serviceProviderStats = require("./routes/serviceProvider/serviceProviderStatsRoutes");
 const serviceProviderServiceListRoutes = require("./routes/serviceProvider/serviceProviderServiceList");
 const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceProvider/serviceProviderScheduleUnavailableDates");
+const serviceRoutes = require("./routes/serviceRoutes");
 
 // Middleware
 app.use(cors());
@@ -32,7 +33,6 @@ app.use("/servicePage", servicePageRoutes);
 app.use("/serviceQuestions", serviceQuestionsRoutes);
 app.use("/assets", express.static("D:/ServLink/assets"));
 app.use("/api/ratings", ratingRoutes);
-
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });

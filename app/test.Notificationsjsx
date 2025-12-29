@@ -1,0 +1,34 @@
+import React from 'react';
+import { View, Button, Alert } from 'react-native';
+
+export default function TestNotificationButton() {
+  const sendTestNotification = async () => {
+    try {
+      const response = await fetch('http://ip:5000/api/users/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 7, //  المستخدم الذي سجل التوكن
+          title: 'Test Notification',
+          message: 'Hello! This is a test push notification'
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        Alert.alert('Success', 'Notification sent!');
+      } else {
+        Alert.alert('Error', data.message || 'Failed to send notification');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to send notification');
+    }
+  };
+
+  return (
+    <View style={{ marginTop: 50, padding: 20 }}>
+      <Button title="Send Test Notification" onPress={sendTestNotification} />
+    </View>
+  );
+}

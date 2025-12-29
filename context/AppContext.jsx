@@ -26,6 +26,7 @@ const AppProvider = ({ children }) => {
   });
   const [selected_from_searchPage, setSelected_from_searchPage] =
     useState(null);
+  const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
 
   return (
     <AppContext.Provider

@@ -13,18 +13,36 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from "../context/AppContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { registerForPushNotifications } from "./notifications";
+import { Platform } from "react-native";
+
 
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
   const [isProvider, setIsProvider] = useState(false);
-  const [images, setImages] = useState([]);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
-  const [birth_date, setbirth_date] = useState("");
+  const [birth_date, setBirthDate] = useState("");
+  const [serviceType, setServiceType] = useState("");
+  const [serviceLocations, setServiceLocations] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [languages, setLanguages] = useState("");
+  const [experienceYears, setExperienceYears] = useState("");
+  const [certifications, setCertifications] = useState("");
+  const [workingHours, setWorkingHours] = useState("");
+  const [aboutYou, setAboutYou] = useState("");
+  const [images, setImages] = useState([]);
+  const [Description, setDescription] = useState([]);
+  const [idCard, setidCard] = useState("");
+
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [date, setDate] = useState(new Date());
   const router = useRouter();
   const navigation = useNavigation();
   const { setLoggedUser } = useContext(AppContext);
@@ -61,6 +79,14 @@ export default function App() {
       prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
     );
   };
+  const onChange = (event, selectedDate) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = selectedDate.toISOString().split("T")[0];
+      setBirthDate(formattedDate);
+    }
+  };
 
   const pickImage = async () => {
     const permissionResult =
@@ -81,10 +107,9 @@ export default function App() {
       setImages((prev) => [...prev, ...selected]);
     }
   };
+
   // Handle registration
   const handleRegister = async () => {
-    const interestsString = checkedItems.join("-");
-
     const role = isProvider ? "provider" : "user";
     const [first_name, last_name] = fullName.split(" ");
 
@@ -95,13 +120,29 @@ export default function App() {
       phone,
       password,
       city,
-      interests: interestsString,
+      interests: checkedItems.join("-"),
       birth_date,
       role,
+      ...(isProvider && {
+        isProvider: true,
+        providerData: {
+          serviceType,
+          Description,
+          serviceLocations,
+          hourlyRate,
+          id_card_number: Number(idCard),
+          languages,
+          experienceYears,
+          certifications,
+          aboutYou,
+          images,
+        }
+      }),
     };
 
+
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/users/register", {
+      const response = await fetch("http://ip:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -111,11 +152,7 @@ export default function App() {
       console.log("Server response:", text);
 
       let resData;
-      try {
-        resData = JSON.parse(text);
-      } catch (e) {
-        resData = null;
-      }
+      try { resData = JSON.parse(text); } catch (e) { resData = null; }
 
       if (response.ok) {
         alert("Account Created!");
@@ -128,7 +165,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/users/login", {
+      const response = await fetch("http://ip:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -140,7 +177,17 @@ export default function App() {
         await AsyncStorage.setItem("user", JSON.stringify(resData.user));
         alert("Login Successful! Welcome " + resData.user.first_name);
         setLoggedUser(resData.user);
-        router.push("/home");
+        const token = await registerForPushNotifications();
+        if (token) {
+          console.log("Expo Token:", token);
+          await fetch("http://ip:5000/api/users/save-push-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: resData.user.user_id, expoToken: token }),
+          });
+        }
+        router.push("./home");
+
       } else {
         alert(resData.message || "Login failed");
       }
@@ -186,18 +233,29 @@ export default function App() {
                 left={<TextInput.Icon icon="city" />}
               />
 
-              <TextInput
-                label="Birth Date"
-                value={birth_date}
-                onChangeText={setbirth_date}
-                placeholder="YYYY-MM-DD"
-                mode="outlined"
-                style={styles.input}
-                left={<TextInput.Icon icon="clock" />}
-              />
+              <TouchableOpacity onPress={() => setShowPicker(true)}>
+                <TextInput
+                  label="Birth Date"
+                  value={birth_date}
+                  placeholder="YYYY-MM-DD"
+                  mode="outlined"
+                  style={styles.input}
+                  editable={false}
+                  left={<TextInput.Icon icon="calendar" />}
+                />
+              </TouchableOpacity>
+
+              {showPicker && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  onChange={onChange}
+                  maximumDate={new Date()}
+                />
+              )}
             </>
           )}
-
           <TextInput
             label="Email"
             value={email}
@@ -242,7 +300,7 @@ export default function App() {
                     style={[
                       styles.interestCard,
                       checkedItems.includes(item.name) &&
-                        styles.interestCardSelected,
+                      styles.interestCardSelected,
                     ]}
                     onPress={() => toggleCheckbox(item.name)}
                   >
@@ -254,7 +312,7 @@ export default function App() {
                       style={[
                         styles.interestText,
                         checkedItems.includes(item.name) &&
-                          styles.interestTextSelected,
+                        styles.interestTextSelected,
                       ]}
                     >
                       {item.name}
@@ -280,29 +338,84 @@ export default function App() {
                   <TextInput
                     label="Service Type"
                     mode="outlined"
+                    value={serviceType}
+                    onChangeText={setServiceType}
                     style={styles.input}
+                    left={<TextInput.Icon icon="briefcase" />}
                   />
+                  <TextInput
+                    label="Description"
+                    mode="outlined"
+                    value={Description}
+                    onChangeText={setDescription}
+                    style={styles.input}
+                    left={<TextInput.Icon icon="pencil" />}
+                  />
+                  <TextInput
+                    label="Service Locations"
+                    mode="outlined"
+                    value={serviceLocations}
+                    onChangeText={setServiceLocations}
+                    style={styles.input}
+                    left={<TextInput.Icon icon="store-marker" />}
+                  />
+
                   <TextInput
                     label="Hourly Rate ($)"
                     mode="outlined"
                     keyboardType="numeric"
+                    value={hourlyRate}
+                    onChangeText={setHourlyRate}
                     style={styles.input}
+                    left={<TextInput.Icon icon="cash-multiple" />}
+                  />
+
+                  <TextInput
+                    label="Language"
+                    mode="outlined"
+                    value={languages}
+                    onChangeText={setLanguages}
+                    placeholder="Arabic - English - Both"
+                    style={styles.input}
+                    left={<TextInput.Icon icon="web" />}
+                  />
+
+                  <TextInput
+                    label="Years of experience"
+                    mode="outlined"
+                    keyboardType="numeric"
+                    value={experienceYears}
+                    onChangeText={setExperienceYears}
+                    style={styles.input}
+                    left={<TextInput.Icon icon="calendar-clock" />}
+                  />
+
+                  <TextInput
+                    label="Certifications"
+                    mode="outlined"
+                    value={certifications}
+                    onChangeText={setCertifications}
+                    style={styles.input}
+                    left={<TextInput.Icon icon="file-outline" />}
+                  />
+                  <TextInput
+                    label="Id Card number"
+                    mode="outlined"
+                    value={idCard}
+                    onChangeText={setidCard}
+                    style={styles.input}
+                    left={<TextInput.Icon icon="card-account-details-outline" />}
                   />
                   <TextInput
                     label="About You"
                     mode="outlined"
                     multiline
                     numberOfLines={3}
+                    value={aboutYou}
+                    onChangeText={setAboutYou}
                     style={styles.input}
+                    left={<TextInput.Icon icon="text-account" />}
                   />
-                  <TextInput
-                    label="Working Hours"
-                    mode="outlined"
-                    placeholder="e.g. 9:00 AM - 6:00 PM"
-                    style={styles.input}
-                    left={<TextInput.Icon icon="clock" />}
-                  />
-
                   <Text style={styles.subtitle}>Upload Sample Work</Text>
                   <Button
                     mode="contained"
@@ -312,7 +425,6 @@ export default function App() {
                   >
                     Choose Images
                   </Button>
-
                   <View style={styles.imageContainer}>
                     {images.map((uri, index) => (
                       <Image
@@ -356,7 +468,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </LinearGradient>
+    </LinearGradient >
   );
 }
 
