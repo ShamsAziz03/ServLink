@@ -114,6 +114,7 @@ const ProviderScheduleUnavailableDates = () => {
       console.error(error.massege);
     }
   };
+
   //to toggle day on select from check box
   const toggleDay = (day) => {
     if (selectedDays.includes(day)) {
