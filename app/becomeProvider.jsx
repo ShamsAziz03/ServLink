@@ -31,6 +31,7 @@ export default function BecomeProviderScreen() {
     });
 
     if (!result.canceled) {
+      
       const selected = result.assets.map((asset) => asset.uri);
       setImages((prev) => [...prev, ...selected]);
     }
