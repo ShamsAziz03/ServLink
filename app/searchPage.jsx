@@ -29,7 +29,7 @@ const SearchItem = ({ item }) => {
   const goToServicePage = async (serviceId) => {
     try {
       const res = await fetch(
-        `http://10.0.2.2:5000/categoryPage/serviceFromSearch/${serviceId}`
+        `http://192.168.1.14:5000/categoryPage/serviceFromSearch/${serviceId}`
       );
       const serviceInfo = await res.json();
 
@@ -73,7 +73,7 @@ const SearchItem = ({ item }) => {
   const goToProviderPage = async (providerId) => {
     try {
       const res = await fetch(
-        `http://10.0.2.2:5000/bookingService/providerFromSearch/${providerId}`
+        `http://192.168.1.14:5000/bookingService/providerFromSearch/${providerId}`
       );
       const providerInfo = await res.json();
       if (!providerInfo) return;
@@ -184,7 +184,7 @@ const SearchScreen = () => {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const url = `http://10.0.2.2:5000/api/services/search?q=${encodeURIComponent(
+      const url = `http://192.168.1.14:5000/api/services/search?q=${encodeURIComponent(
         query
       )}&sort=${sort}`;
       const res = await fetch(url);

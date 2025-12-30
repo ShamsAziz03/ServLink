@@ -27,7 +27,7 @@ const Payment = () => {
   } = useContext(AppContext);
   const [selectedOption, setSelectedOption] = useState("cache");
   const [confirmed, setConfirmed] = useState(false);
-  const API_URL = "http://10.0.2.2:5000";
+  const API_URL = "http://192.168.1.14:5000";
 
   const fetchStoreAnswers = async (bookId) => {
     console.log("questionsAnswers:", questionsAnswers);
