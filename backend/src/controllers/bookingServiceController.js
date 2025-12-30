@@ -45,11 +45,15 @@ exports.getProviderSchedule = async (req, res) => {
     const result = await ServiceProviderSchedule.getProviderSchedule(
       providerId
     );
-    if (result.length === 0)
+    if (result.length === 0) {
       res.json({ error: "No Such Schedule for theis SP" });
+      return;
+    }
     res.json(result);
+    return;
   } catch (err) {
     res.json({ error: err.message });
+    return;
   }
 };
 
