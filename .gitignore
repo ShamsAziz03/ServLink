@@ -42,3 +42,4 @@ yarn-error.*
 
 backend/.env
 credentials.json
+package-lock.json
