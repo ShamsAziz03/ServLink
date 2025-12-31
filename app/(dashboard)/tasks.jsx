@@ -31,7 +31,7 @@ export default function MyTasks() {
   const [ratingScore, setRatingScore] = useState(0);
   const [ratingFeedback, setRatingFeedback] = useState("");
 
-  const BASE_URL = "http://192.168.1.14:5000";
+  const BASE_URL = "http://10.0.2.2:5000";
 
   useEffect(() => {
     fetchBookings();
