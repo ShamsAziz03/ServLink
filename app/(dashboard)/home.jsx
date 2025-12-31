@@ -197,17 +197,21 @@ const home = () => {
   //for fetch top providers
   const [topProviders, setTopProviders] = useState([]);
   const fetchTopProviders = async () => {
-    try {
-      const response = await fetch(
-        "http://192.168.1.14:5000/homeInfo/topProviders"
-      );
-      const fetchedData = await response.json();
-      setTopProviders(fetchedData);
-      console.log("top providers:", fetchedData);
-    } catch (error) {
-      console.error("Error fetching top providers:", error);
-    }
-  };
+  try {
+    const response = await fetch(
+      "http://192.168.1.14:5000/homeInfo/topProviders"
+    );
+    const fetchedData = await response.json();
+    
+    // تأكد هنا إن topProviders موجودة وتكون array
+    setTopProviders(fetchedData.topProviders || []);
+    
+    console.log("top providers:", fetchedData.topProviders);
+  } catch (error) {
+    console.error("Error fetching top providers:", error);
+  }
+};
+
 
   //for most booked services
   const [mostBooked, setMostBooked] = useState([]);

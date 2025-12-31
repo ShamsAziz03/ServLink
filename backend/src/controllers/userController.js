@@ -42,15 +42,40 @@ exports.register = async (req, res) => {
 };
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const [rows] = await User.getUserByEmail(email);
-    if (rows.length === 0) return res.status(400).json({ message: "User not found" });
+    if (rows.length === 0)
+      return res.status(400).json({ message: "User not found" });
 
     const user = rows[0];
     const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Incorrect password" });
 
-    res.status(200).json({
+   if (user.role === 'provider') {
+  const provider = await ServiceProvider.getByUserId(user.user_id);
+
+  if (!provider) {
+    return res.status(404).json({ message: "Provider profile not found" });
+  }
+
+  return res.status(200).json({
+    message: "Login successful",
+    user: {
+      user_id: user.user_id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      city: user.city,
+      provider_id: provider.provider_id
+    }
+  });
+}
+    // إذا User عادي
+    return res.status(200).json({
       message: "Login successful",
       user: {
         user_id: user.user_id,
@@ -59,13 +84,17 @@ exports.login = async (req, res) => {
         email: user.email,
         role: user.role,
         phone: user.phone,
-        city: user.city,
+        city: user.city
       }
     });
+
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
+
+
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
   const { first_name, last_name, email, phone, city } = req.body;

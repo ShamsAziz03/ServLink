@@ -40,7 +40,7 @@ const ServiceBooking = () => {
     try {
       const service_id = currentService.service_id;
       const result = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviders/${service_id}`
+        `http://192.168.1.14:5000/bookingService/getServiceProviders/${service_id}`
       );
       const fetchedData = await result.json();
       setServiceProviders(fetchedData);

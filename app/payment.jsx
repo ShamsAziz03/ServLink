@@ -27,7 +27,7 @@ const Payment = () => {
   } = useContext(AppContext);
   const [selectedOption, setSelectedOption] = useState("cache");
   const [confirmed, setConfirmed] = useState(false);
-  const API_URL = "http://192.168.1.14:5000";
+  const API_URL = "http://10.0.2.2:5000";
 
   const fetchStoreAnswers = async (bookId) => {
     console.log("questionsAnswers:", questionsAnswers);
@@ -93,7 +93,7 @@ const Payment = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        wallet_id: 0,
+        wallet_id: null,
         booking_id: bookingId,
         type: bookingObject.typeOfPayment,
         amount: bookingObject.hourlyRate * bookingObject.expectedTime,
@@ -102,10 +102,13 @@ const Payment = () => {
 
     const transactionData = await result.json();
     console.log("Transaction:", transactionData);
+   
+
     const answersResult = await fetchStoreAnswers(bookingId);
     if (bookingId && transactionData.insertId && answersResult) {
       setConfirmed(true);
     } else {
+       console.log("Transaction FULL RESPONSE:", transactionData);
       console.error("Booking, transaction, or answers failed");
     }
   };

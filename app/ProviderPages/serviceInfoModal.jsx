@@ -47,8 +47,8 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
   const [showImage, setShowImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
   const [providerExpImages, setProviderExpImages] = useState([
-    "http://10.0.2.2:5000/assets/agriculture.png",
-    "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
+    "http://192.168.1.14:5000/assets/agriculture.png",
+    "http://192.168.1.14:5000/assets/Installing_electrical_sockets.jpg",
   ]);
   const [feedbacks, setFeedbakcs] = useState([
     {
@@ -77,7 +77,7 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
 
   const fetchFeedbacks = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/serviceProviderServiceList/getProviderServiceFeedbacks/${service.Provider_Services_id}`
+      `http://192.168.1.14:5000/serviceProviderServiceList/getProviderServiceFeedbacks/${service.Provider_Services_id}`
     );
     const data = await result.json();
     if (data.length == 0) {
@@ -92,7 +92,7 @@ const ServiceInfoModal = ({ visible, onClose, service }) => {
 
   const fetchAvgRating = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/serviceProviderServiceList/getProviderServiceAvgRating/${service.Provider_Services_id}`
+      `http://192.168.1.14:5000/serviceProviderServiceList/getProviderServiceAvgRating/${service.Provider_Services_id}`
     );
     const data = await result.json(); //{avgScore: }
     if (data[0]?.avgScore) {

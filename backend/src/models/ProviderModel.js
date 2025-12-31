@@ -33,7 +33,15 @@ const ServiceProvider = {
         description
       ]
     );
+  },
+getByUserId: async (user_id) => {
+    const [rows] = await db.promise().query(
+      `SELECT * FROM service_providers WHERE user_id = ?`,
+      [user_id]
+    );
+    return rows[0]; 
   }
 };
 
+ 
 module.exports = ServiceProvider;

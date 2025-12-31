@@ -25,6 +25,11 @@ const AppProvider = ({ children }) => {
     typeOfPayment: "cache",
   });
   const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
+   const [currentBooking, setCurrentBooking] = useState(null); // لتخزين بيانات الحجز
+  const [timerState, setTimerState] = useState({
+      seconds: 0,
+    running: false,
+  });
 
   return (
     <AppContext.Provider
@@ -43,6 +48,10 @@ const AppProvider = ({ children }) => {
         setBookingObject,
         selected_from_searchPage,
         setSelected_from_searchPage,
+        currentBooking, 
+        setCurrentBooking, 
+        timerState, 
+        setTimerState
       }}
     >
       {children}

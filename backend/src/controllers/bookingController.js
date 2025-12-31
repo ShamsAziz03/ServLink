@@ -69,7 +69,7 @@ exports.updateBooking = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
- 
+
 exports.deleteBooking = async (req, res) => {
   const { booking_id } = req.params;
 
