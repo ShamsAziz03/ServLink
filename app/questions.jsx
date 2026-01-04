@@ -45,7 +45,7 @@ const Questions = () => {
   const fetchServiceQuestions = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/serviceQuestions/getServiceQuestions/${currentService.service_id}`
+        `http://ip:5000/serviceQuestions/getServiceQuestions/${currentService.service_id}`
       );
       const fetchedData = await response.json();
       setServiceQuestions(fetchedData);

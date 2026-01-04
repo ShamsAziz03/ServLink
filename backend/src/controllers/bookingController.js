@@ -6,16 +6,21 @@ exports.getBookingsByUser = async (req, res) => {
   try {
     let query = `
       SELECT 
-  b.*, 
-  sp.field_of_work AS service_name, 
-  sp.description, 
-  sp.hourly_rate,
-  CONCAT(u.first_name, ' ', u.last_name) AS provider_name  
+  b.*,
+  p.field_of_work AS service_name,
+  p.description,
+  p.hourly_rate,
+  s.name,
+  CONCAT(u.first_name, ' ', u.last_name) AS provider_name
 FROM bookings b
-LEFT JOIN service_providers sp 
-  ON b.Provider_Services_id = sp.provider_id
-LEFT JOIN users u 
-  ON sp.user_id = u.user_id  
+LEFT JOIN Provider_Services ps
+  ON b.Provider_Services_id = ps.Provider_Services_id
+LEFT JOIN services s
+  ON ps.service_id = s.service_id
+  LEFT JOIN service_providers p
+  ON ps.provider_id = p.provider_id
+LEFT JOIN users u
+  ON p.user_id = u.user_id
 WHERE b.user_id = ?;`;
 
     const params = [user_id];

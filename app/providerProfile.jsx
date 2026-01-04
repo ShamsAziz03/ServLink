@@ -43,9 +43,9 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
   const [currentImage, setCurrentImage] = useState("");
   const [rating, setRating] = useState(0);
   const [providerExpImages, setProviderExpImages] = useState([
-    "http://10.0.2.2:5000/assets/agriculture.png",
-    "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
-    "http://10.0.2.2:5000/assets/Mounting_TV_on_wall.png",
+    "http://ip:5000/assets/agriculture.png",
+    "http://ip:5000/assets/Installing_electrical_sockets.jpg",
+    "http://ip:5000/assets/Mounting_TV_on_wall.png",
   ]);
   const [feedbacks, setFeedbakcs] = useState([]);
   const { loggedUser } = useContext(AppContext);
@@ -68,7 +68,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
 
   const fetchProviderRating = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/bookingService/getProviderRating/${providerInfo.provider_id}`
+      `http://ip:5000/bookingService/getProviderRating/${providerInfo.provider_id}`
     );
     const data = await result.json();
     if (data.length != 0) {
@@ -77,7 +77,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
   };
   const fetchFeedbacks = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/bookingService/getFeedbacks/${providerInfo.provider_id}`
+      `http://ip:5000/bookingService/getFeedbacks/${providerInfo.provider_id}`
     );
     const data = await result.json();
     if (data.length == 0) {
@@ -92,7 +92,7 @@ const ProviderProfile = ({ providerInfo, visible, onClose }) => {
 
   const addToFav = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/api/favorites/addFavProvider`,
+      `http://ip:5000/api/favorites/addFavProvider`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

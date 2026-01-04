@@ -55,7 +55,7 @@ const CategoryPage = () => {
   const fetchcategoriesData = async () => {
     try {
       const response = await fetch(
-        "http://10.0.2.2:5000/categoryPage/categories"
+        "http://ip:5000/categoryPage/categories"
       );
       const fetchedData = await response.json();
       setcategoriesData(fetchedData[0]);
@@ -69,7 +69,7 @@ const CategoryPage = () => {
   const fetchServicesData = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/categoryPage/services/${activeCategory}`
+        `http://ip:5000/categoryPage/services/${activeCategory}`
       );
       const fetchedData = await response.json();
       setServicesData(fetchedData);
@@ -83,7 +83,7 @@ const CategoryPage = () => {
   const fetchFeedbackData = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/categoryPage/feedback/${activeCategory}`
+        `http://ip:5000/categoryPage/feedback/${activeCategory}`
       );
       const fetchedData = await response.json();
       setFeedbackData(fetchedData);

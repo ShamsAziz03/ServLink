@@ -31,7 +31,7 @@ export default function MyTasks() {
   const [ratingScore, setRatingScore] = useState(0);
   const [ratingFeedback, setRatingFeedback] = useState("");
 
-  const BASE_URL = "http://10.0.2.2:5000";
+  const BASE_URL = "http://ip:5000";
 
   useEffect(() => {
     fetchBookings();
@@ -52,6 +52,7 @@ export default function MyTasks() {
 
       const res = await fetch(`${BASE_URL}/api/bookings/user/${user.user_id}`);
       const data = await res.json();
+      console.log("Bookings API response:", data);
 
       if (!Array.isArray(data)) {
         setBookings([]);
@@ -204,11 +205,15 @@ export default function MyTasks() {
     </View>
 
     {[
+      ["work", `Service: ${item.name}`],
       ["info", `Status: ${item.status}`],
       ["date-range", `Date: ${item.service_date}`],
       ["person", `Provider: ${item.provider_name || "N/A"}`],
       ["schedule", `Time: ${item.service_time}`],
-      ["payments", `Total: $${item.total_price}`],
+      ["payments", `Estimated price: $${item.total_price}`],
+      ["schedule", `Estimated Time: $${item.estimated_time}`],
+      ["payments", `Actual price: $${item.actual_total_price}`],
+      ["schedule", `Actual Time: $${item.duration_time}`],
       ["credit-card", `Payment: ${item.payment_method}`],
       ["place", `Address: ${item.address}`]
     ].map(([icon, text], idx) => (

@@ -19,6 +19,7 @@ const serviceProviderStats = require("./routes/serviceProvider/serviceProviderSt
 const serviceProviderServiceListRoutes = require("./routes/serviceProvider/serviceProviderServiceList");
 const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceProvider/serviceProviderScheduleUnavailableDates");
 const providerRoutes = require("./routes/serviceProvider/providerRoutes");
+const AdminRoutes = require("./routes/AdminRoutes");
 
 
 
@@ -35,6 +36,7 @@ app.use("/servicePage", servicePageRoutes);
 app.use("/serviceQuestions", serviceQuestionsRoutes);
 app.use("/assets", express.static("C:/Users/pc/Desktop/ServLink/assets"));
 app.use("/api/ratings", ratingRoutes);
+app.use("/api", AdminRoutes)
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
@@ -62,6 +64,7 @@ app.use(
   serviceProviderScheduleUnavailableDatesRoutes
 );
 
+app.use("/uploads", express.static("uploads"));
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
 import {
   View,
   Text,
@@ -61,8 +64,9 @@ export default function BookingCalendarScreen() {
       }
 
       const res = await axios.get(
-        `http://192.168.1.14:5000/api/provider/bookings/${provider_id}`
+        `http://ip:5000/api/provider/bookings/${provider_id}`
       );
+      // console.log(res);
 
       setAppointments(res.data);
     } catch (err) {
@@ -72,9 +76,11 @@ export default function BookingCalendarScreen() {
     }
   };
 
-  useEffect(() => {
+ useFocusEffect(
+  useCallback(() => {
     fetchBookings();
-  }, []);
+  }, [])
+);
 
   /* ================= FILTER BY DATE ================= */
   const filteredAppointments = appointments.filter((a) => {
@@ -168,16 +174,22 @@ export default function BookingCalendarScreen() {
                 <Text style={styles.time}>{item.service_time}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    setCurrentBooking(item); // خزّن كامل بيانات الحجز في AppContext
-                    router.push("../BookingTimer"); // نذهب لصفحة التايمر
+                    if (item.status !== "Pending") return; 
+                    setCurrentBooking(item); 
+                    router.push("../BookingTimer"); 
                   }}
+                  disabled={item.status !== "Pending"} 
                 >
+                
                   <View style={styles.card}>
+                     <View style={styles.labelRow}>
+                      <Text style={styles.labelTitle}>Service:</Text>
+                      <Text style={styles.labelText}>{item.name}</Text>
+                    </View>
                     <View style={styles.labelRow}>
                       <Text style={styles.labelTitle}>Status:</Text>
                       <Text style={styles.labelText}>{item.status}</Text>
                     </View>
-
                     <View style={styles.labelRow}>
                       <Feather name="user" size={16} color={COLORS.primary} />
                       <Text style={styles.labelText}>
@@ -192,7 +204,7 @@ export default function BookingCalendarScreen() {
 
                     <View style={styles.labelRow}>
                       <Feather name="dollar-sign" size={16} color={COLORS.primary} />
-                      <Text style={styles.labelText}>Price: {item.total_price}</Text>
+                      <Text style={styles.labelText}>Estimated Price: {item.total_price}</Text>
                     </View>
 
                     <View style={styles.labelRow}>

@@ -32,22 +32,44 @@ export default function BookingTimer() {
   };
 
   const endTimer = async () => {
-    pauseTimer();
-    const hoursDecimal = (timerState.seconds / 3600).toFixed(2);
-    console.log(hoursDecimal);
+  pauseTimer();
+  const hoursDecimal = (timerState.seconds / 3600).toFixed(2);
 
-    try {
-      await axios.put(`http://10.0.2.2:5000/api/provider/bookings/booking/${booking_id}/complete`, {
-        actual_time: hoursDecimal,
-      });
-      alert(`Booking completed! Duration: ${hoursDecimal} hours`);
-      router.back();
-      resetTimer();
-    } catch (err) {
-      console.log(err);
-      alert("Error saving time");
-    }
-  };
+  try {
+    const res = await axios.put(
+      `http://ip:5000/api/provider/bookings/booking/${booking_id}/complete`,
+      { actual_time: hoursDecimal }
+    );
+
+    const { actual_total_price, hourly_rate, user_id } = res.data;
+    await fetch('http://ip:5000/api/users/send-notification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: currentBooking.user_id,
+        title: 'Booking Completed',
+        message:
+          `Service finished ✅\n` +
+          `Duration: ${hoursDecimal} hours\n` +
+          `Total price: ${actual_total_price} ₪`
+      })
+    });
+    console.log(currentBooking.user_id,);
+    alert(
+      `Booking completed ✅\n` +
+      `Duration: ${hoursDecimal} hours\n` +
+      `Hourly rate: ${hourly_rate} ₪\n` +
+      `Total price: ${actual_total_price} ₪`
+    );
+
+    resetTimer();
+    router.back();
+  } catch (err) {
+    console.log(err);
+    alert("Error saving time");
+  }
+};
+
 
   const hours = Math.floor(timerState.seconds / 3600);
   const minutes = Math.floor((timerState.seconds % 3600) / 60);

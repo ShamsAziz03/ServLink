@@ -1,41 +1,45 @@
 const db = require("../../config/db");
-
-// GET: جلب جميع حجوزات البروفايدر
 exports.getProviderBookings = async (req, res) => {
   const { provider_id } = req.params;
 
   try {
     const query = `
       SELECT 
-        b.booking_id,
-        b.user_id,
-        CONCAT(u.first_name,' ', u.last_name) AS client_name,
-        b.service_date,
-        b.service_time,
-        b.duration_time,
-        b.address,
-        b.notes,
-        b.total_price,
-        b.status,
-        b.payment_method,
-        b.estimated_time,
-        sp.field_of_work AS service_name
-      FROM bookings b
-      JOIN provider_services ps
-        ON b.Provider_Services_id = ps.Provider_Services_id
-        LEFT JOIN service_providers sp 
-        ON b.Provider_Services_id = sp.provider_id
-      JOIN users u
-        ON b.user_id = u.user_id
-      WHERE ps.provider_id = ?
-      ORDER BY b.service_date, b.service_time
+  b.booking_id,
+  b.user_id,
+  CONCAT(c.first_name, ' ', c.last_name) AS client_name,
+  b.service_date,
+  b.service_time,
+  b.duration_time,
+  b.address,
+  b.notes,
+  b.total_price,
+  b.status,
+  b.payment_method,
+  b.estimated_time,
+  sp.field_of_work AS service_name,
+  s.name,
+  CONCAT(pu.first_name, ' ', pu.last_name) AS provider_name
+FROM bookings b
+JOIN provider_services ps
+  ON b.Provider_Services_id = ps.Provider_Services_id
+JOIN service_providers sp
+  ON ps.provider_id = sp.provider_id
+JOIN services s
+  ON ps.service_id = s.service_id
+JOIN users pu
+  ON sp.user_id = pu.user_id
+JOIN users c
+  ON b.user_id = c.user_id
+WHERE ps.provider_id = ?
+ORDER BY b.service_date, b.service_time;
+
     `;
     const [rows] = await db.promise().query(query, [provider_id]);
     
-    // تنسيق التاريخ ليكون متوافقاً مع الجافاسكريبت
     const formattedRows = rows.map(row => ({
       ...row,
-      service_date: formatDate(row.service_date) // تأكد من أن التاريخ بصيغة YYYY-MM-DD
+      service_date: formatDate(row.service_date) 
     }));
     
     res.status(200).json(formattedRows);
@@ -89,27 +93,37 @@ exports.getBookingsByDate = async (req, res) => {
 
   try {
     const query = `
-      SELECT 
-        b.booking_id,
-        b.user_id,
-        CONCAT(u.first_name,' ', u.last_name) AS client_name,
-        b.service_date,
-        b.service_time,
-        b.duration_time,
-        b.address,
-        b.notes,
-        b.total_price,
-        b.payment_method,
-        b.status,
-        b.estimated_time,
-      FROM bookings b
-      JOIN provider_services ps
-        ON b.Provider_Services_id = ps.Provider_Services_id
-      JOIN users u
-        ON b.user_id = u.user_id
-      WHERE ps.provider_id = ? 
-        AND b.service_date = ?
-      ORDER BY b.service_time
+       SELECT 
+  b.booking_id,
+  b.user_id,
+  CONCAT(c.first_name, ' ', c.last_name) AS client_name,
+  b.service_date,
+  b.service_time,
+  b.duration_time,
+  b.address,
+  b.notes,
+  b.total_price,
+  b.status,
+  b.payment_method,
+  b.estimated_time,
+  sp.field_of_work AS service_name,
+  s.name,
+  CONCAT(pu.first_name, ' ', pu.last_name) AS provider_name
+FROM bookings b
+JOIN provider_services ps
+  ON b.Provider_Services_id = ps.Provider_Services_id
+JOIN service_providers sp
+  ON ps.provider_id = sp.provider_id
+JOIN services s
+  ON ps.service_id = s.service_id
+JOIN users pu
+  ON sp.user_id = pu.user_id
+JOIN users c
+  ON b.user_id = c.user_id
+WHERE ps.provider_id = ?
+ORDER BY b.service_date, b.service_time;
+
+
     `;
     
     const [rows] = await db.promise().query(query, [provider_id, date]);
@@ -120,31 +134,69 @@ exports.getBookingsByDate = async (req, res) => {
   }
 };
 // PUT /api/bookings/:id/complete
+// PUT /api/bookings/:booking_id/complete
 exports.completeBooking = async (req, res) => {
   const { booking_id } = req.params;
   const { actual_time } = req.body;
 
   try {
-    const [result] = await db.promise().query(
-      `UPDATE bookings SET duration_time = ?, status = 'Completed' WHERE booking_id = ?`,
-      [actual_time, booking_id]
+    const [rateRows] = await db.promise().query(
+      `
+      SELECT sp.hourly_rate
+      FROM bookings b
+      JOIN provider_services ps 
+        ON b.Provider_Services_id = ps.Provider_Services_id
+      JOIN service_providers sp 
+        ON ps.provider_id = sp.provider_id
+      WHERE b.booking_id = ?
+      `,
+      [booking_id]
     );
 
-    if (result.affectedRows === 0) return res.status(404).json({ message: "Booking not found" });
+    if (rateRows.length === 0) {
+      return res.status(404).json({ message: "Booking or provider not found" });
+    }
 
-    res.status(200).json({ success: true, actual_time });
+    const hourlyRate = rateRows[0].hourly_rate;
+
+    const actualTotalPrice = actual_time * hourlyRate;
+
+    const [result] = await db.promise().query(
+      `
+      UPDATE bookings 
+      SET 
+        duration_time = ?,
+        actual_total_price = ?,
+        status = 'Completed'
+      WHERE booking_id = ?
+      `,
+      [actual_time, actualTotalPrice, booking_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      booking_id,
+      actual_time,
+      hourly_rate: hourlyRate,
+      actual_total_price: actualTotalPrice
+    });
+
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 };
 
 
-// دالة مساعدة لتنسيق التاريخ
 function formatDate(date) {
   if (!date) return null;
   
   const d = new Date(date);
-  if (isNaN(d.getTime())) return date; // إذا كان التاريخ غير صالح، أرجع القيمة الأصلية
+  if (isNaN(d.getTime())) return date; 
   
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
