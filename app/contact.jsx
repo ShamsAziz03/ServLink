@@ -21,6 +21,7 @@ export default function ContactUsScreen() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
+  const ip = process.env.EXPO_PUBLIC_IP;
 
   useEffect(() => {
     const getUser = async () => {

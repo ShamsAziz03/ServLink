@@ -26,13 +26,14 @@ export default function AdminContactMessagesScreen() {
   const [selected, setSelected] = useState(null);
   const [reply, setReply] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+   const ip = process.env.EXPO_PUBLIC_IP;
 
   useEffect(() => {
     fetchMessages();
   }, []);
 
   const fetchMessages = async () => {
-    const res = await axios.get("http://192.168.1.12:5000/api/get_contact_messages");
+    const res = await axios.get(`http://${ip}:5000/api/get_contact_messages`);
     setMessages(res.data);
   };
 
@@ -40,13 +41,13 @@ export default function AdminContactMessagesScreen() {
   if (!reply.trim()) return;
 
   try {
-    await axios.post("http://192.168.1.12:5000/api/contact_reply", {
+    await axios.post(`http://${ip}:5000/api/contact_reply`, {
       contact_id: selected.id,
       reply,
     });
 
     if (selected.user_id) {  
-      await axios.post("http://192.168.1.12:5000/api/users/send-notification", {
+      await axios.post(`http://${ip}:5000/api/users/send-notification`, {
         userId: selected.user_id,
         title: "New Reply 💬",
         message: reply,

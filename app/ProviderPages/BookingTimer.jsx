@@ -47,7 +47,7 @@ export default function BookingTimer() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: 9,
+        userId: currentBooking.user_id,
         title: 'Booking Completed',
         message:
           `Service finished ✅\n` +
@@ -55,7 +55,7 @@ export default function BookingTimer() {
           `Total price: ${actual_total_price} ₪`
       })
     });
-    console.log(currentBooking.user_id,);
+    console.log(currentBooking.user_id);
     alert(
       `Booking completed ✅\n` +
       `Duration: ${hoursDecimal} hours\n` +
