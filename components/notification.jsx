@@ -16,12 +16,12 @@ const Notification = ({ visible, onClose, user_id }) => {
 
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
-
+  const ip = process.env.EXPO_PUBLIC_IP;
   //to fetch notifications
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/homeInfo/notifications/${userId}`
+        `http://${ip}:5000/homeInfo/notifications/${userId}`
       );
       const fetchedData = await response.json();
       setNotifications(fetchedData[0]);
@@ -41,7 +41,7 @@ const Notification = ({ visible, onClose, user_id }) => {
     try {
       if (id != -1) {
         const response = await fetch(
-          `http://10.0.2.2:5000/homeInfo/deleteNotification/${id}`,
+          `http://${ip}:5000/homeInfo/deleteNotification/${id}`,
           { method: "DELETE" }
         );
         const result = await response.json();
@@ -52,7 +52,7 @@ const Notification = ({ visible, onClose, user_id }) => {
         }
       } else {
         const response = await fetch(
-          `http://10.0.2.2:5000/homeInfo/deleteNotifications/${userId}`,
+          `http://${ip}:5000/homeInfo/deleteNotifications/${userId}`,
           { method: "DELETE" }
         );
         const result = await response.json();

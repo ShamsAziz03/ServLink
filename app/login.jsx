@@ -40,7 +40,7 @@ export default function App() {
   const [Description, setDescription] = useState([]);
   const [idCard, setidCard] = useState("");
 
-
+    const ip = process.env.EXPO_PUBLIC_IP;
   const [showPicker, setShowPicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
@@ -142,7 +142,7 @@ export default function App() {
 
 
     try {
-      const response = await fetch("http://ip:5000/api/users/register", {
+      const response = await fetch(`http://${ip}:5000/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -165,7 +165,7 @@ export default function App() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://ip:5000/api/users/login", {
+      const response = await fetch(`http://${ip}:5000/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -180,14 +180,14 @@ export default function App() {
         const token = await registerForPushNotifications();
         if (token) {
           console.log("Expo Token:", token);
-          await fetch("http://ip:5000/api/users/save-push-token", {
+          await fetch(`http://${ip}:5000/api/users/save-push-token`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: resData.user.user_id, expoToken: token }),
           });
         }
         if (resData.user.role=='user') 
-        router.push("./Admin/home");
+        router.push("./home");
         else if(resData.user.role=='provider')
            router.push("./ProviderPages/providerDashboard");
 

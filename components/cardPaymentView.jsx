@@ -8,7 +8,8 @@ import {
 import { AppContext } from "../context/AppContext";
 import { Link, useNavigation } from "@react-navigation/native";
 
-const API_URL = "http://10.0.2.2:5000";
+  const ip = process.env.EXPO_PUBLIC_IP;
+const API_URL = `http://${ip}:5000`;
 
 const CardPayment = () => {
   const [cardDetails, setCardDetails] = useState();

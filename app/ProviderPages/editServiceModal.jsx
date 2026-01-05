@@ -17,7 +17,8 @@ import { Checkbox } from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import ChooseImageModal from "./chooseImageModal";
 
-const API_ADDRESS = "http://10.0.2.2:5000";
+const ip = process.env.EXPO_PUBLIC_IP;
+const API_ADDRESS = `http://${ip}:5000`;
 
 const EditServiceModel = ({ visible, onClose, service }) => {
   const [categories, setCategories] = useState([

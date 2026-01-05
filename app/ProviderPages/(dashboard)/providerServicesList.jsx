@@ -37,7 +37,8 @@ export default function ProviderServices() {
   ]);
   const [originalServices, setOriginalServices] = useState(services);
   const [selectedService, setSelectedService] = useState(null);
-  const API_ADDRESS = "http://10.0.2.2:5000";
+    const ip = process.env.EXPO_PUBLIC_IP;
+  const API_ADDRESS = `http://${ip}:5000`;
   const [showEditForm, setShowEditForm] = useState(false); //for edit form modal
   const [showAddForm, setShowAddForm] = useState(false); //for add form modal
   const [currentService, setCurrentService] = useState(null);

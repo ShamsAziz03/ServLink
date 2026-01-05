@@ -19,6 +19,9 @@ export default function ContactUsScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+
+    const ip = process.env.EXPO_PUBLIC_IP;
+
   const handleSubmit = async () => {
     if (!name || !email || !message) {
       alert("Please fill all fields");
@@ -26,7 +29,7 @@ export default function ContactUsScreen() {
     }
 
     try {
-      const response = await fetch("http://10.0.2.ip:5000/contact-us", {
+      const response = await fetch(`http://${ip}:5000/contact-us`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),

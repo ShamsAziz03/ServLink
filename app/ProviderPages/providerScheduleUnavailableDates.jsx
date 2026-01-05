@@ -18,7 +18,8 @@ import AddUnavailableDateModal from "./addUnavailableDate";
 import { AppContext } from "../../context/AppContext";
 
 const ProviderScheduleUnavailableDates = () => {
-  const API_ADDRESS = "http://10.0.2.2:5000";
+  const ip = process.env.EXPO_PUBLIC_IP;
+  const API_ADDRESS = `http://${ip}:5000`;
 
   const insets = useSafeAreaInsets();
   const router = useRouter();

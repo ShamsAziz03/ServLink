@@ -44,7 +44,7 @@ export default function BookingCalendarScreen() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
+  const ip = process.env.EXPO_PUBLIC_IP;
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   /* ================= FETCH BOOKINGS ================= */
@@ -64,7 +64,7 @@ export default function BookingCalendarScreen() {
       }
 
       const res = await axios.get(
-        `http://ip:5000/api/provider/bookings/${provider_id}`
+        `http://${ip}:5000/api/provider/bookings/${provider_id}`
       );
       // console.log(res);
 

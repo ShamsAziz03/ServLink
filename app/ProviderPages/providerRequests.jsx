@@ -15,7 +15,8 @@ import { AppContext } from "../../context/AppContext";
 
 export default function ProviderRequests() {
   const router = useRouter();
-  const API_ADDRESS = "http://10.0.2.2:5000";
+  const ip = process.env.EXPO_PUBLIC_IP;
+  const API_ADDRESS = `http://${ip}:5000`;
   const { loggedUser } = useContext(AppContext);
 
   const [originalBookings, setOriginalBookings] = useState([

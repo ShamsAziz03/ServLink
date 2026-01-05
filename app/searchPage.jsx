@@ -23,13 +23,13 @@ const SearchItem = ({ item }) => {
   const { setSelected_from_searchPage } = useContext(AppContext);
   const [showProviderProfile, setShowProviderProfile] = useState(false);
   const [serviceProviderInfo, setServiceProviderInfo] = useState({});
-
+  const ip = process.env.EXPO_PUBLIC_IP;
   const locationArray = item.service_locations?.split(",") || [];
 
   const goToServicePage = async (serviceId) => {
     try {
       const res = await fetch(
-        `http://ip:5000/categoryPage/serviceFromSearch/${serviceId}`
+        `http://${ip}:5000/categoryPage/serviceFromSearch/${serviceId}`
       );
       const serviceInfo = await res.json();
 
@@ -73,7 +73,7 @@ const SearchItem = ({ item }) => {
   const goToProviderPage = async (providerId) => {
     try {
       const res = await fetch(
-        `http://ip:5000/bookingService/providerFromSearch/${providerId}`
+        `http://${ip}:5000/bookingService/providerFromSearch/${providerId}`
       );
       const providerInfo = await res.json();
       if (!providerInfo) return;
@@ -180,11 +180,11 @@ const SearchScreen = () => {
   const [sort, setSort] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
   const { pageToBack } = useLocalSearchParams();
-
+  const ip = "10.0.2.2";
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const url = `http://ip:5000/api/services/search?q=${encodeURIComponent(
+      const url = `http://${ip}:5000/api/services/search?q=${encodeURIComponent(
         query
       )}&sort=${sort}`;
       const res = await fetch(url);

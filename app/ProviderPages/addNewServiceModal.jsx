@@ -18,7 +18,8 @@ import ChooseImageModal from "./chooseImageModal";
 import { AppContext } from "../../context/AppContext";
 import AddCategoryModal from "./addCategoryModal";
 
-const API_ADDRESS = "http://10.0.2.2:5000";
+const ip = process.env.EXPO_PUBLIC_IP;
+const API_ADDRESS = `http://${ip}:5000`;
 
 const AddNewServiceModal = ({ visible, onClose }) => {
   const [categories, setCategories] = useState([

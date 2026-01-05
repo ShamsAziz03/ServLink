@@ -9,6 +9,7 @@ export default function BookingTimer() {
   const { currentBooking, timerState, setTimerState } = useContext(AppContext);
   const router = useRouter();
   const timerRef = useRef(null);
+    const ip = process.env.EXPO_PUBLIC_IP;
 
   if (!currentBooking) return <Text>No booking selected</Text>;
   const { booking_id } = currentBooking;
@@ -37,12 +38,12 @@ export default function BookingTimer() {
 
   try {
     const res = await axios.put(
-      `http://ip:5000/api/provider/bookings/booking/${booking_id}/complete`,
+      `http://${ip}:5000/api/provider/bookings/booking/${booking_id}/complete`,
       { actual_time: hoursDecimal }
     );
 
     const { actual_total_price, hourly_rate, user_id } = res.data;
-    await fetch('http://ip:5000/api/users/send-notification', {
+    await fetch(`http://${ip}:5000/api/users/send-notification`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function MyTasks() {
   const [bookings, setBookings] = useState([]);
@@ -31,14 +31,15 @@ export default function MyTasks() {
   const [ratingScore, setRatingScore] = useState(0);
   const [ratingFeedback, setRatingFeedback] = useState("");
 
-  const BASE_URL = "http://ip:5000";
+  const ip = process.env.EXPO_PUBLIC_IP;
+  const BASE_URL = `http://${ip}:5000`;
 
   useEffect(() => {
     fetchBookings();
   }, [filter]);
 
   const dateToDays = (dateStr) => {
-    const [y, m, d] = dateStr.split('-').map(Number);
+    const [y, m, d] = dateStr.split("-").map(Number);
     const dt = new Date(y, m - 1, d);
     return Math.floor(dt.getTime() / (1000 * 60 * 60 * 24));
   };
@@ -67,7 +68,7 @@ export default function MyTasks() {
         return true;
       });
 
-      const formattedData = filtered.map(b => {
+      const formattedData = filtered.map((b) => {
         const dateObj = new Date(b.service_date);
         dateObj.setDate(dateObj.getDate() + 1);
         const correctedDate = dateObj.toISOString().slice(0, 10);
@@ -84,7 +85,9 @@ export default function MyTasks() {
 
   const handleDelete = async (booking_id) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/bookings/${booking_id}`, { method: "DELETE" });
+      const res = await fetch(`${BASE_URL}/api/bookings/${booking_id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       Alert.alert("Info", data.message);
       fetchBookings();
@@ -100,7 +103,10 @@ export default function MyTasks() {
     const bookingDays = dateToDays(newDate);
 
     if (bookingDays - todayDays < 1) {
-      Alert.alert("Cannot Edit", "Booking must be at least 1 day in the future");
+      Alert.alert(
+        "Cannot Edit",
+        "Booking must be at least 1 day in the future"
+      );
       return;
     }
 
@@ -108,16 +114,19 @@ export default function MyTasks() {
     if (formattedTime && formattedTime.length === 5) formattedTime += ":00";
 
     try {
-      const res = await fetch(`${BASE_URL}/api/bookings/${currentBooking.booking_id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          service_date: newDate,
-          service_time: formattedTime,
-          address: newAddress,
-          notes: newNotes,
-        }),
-      });
+      const res = await fetch(
+        `${BASE_URL}/api/bookings/${currentBooking.booking_id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            service_date: newDate,
+            service_time: formattedTime,
+            address: newAddress,
+            notes: newNotes,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -163,11 +172,10 @@ export default function MyTasks() {
         body: JSON.stringify({
           booking_id: currentRatingBooking.booking_id,
           score: ratingScore,
-          feedback_text: ratingFeedback
-        })
+          feedback_text: ratingFeedback,
+        }),
       });
       console.log("Selected Booking Data:", currentRatingBooking);
-
 
       const data = await res.json();
       if (res.ok) {
@@ -198,48 +206,61 @@ export default function MyTasks() {
   );
 
   const renderCard = ({ item }) => (
-  <LinearGradient colors={["#ffffff", "#f5f0fa"]} style={styles.card}>
-    <View style={styles.cardHeader}>
-      <Text style={styles.title}>Booking #{item.booking_id}</Text>
-      <MaterialIcons name="event" size={24} color="#750d83" />
-    </View>
-
-    {[
-      ["work", `Service: ${item.name}`],
-      ["info", `Status: ${item.status}`],
-      ["date-range", `Date: ${item.service_date}`],
-      ["person", `Provider: ${item.provider_name || "N/A"}`],
-      ["schedule", `Time: ${item.service_time}`],
-      ["payments", `Estimated price: $${item.total_price}`],
-      ["schedule", `Estimated Time: $${item.estimated_time}`],
-      ["payments", `Actual price: $${item.actual_total_price}`],
-      ["schedule", `Actual Time: $${item.duration_time}`],
-      ["credit-card", `Payment: ${item.payment_method}`],
-      ["place", `Address: ${item.address}`]
-    ].map(([icon, text], idx) => (
-      <View key={idx} style={styles.detailRow}>
-        <MaterialIcons name={icon} size={16} color="#750d83" />
-        <Text style={styles.detailText}>{text}</Text>
+    <LinearGradient colors={["#ffffff", "#f5f0fa"]} style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.title}>Booking #{item.booking_id}</Text>
+        <MaterialIcons name="event" size={24} color="#750d83" />
       </View>
-    ))}
 
-    <View style={styles.actions}>
-      <ActionButton icon="edit" text="Edit" color="#8e44ad" onPress={() => openEditModal(item)} />
-      <ActionButton icon="delete" text="Delete" color="#c0392b" onPress={() => handleDelete(item.booking_id)} />
+      {[
+        ["work", `Service: ${item.name}`],
+        ["info", `Status: ${item.status}`],
+        ["date-range", `Date: ${item.service_date}`],
+        ["person", `Provider: ${item.provider_name || "N/A"}`],
+        ["schedule", `Time: ${item.service_time}`],
+        ["payments", `Estimated price: $${item.total_price}`],
+        ["schedule", `Estimated Time: $${item.estimated_time}`],
+        ["payments", `Actual price: $${item.actual_total_price}`],
+        ["schedule", `Actual Time: $${item.duration_time}`],
+        ["credit-card", `Payment: ${item.payment_method}`],
+        ["place", `Address: ${item.address}`],
+      ].map(([icon, text], idx) => (
+        <View key={idx} style={styles.detailRow}>
+          <MaterialIcons name={icon} size={16} color="#750d83" />
+          <Text style={styles.detailText}>{text}</Text>
+        </View>
+      ))}
 
-      {item.status.toLowerCase() === "completed" && (
+      <View style={styles.actions}>
         <ActionButton
-          icon="star"
-          text="Rate"
-          color="#750d83"
-          onPress={() => openRatingModal(item)}
+          icon="edit"
+          text="Edit"
+          color="#8e44ad"
+          onPress={() => openEditModal(item)}
         />
-      )}
-    </View>
-  </LinearGradient>
-);
+        <ActionButton
+          icon="delete"
+          text="Delete"
+          color="#c0392b"
+          onPress={() => handleDelete(item.booking_id)}
+        />
+
+        {item.status.toLowerCase() === "completed" && (
+          <ActionButton
+            icon="star"
+            text="Rate"
+            color="#750d83"
+            onPress={() => openRatingModal(item)}
+          />
+        )}
+      </View>
+    </LinearGradient>
+  );
   const ActionButton = ({ icon, text, color, onPress }) => (
-    <TouchableOpacity style={[styles.actionBtn, { backgroundColor: color }]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.actionBtn, { backgroundColor: color }]}
+      onPress={onPress}
+    >
       <MaterialIcons name={icon} size={18} color="#fff" />
       <Text style={styles.btnText}>{text}</Text>
     </TouchableOpacity>
@@ -262,7 +283,11 @@ export default function MyTasks() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#750d83" style={{ marginTop: 50 }} />
+        <ActivityIndicator
+          size="large"
+          color="#750d83"
+          style={{ marginTop: 50 }}
+        />
       ) : bookings.length === 0 ? (
         <Text style={styles.noData}>No bookings found</Text>
       ) : (
@@ -286,22 +311,45 @@ export default function MyTasks() {
             <Text style={styles.modalTitle}>Edit Booking</Text>
 
             <Text style={styles.inputLabel}>Service Date (YYYY-MM-DD)</Text>
-            <TextInput style={styles.input} value={newDate} onChangeText={setNewDate} />
+            <TextInput
+              style={styles.input}
+              value={newDate}
+              onChangeText={setNewDate}
+            />
 
             <Text style={styles.inputLabel}>Service Time (HH:MM)</Text>
-            <TextInput style={styles.input} value={newTime} onChangeText={setNewTime} />
+            <TextInput
+              style={styles.input}
+              value={newTime}
+              onChangeText={setNewTime}
+            />
 
             <Text style={styles.inputLabel}>Address</Text>
-            <TextInput style={styles.input} value={newAddress} onChangeText={setNewAddress} />
+            <TextInput
+              style={styles.input}
+              value={newAddress}
+              onChangeText={setNewAddress}
+            />
 
             <Text style={styles.inputLabel}>Notes</Text>
-            <TextInput style={[styles.input, { height: 80 }]} value={newNotes} onChangeText={setNewNotes} multiline />
+            <TextInput
+              style={[styles.input, { height: 80 }]}
+              value={newNotes}
+              onChangeText={setNewNotes}
+              multiline
+            />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: "#750d83" }]} onPress={handleEdit}>
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#750d83" }]}
+                onPress={handleEdit}
+              >
                 <Text style={styles.btnText}>Save</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: "#dc3545" }]} onPress={() => setEditModalVisible(false)}>
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#dc3545" }]}
+                onPress={() => setEditModalVisible(false)}
+              >
                 <Text style={styles.btnText}>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -318,7 +366,9 @@ export default function MyTasks() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Rate Booking #{currentRatingBooking?.booking_id}</Text>
+            <Text style={styles.modalTitle}>
+              Rate Booking #{currentRatingBooking?.booking_id}
+            </Text>
 
             <Text style={styles.inputLabel}>Rating</Text>
             <StarRating rating={ratingScore} onChange={setRatingScore} />
@@ -332,10 +382,16 @@ export default function MyTasks() {
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: "#750d83" }]} onPress={submitRating}>
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#750d83" }]}
+                onPress={submitRating}
+              >
                 <Text style={styles.btnText}>Submit</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: "#dc3545" }]} onPress={() => setRatingModalVisible(false)}>
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#dc3545" }]}
+                onPress={() => setRatingModalVisible(false)}
+              >
                 <Text style={styles.btnText}>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -348,24 +404,98 @@ export default function MyTasks() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40 },
-  filterRow: { flexDirection: "row", justifyContent: "center", marginBottom: 20, flexWrap: "wrap" },
-  filterBtn: { backgroundColor: "#c89bcbff", paddingHorizontal: 15, paddingVertical: 8, marginHorizontal: 5, marginVertical: 5, borderRadius: 20 },
+  filterRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
+    flexWrap: "wrap",
+  },
+  filterBtn: {
+    backgroundColor: "#c89bcbff",
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    borderRadius: 20,
+  },
   activeFilter: { backgroundColor: "#750d83" },
   filterText: { color: "#fff", fontWeight: "bold" },
-  card: { padding: 20, marginHorizontal: 15, marginVertical: 8, borderRadius: 15, shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 5 },
-  title: { fontSize: 18, fontWeight: "bold", color: "#37043a", marginBottom: 5 },
-  cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  card: {
+    padding: 20,
+    marginHorizontal: 15,
+    marginVertical: 8,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#37043a",
+    marginBottom: 5,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   detailRow: { flexDirection: "row", alignItems: "center", marginTop: 5 },
   detailText: { fontSize: 14, color: "#4b4453", marginLeft: 5 },
-  actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 15 },
-  actionBtn: { flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "#8e44ad", paddingVertical: 10, borderRadius: 8, marginHorizontal: 5 },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+  },
+  actionBtn: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#8e44ad",
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
   btnText: { color: "#fff", fontWeight: "bold", marginLeft: 5 },
-  noData: { textAlign: "center", color: "#750d83", fontSize: 16, marginTop: 100 },
-  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
-  modalContent: { backgroundColor: "#fff", borderRadius: 15, padding: 20, width: "85%" },
+  noData: {
+    textAlign: "center",
+    color: "#750d83",
+    fontSize: 16,
+    marginTop: 100,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 20,
+    width: "85%",
+  },
   modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginBottom: 10 },
-  modalBtn: { flex: 1, padding: 10, borderRadius: 8, alignItems: "center", marginHorizontal: 5 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  modalBtn: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
   modalActions: { flexDirection: "row", justifyContent: "space-between" },
-  inputLabel: { fontSize: 14, fontWeight: "bold", marginBottom: 5, color: "#37043a" },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#37043a",
+  },
 });
