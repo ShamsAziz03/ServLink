@@ -29,7 +29,7 @@ export default function ProvidersAdmin() {
   const fetchProviders = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://ip:5000/api/ProviderswithBookings");
+      const res = await axios.get("http://192.168.1.12:5000/api/ProviderswithBookings");
       setProviders(res.data);
     } catch (err) {
       console.log(err.message);
@@ -42,7 +42,7 @@ export default function ProvidersAdmin() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://ip:5000/api/search-providers?search=${text}`
+        `http://192.168.1.12:5000/api/search-providers?search=${text}`
       );
       setProviders(res.data);
     } catch (err) {
@@ -69,7 +69,7 @@ export default function ProvidersAdmin() {
 
   const handleApprove = async (item) => {
     try {
-      await axios.put("http://ip:5000/api/approve-provider", {
+      await axios.put("http://192.168.1.12:5000/api/approve-provider", {
         provider_id: item.provider_id,
         approved_by_admin: item.approved_by_admin === 1 ? 0 : 1,
       });

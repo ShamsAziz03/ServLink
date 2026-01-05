@@ -16,7 +16,7 @@ export default function FavoriteProvidersScreen() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const BASE_URL = "http://ip:5000"; 
+  const BASE_URL = "http://192.168.1.12:5000"; 
 
   useEffect(() => {
     const fetchFavorites = async () => {

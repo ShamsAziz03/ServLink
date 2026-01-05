@@ -40,7 +40,7 @@ const ServiceBooking = () => {
     try {
       const service_id = currentService.service_id;
       const result = await fetch(
-        `http://ip:5000/bookingService/getServiceProviders/${service_id}`
+        `http://192.168.1.12:5000/bookingService/getServiceProviders/${service_id}`
       );
       const fetchedData = await result.json();
       setServiceProviders(fetchedData);
@@ -60,7 +60,7 @@ const ServiceBooking = () => {
 
       try {
         const result = await fetch(
-          "http://ip:5000/bookingService/getProvidersUnAvailableDates",
+          "http://192.168.1.12:5000/bookingService/getProvidersUnAvailableDates",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -87,7 +87,7 @@ const ServiceBooking = () => {
 
       try {
         const result = await fetch(
-          "http://ip:5000/bookingService/getProvidersSchedule",
+          "http://192.168.1.12:5000/bookingService/getProvidersSchedule",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -22,7 +22,7 @@ const ProviderDashboard = () => {
   const insets = useSafeAreaInsets();
   const { loggedUser } = useContext(AppContext);
   const [visible, setVisibility] = useState(false);
-  const API_ADDRESS = "http://ip:5000";
+  const API_ADDRESS = "http://192.168.1.12:5000";
   const [providerStats, setProviderStats] = useState({
     rating: 0,
     numOfCompletedOrders: 0,

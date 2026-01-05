@@ -54,7 +54,7 @@ const CategoryPage = () => {
   const fetchserviceMetaData = async () => {
     try {
       const response = await fetch(
-        `http://ip:5000/servicePage/metaData/${serviceInfo.service_id}`
+        `http://192.168.1.12:5000/servicePage/metaData/${serviceInfo.service_id}`
       );
       const fetchedData = await response.json();
       setServiceMetaData(fetchedData);
@@ -67,7 +67,7 @@ const CategoryPage = () => {
   const fetchFeedbackData = async () => {
     try {
       const response = await fetch(
-        `http://ip:5000/servicePage/feedback/${serviceInfo.service_id}`
+        `http://192.168.1.12:5000/servicePage/feedback/${serviceInfo.service_id}`
       );
       const fetchedData = await response.json();
       setFeedbackData(fetchedData);
@@ -81,7 +81,7 @@ const CategoryPage = () => {
   const fetchProviders = async () => {
     try {
       const response = await fetch(
-        `http://ip:5000/servicePage/providers/${serviceInfo.service_id}`
+        `http://192.168.1.12:5000/servicePage/providers/${serviceInfo.service_id}`
       );
       const fetchedData = await response.json();
       setProviders(fetchedData);

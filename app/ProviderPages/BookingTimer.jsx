@@ -37,16 +37,16 @@ export default function BookingTimer() {
 
   try {
     const res = await axios.put(
-      `http://ip:5000/api/provider/bookings/booking/${booking_id}/complete`,
+      `http://192.168.1.12:5000/api/provider/bookings/booking/${booking_id}/complete`,
       { actual_time: hoursDecimal }
     );
 
     const { actual_total_price, hourly_rate, user_id } = res.data;
-    await fetch('http://ip:5000/api/users/send-notification', {
+    await fetch('http://192.168.1.12:5000/api/users/send-notification', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: currentBooking.user_id,
+        userId: 9,
         title: 'Booking Completed',
         message:
           `Service finished ✅\n` +

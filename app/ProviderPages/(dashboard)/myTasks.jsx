@@ -64,7 +64,7 @@ export default function BookingCalendarScreen() {
       }
 
       const res = await axios.get(
-        `http://ip:5000/api/provider/bookings/${provider_id}`
+        `http://192.168.1.12:5000/api/provider/bookings/${provider_id}`
       );
       // console.log(res);
 

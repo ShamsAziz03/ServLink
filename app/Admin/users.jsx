@@ -29,7 +29,7 @@ export default function UsersAdmin() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://ip:5000/api/UserswithBookings"
+        "http://192.168.1.12:5000/api/UserswithBookings"
       );
       setUsers(res.data);
     } catch (err) {
@@ -43,7 +43,7 @@ export default function UsersAdmin() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://ip:5000/api/search-users?search=${text}`
+        `http://192.168.1.12:5000/api/search-users?search=${text}`
       );
       setUsers(res.data);
     } catch (err) {
@@ -73,7 +73,7 @@ export default function UsersAdmin() {
 
   const handleBlock = async (item) => {
     try {
-      await axios.put("http://ip:5000/api/block-user", {
+      await axios.put("http://192.168.1.12:5000/api/block-user", {
         user_id: item.user_id,
         is_blacklisted: item.is_blacklisted === 1 ? 0 : 1,
       });
