@@ -174,11 +174,11 @@ export default function BookingCalendarScreen() {
                 <Text style={styles.time}>{item.service_time}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    if (item.status !== "Pending") return; 
+                    if (item.status.toLowerCase() !== "pending") return; 
                     setCurrentBooking(item); 
                     router.push("../BookingTimer"); 
                   }}
-                  disabled={item.status !== "Pending"} 
+                  disabled={item.status.toLowerCase() !== "pending"} 
                 >
                 
                   <View style={styles.card}>

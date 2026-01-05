@@ -237,7 +237,7 @@ export default function ProviderRequests() {
     const obj = {
       bookId: book.booking_id,
       is_accept: "accepted",
-      status: "pending",
+      status: "Pending",
       userId: userId,
       providerId: providerId,
     };
