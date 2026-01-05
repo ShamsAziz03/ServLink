@@ -18,6 +18,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const serviceProviderStats = require("./routes/serviceProvider/serviceProviderStatsRoutes");
 const serviceProviderServiceListRoutes = require("./routes/serviceProvider/serviceProviderServiceList");
 const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceProvider/serviceProviderScheduleUnavailableDates");
+const providerBookings = require("./routes/serviceProvider/serviceProviderRequestsRoutes");
 
 // Middleware
 app.use(cors());
@@ -56,6 +57,7 @@ app.use(
   "/providerScheduleUnavailableDates",
   serviceProviderScheduleUnavailableDatesRoutes
 );
+app.use("/providerBookings", providerBookings);
 
 // Start server
 const PORT = process.env.PORT || 5000;

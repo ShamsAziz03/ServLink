@@ -192,8 +192,8 @@ export default function ProfileScreen() {
           <SettingItem
             iconLib="Ionicons"
             icon="briefcase-outline"
-            text="Become a Provider"
-            onPress={() => router.push("/becomeProvider")}
+            text="Your Requests Bookings"
+            onPress={() => router.push("/ProviderPages/providerRequests")}
           />
           <SettingItem
             iconLib="Ionicons"

@@ -687,17 +687,16 @@ const ProviderScheduleUnavailableDates = () => {
             </Pressable>
             <Text
               style={{
-                fontSize: 26,
+                fontSize: 23,
                 fontWeight: "900",
                 color: "#601d77ff",
               }}
             >
-              ServLink
+              Work Schedule
             </Text>
           </View>
 
           {/* Header */}
-          <Text style={styles.title}>Work Schedule</Text>
           <Text style={styles.subtitle}>
             Manage Work Time & Schedule & Unavailable dates
           </Text>
@@ -813,8 +812,8 @@ const styles = StyleSheet.create({
     color: "#7b3685ff",
     marginBottom: 20,
     fontWeight: "700",
-    marginTop: 10,
-    fontSize: 15,
+    marginTop: 20,
+    fontSize: 16,
   },
   statsRow: {
     flexDirection: "row",
@@ -846,7 +845,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomColor: "#888",
     borderBottomWidth: 0.8,
-    gap: 80,
+    gap: 60,
   },
   input: {
     borderWidth: 1,
