@@ -5,13 +5,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import BackButton from "../components/BackButton";
 
-
 export default function ChangePassword() {
   const [user, setUser] = useState(null);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const ip = process.env.EXPO_PUBLIC_IP;
   useEffect(() => {
     const loadUser = async () => {
       const saved = await AsyncStorage.getItem("user");
@@ -28,7 +28,7 @@ export default function ChangePassword() {
 
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/api/users/${user.user_id}/changePassword`,
+        `http://${ip}:5000/api/users/${user.user_id}/changePassword`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ export default function ChangePassword() {
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
-       <BackButton goTo="/profileUser"/>
+      <BackButton goTo="/profileUser" />
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingTop:0,
-    paddingBottom:90,
+    paddingTop: 0,
+    paddingBottom: 90,
   },
   card: {
     width: "90%",

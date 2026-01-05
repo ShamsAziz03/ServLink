@@ -36,11 +36,12 @@ const ServiceBooking = () => {
   //for fetch service providers
   const [serviceProviders, setServiceProviders] = useState([]);
   const [originalServiceProviders, setOriginalServiceProviders] = useState([]);
+    const ip = process.env.EXPO_PUBLIC_IP;
   const fetchProviders = async () => {
     try {
       const service_id = currentService.service_id;
       const result = await fetch(
-        `http://192.168.1.12:5000/bookingService/getServiceProviders/${service_id}`
+        `http://${ip}:5000/bookingService/getServiceProviders/${service_id}`
       );
       const fetchedData = await result.json();
       setServiceProviders(fetchedData);
@@ -60,7 +61,7 @@ const ServiceBooking = () => {
 
       try {
         const result = await fetch(
-          "http://192.168.1.12:5000/bookingService/getProvidersUnAvailableDates",
+          `http://${ip}:5000/bookingService/getProvidersUnAvailableDates`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -87,7 +88,7 @@ const ServiceBooking = () => {
 
       try {
         const result = await fetch(
-          "http://192.168.1.12:5000/bookingService/getProvidersSchedule",
+          `http://${ip}:5000/bookingService/getProvidersSchedule`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

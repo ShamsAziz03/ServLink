@@ -23,11 +23,12 @@ export default function Dashboard() {
     provider_count: 0,
     category_count:0,
   });
+    const ip = process.env.EXPO_PUBLIC_IP;
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://192.168.1.12:5000/api/adminInfo");
+        const res = await axios.get(`http://${ip}:5000/api/adminInfo`);
         //console.log(res);
         setStats(res.data);
       } catch (err) {

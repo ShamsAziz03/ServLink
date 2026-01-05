@@ -239,8 +239,8 @@ exports.addCategory = async (req, res) => {
     if (!name || !description || !file) {
       return res.status(400).json({ message: "Missing fields" });
     }
-
-    const cover_image_url = `http://192.168.1.12:5000/assets/${file.filename}`;
+  const ip = process.env.EXPO_PUBLIC_IP;
+    const cover_image_url = `http://${ip}:5000/assets/${file.filename}`;
 
     const query = `
       INSERT INTO categories (name, description, cover_image)
@@ -265,7 +265,7 @@ exports.updateCategory = async (req, res) => {
 
     let cover_image_url;
     if (file) {
-      cover_image_url = `http://192.168.1.12:5000/assets/${file.filename}`;
+      cover_image_url = `http://${ip}:5000/assets/${file.filename}`;
     }
 
     let query, params;

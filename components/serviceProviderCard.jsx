@@ -28,10 +28,11 @@ const ServiceProviderCard = ({ serviceProviderInfo }) => {
   const [showProviderProfile, setShowProviderProfile] = useState(false);
 
   const [rating, setRating] = useState(0);
+    const ip = process.env.EXPO_PUBLIC_IP;
 
   const fetchProviderRating = async () => {
     const result = await fetch(
-      `http://10.0.2.2:5000/bookingService/getProviderRating/${serviceProviderInfo.provider_id}`
+      `http://${ip}:5000/bookingService/getProviderRating/${serviceProviderInfo.provider_id}`
     );
     const data = await result.json();
     if (data.length != 0) {

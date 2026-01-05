@@ -32,7 +32,7 @@ const Favorite = {
       VALUES (?, ?, NOW())
     `;
     const [result] = await db.promise().execute(query, [userId, providerId]);
-   if (result.affectedRows === 1) {
+    if (result.affectedRows > 0) {
       return { success: true };
     } else {
       return { success: false };

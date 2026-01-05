@@ -39,6 +39,7 @@ function getStars(rating) {
 }
 
 const home = () => {
+  const ip = process.env.EXPO_PUBLIC_IP;
   const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisibility] = useState(false);
@@ -172,7 +173,7 @@ const home = () => {
   const [categoriesData, setcategoriesData] = useState([]);
   const fetchData = async () => {
     try {
-      const response = await fetch("http:/192.168.1.12:5000/homeInfo/categories");
+      const response = await fetch(`http://${ip}:5000/homeInfo/categories`);
       const fetchedData = await response.json();
       setcategoriesData(fetchedData[0]);
       console.log("Response:", fetchedData[0]);
@@ -185,7 +186,7 @@ const home = () => {
   const [offersData, setOffersData] = useState([]);
   const fetchOffers = async () => {
     try {
-      const response = await fetch("http://192.168.1.12:5000/homeInfo/offers");
+      const response = await fetch(`http://${ip}:5000/homeInfo/offers`);
       const fetchedDataOffers = await response.json();
       setOffersData(fetchedDataOffers[0]);
       console.log("Response:", fetchedDataOffers[0]);
@@ -197,27 +198,22 @@ const home = () => {
   //for fetch top providers
   const [topProviders, setTopProviders] = useState([]);
   const fetchTopProviders = async () => {
-  try {
-    const response = await fetch(
-      "http://192.168.1.12:5000/homeInfo/topProviders"
-    );
-    const fetchedData = await response.json();
-    
-    // تأكد هنا إن topProviders موجودة وتكون array
-    setTopProviders(fetchedData.topProviders || []);
-    
-    console.log("top providers:", fetchedData.topProviders);
-  } catch (error) {
-    console.error("Error fetching top providers:", error);
-  }
-};
+    try {
+      const response = await fetch(`http://${ip}:5000/homeInfo/topProviders`);
+      const fetchedData = await response.json();
+      setTopProviders(fetchedData);
 
+      console.log("top providers:", fetchedData);
+    } catch (error) {
+      console.error("Error fetching top providers:", error);
+    }
+  };
 
   //for most booked services
   const [mostBooked, setMostBooked] = useState([]);
   const fetchMostBooked = async () => {
     try {
-      const response = await fetch("http://192.168.1.12:5000/homeInfo/mostBooked");
+      const response = await fetch(`http://${ip}:5000/homeInfo/mostBooked`);
       const fetchedData = await response.json();
       setMostBooked(fetchedData);
       console.log("most booked:", fetchedData);

@@ -104,7 +104,7 @@ where sp.provider_id= ? ;
     is_accept,
     estimated_time
   )
-  VALUES (?, ?, 'pending', CURDATE(), ?, ?, ?, ?, ?, NOW(), 'pending', ?)
+  VALUES (?, ?, 'Pending', CURDATE(), ?, ?, ?, ?, ?, NOW(), 'pending', ?)
 `;
 
     const [result] = await db

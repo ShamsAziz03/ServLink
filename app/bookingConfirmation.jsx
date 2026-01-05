@@ -29,10 +29,12 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
 
   const { provider_id, base_price } = provider;
 
+  const ip = process.env.EXPO_PUBLIC_IP;
+
   const fetchServiceProviderSchedule = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderSchedule/${provider_id}`
+        `http://${ip}:5000/bookingService/getServiceProviderSchedule/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderSchedule(fetchedData);
@@ -44,7 +46,7 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
   const fetchServiceProviderBookings = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderBookings/${provider_id}`
+        `http://${ip}:5000/bookingService/getServiceProviderBookings/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderBookings(fetchedData);
@@ -57,7 +59,7 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
   const fetchServiceProviderUnavailableDates = async () => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/bookingService/getServiceProviderUnavailableDates/${provider_id}`
+        `http://${ip}:5000/bookingService/getServiceProviderUnavailableDates/${provider_id}`
       );
       const fetchedData = await response.json();
       setProviderUnavailableDates(fetchedData);

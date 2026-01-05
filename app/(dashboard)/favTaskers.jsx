@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  
+import {
   View,
   Text,
   StyleSheet,
@@ -16,7 +16,8 @@ export default function FavoriteProvidersScreen() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const BASE_URL = "http://192.168.1.12:5000"; 
+  const ip = process.env.EXPO_PUBLIC_IP;
+  const BASE_URL =`http://${ip}:5000`;
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -26,11 +27,12 @@ export default function FavoriteProvidersScreen() {
         if (!storedUser) return;
         const user = JSON.parse(storedUser);
 
-        const res = await fetch(`${BASE_URL}/api/favorites/user/${user.user_id}`);
-       const data = await res.json();
-console.log("Favorites API response:", data);
-setFavorites(data);
-
+        const res = await fetch(
+          `${BASE_URL}/api/favorites/user/${user.user_id}`
+        );
+        const data = await res.json();
+        console.log("Favorites API response:", data);
+        setFavorites(data);
       } catch (err) {
         console.log("Error fetching favorites:", err);
       } finally {
@@ -51,8 +53,12 @@ setFavorites(data);
           text: "Yes",
           onPress: async () => {
             try {
-              await fetch(`${BASE_URL}/api/favorites/${favorite_id}`, { method: "DELETE" });
-              setFavorites(favorites.filter(f => f.favorite_id !== favorite_id));
+              await fetch(`${BASE_URL}/api/favorites/${favorite_id}`, {
+                method: "DELETE",
+              });
+              setFavorites(
+                favorites.filter((f) => f.favorite_id !== favorite_id)
+              );
             } catch (err) {
               Alert.alert("Error", "Failed to remove favorite");
             }
@@ -68,8 +74,15 @@ setFavorites(data);
       <View style={styles.row}>
         <MaterialCommunityIcons name="account" size={22} color="#750d83" />
         <Text style={styles.text}>{item.provider_name}</Text>
-        <TouchableOpacity style={styles.deleteIcon} onPress={() => removeFavorite(item.favorite_id)}>
-          <MaterialCommunityIcons name="trash-can-outline" size={22} color="#750d83" />
+        <TouchableOpacity
+          style={styles.deleteIcon}
+          onPress={() => removeFavorite(item.favorite_id)}
+        >
+          <MaterialCommunityIcons
+            name="trash-can-outline"
+            size={22}
+            color="#750d83"
+          />
         </TouchableOpacity>
       </View>
 
@@ -82,7 +95,11 @@ setFavorites(data);
       {/* aboutProvider */}
       {item.aboutProvider ? (
         <View style={styles.row}>
-          <MaterialCommunityIcons name="text-box-outline" size={22} color="#750d83" />
+          <MaterialCommunityIcons
+            name="text-box-outline"
+            size={22}
+            color="#750d83"
+          />
           <Text style={styles.aboutProvider}>{item.aboutProvider}</Text>
         </View>
       ) : null}
@@ -105,7 +122,11 @@ setFavorites(data);
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#750d83" style={{ marginTop: 50 }} />
+        <ActivityIndicator
+          size="large"
+          color="#750d83"
+          style={{ marginTop: 50 }}
+        />
       ) : favorites.length === 0 ? (
         <Text style={styles.noData}>No favorite providers found</Text>
       ) : (
@@ -141,9 +162,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   row: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
-  text: { marginLeft: 8, fontSize: 16, color: "#333", fontWeight: "bold", flex: 1 },
-  aboutProvider: { marginLeft: 8, fontSize: 14, color: "#555", flex: 1, flexWrap: "wrap" },
+  text: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "bold",
+    flex: 1,
+  },
+  aboutProvider: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#555",
+    flex: 1,
+    flexWrap: "wrap",
+  },
   rate: { marginLeft: 8, fontSize: 15, fontWeight: "bold", color: "#750d83" },
   deleteIcon: { marginLeft: 10 },
-  noData: { textAlign: "center", color: "#750d83", fontSize: 16, marginTop: 100 },
+  noData: {
+    textAlign: "center",
+    color: "#750d83",
+    fontSize: 16,
+    marginTop: 100,
+  },
 });

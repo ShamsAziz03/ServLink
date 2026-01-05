@@ -44,7 +44,7 @@ export default function BookingCalendarScreen() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
+  const ip = process.env.EXPO_PUBLIC_IP;
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   /* ================= FETCH BOOKINGS ================= */
@@ -64,7 +64,7 @@ export default function BookingCalendarScreen() {
       }
 
       const res = await axios.get(
-        `http://192.168.1.12:5000/api/provider/bookings/${provider_id}`
+        `http://${ip}:5000/api/provider/bookings/${provider_id}`
       );
       // console.log(res);
 
@@ -174,11 +174,11 @@ export default function BookingCalendarScreen() {
                 <Text style={styles.time}>{item.service_time}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    if (item.status !== "Pending") return; 
+                    if (item.status.toLowerCase() !== "pending") return; 
                     setCurrentBooking(item); 
                     router.push("../BookingTimer"); 
                   }}
-                  disabled={item.status !== "Pending"} 
+                  disabled={item.status.toLowerCase() !== "pending"} 
                 >
                 
                   <View style={styles.card}>

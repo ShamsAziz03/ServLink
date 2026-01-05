@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Button, Alert } from 'react-native';
 
 export default function TestNotificationButton() {
+    const ip = process.env.EXPO_PUBLIC_IP;
   const sendTestNotification = async () => {
     try {
-      const response = await fetch('http://192.168.1.12:5000/api/users/send-notification', {
+      const response = await fetch(`http://${ip}:5000/api/users/send-notification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

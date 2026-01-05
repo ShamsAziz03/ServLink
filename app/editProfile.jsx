@@ -12,7 +12,7 @@ export default function EditProfile() {
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
-
+  const ip = process.env.EXPO_PUBLIC_IP;
   useEffect(() => {
     const loadUser = async () => {
       const saved = await AsyncStorage.getItem("user");
@@ -34,7 +34,7 @@ export default function EditProfile() {
 
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/api/users/${user.user_id}`,
+        `http://${ip}:5000/api/users/${user.user_id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

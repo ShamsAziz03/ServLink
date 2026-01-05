@@ -41,11 +41,12 @@ const Questions = () => {
   const currentQuestion = serviceQuestions[currentIndex];
   const [otherAnswers, setOtherAnswers] = useState(true);
   const [selectedOption, setSelectedOption] = useState({});
+  const ip = process.env.EXPO_PUBLIC_IP;
 
   const fetchServiceQuestions = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.12:5000/serviceQuestions/getServiceQuestions/${currentService.service_id}`
+        `http://${ip}:5000/serviceQuestions/getServiceQuestions/${currentService.service_id}`
       );
       const fetchedData = await response.json();
       setServiceQuestions(fetchedData);

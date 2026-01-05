@@ -42,8 +42,9 @@ export default function CategoriesScreen() {
         fetchCategories();
     }, []);
 
+      const ip = process.env.EXPO_PUBLIC_IP;
     const fetchCategories = async () => {
-        const res = await axios.get("http://192.168.1.12:5000/api/categories");
+        const res = await axios.get(`http://${ip}:5000/api/categories`);
         setCategories(res.data);
     };
 
@@ -68,7 +69,11 @@ export default function CategoriesScreen() {
             type: "image/jpeg",
         });
 
+<<<<<<< HEAD
         await axios.post("http://192.168.1.12:5000/api/addCategory", formData, {
+=======
+        await axios.post(`http://${ip}:5000/api/addCategory`, formData, {
+>>>>>>> fb2728f8afa0df6127a6d270d2d743c07b1b16d3
             headers: { "Content-Type": "multipart/form-data" },
         });
 
@@ -109,7 +114,11 @@ export default function CategoriesScreen() {
 
     console.log("Sending formData:", formData);
 
+<<<<<<< HEAD
     await axios.put(`http://192.168.1.12:5000/api/updateCategory`, formData, {
+=======
+    await axios.put(`http://${ip}:5000/api/updateCategory`, formData, {
+>>>>>>> fb2728f8afa0df6127a6d270d2d743c07b1b16d3
       headers: { "Content-Type": "multipart/form-data" },
     });
 

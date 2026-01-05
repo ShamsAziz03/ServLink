@@ -22,15 +22,14 @@ export default function ContactUsScreen() {
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
-  // ✅ جلب user_id عند تحميل الصفحة
   useEffect(() => {
     const getUser = async () => {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
         setUserId(user.user_id);
-        setName(user.name || ""); // اختياري إذا بدك تملئي الاسم تلقائياً
-        setEmail(user.email || ""); // اختياري إذا بدك تملئي الإيميل تلقائياً
+        setName(user.name || ""); 
+        setEmail(user.email || ""); 
       }
     };
     getUser();
@@ -48,7 +47,7 @@ export default function ContactUsScreen() {
     }
 
     try {
-      const response = await fetch("http://192.168.1.12:5000/contact-us", {
+      const response = await fetch(`http://${ip}:5000/contact-us`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userId, name, email, message }),
