@@ -28,8 +28,14 @@ exports.getBookAnswers = async (req, res) => {
 
 exports.updateBook = async (req, res) => {
   try {
-    const { bookId, is_accept, status } = req.body;
-    const result = await BookingModel.updateBook(bookId, is_accept, status);
+    const { bookId, is_accept, status, userId, providerId } = req.body;
+    const result = await BookingModel.updateBook(
+      bookId,
+      is_accept,
+      status,
+      userId,
+      providerId
+    );
     res.json(result);
   } catch (err) {
     res.status(500).json({
