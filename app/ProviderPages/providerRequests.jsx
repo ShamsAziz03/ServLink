@@ -198,7 +198,7 @@ export default function ProviderRequests() {
   };
 
   const fetchBooks = async () => {
-    const id = loggedUser?.id || 2;
+    const id = loggedUser?.user_id || 2;
     const result = await fetch(
       `${API_ADDRESS}/providerBookings/getProviderBookings/${id}`
     );
@@ -230,13 +230,29 @@ export default function ProviderRequests() {
     }
   };
 
-  const handleAccept = (bookId) => {
-    const obj = { bookId: bookId, is_accept: "accepted", status: "pending" };
+  const handleAccept = (book) => {
+    const userId = book.customerId;
+    const providerId = loggedUser?.user_id || 2;
+    const obj = {
+      bookId: book.booking_id,
+      is_accept: "accepted",
+      status: "pending",
+      userId: userId,
+      providerId: providerId,
+    };
     updateBook(obj);
   };
 
-  const handleReject = (bookId) => {
-    const obj = { bookId: bookId, is_accept: "rejected", status: "Cancelled" };
+  const handleReject = (book) => {
+    const userId = book.customerId;
+    const providerId = loggedUser?.user_id || 2;
+    const obj = {
+      bookId: book.booking_id,
+      is_accept: "rejected",
+      status: "Cancelled",
+      userId: userId,
+      providerId: providerId,
+    };
     updateBook(obj);
   };
 
@@ -467,7 +483,7 @@ export default function ProviderRequests() {
                               {
                                 text: "Yes",
                                 onPress: () => {
-                                  handleAccept(item.booking_id);
+                                  handleAccept(item);
                                 },
                               },
                             ]
@@ -499,7 +515,7 @@ export default function ProviderRequests() {
                               {
                                 text: "Yes",
                                 onPress: () => {
-                                  handleReject(item.booking_id);
+                                  handleReject(item);
                                 },
                               },
                             ]

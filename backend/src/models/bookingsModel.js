@@ -36,6 +36,7 @@ WHERE
     b.duration_time,
     b.actual_total_price,
     b.total_price,
+    u.user_id as customerId,
     u.first_name,
     u.last_name,
     u.phone,
@@ -72,19 +73,47 @@ WHERE
     return response;
   }
 
-  static async updateBook(bookId, is_accept, status) {
-    const getBookAnswers = `UPDATE bookings
-SET 
-    is_accept = ?,
-    status = ?
-WHERE booking_id = ?;
-     `;
+  static async updateBook(bookId, is_accept, status, userId, providerId) {
+    const updateQuery = `UPDATE bookings
+    SET is_accept = ?, status = ?
+    WHERE booking_id = ?;`;
     const [response] = await db
       .promise()
-      .execute(getBookAnswers, [is_accept, status, bookId]);
+      .execute(updateQuery, [is_accept, status, bookId]);
+
     if (response.affectedRows > 0) {
-      return { success: "Update Done" };
+      const [providerRows] = await db.promise().execute(
+        `SELECT u.first_name, u.last_name 
+         FROM service_providers p 
+         JOIN users u ON p.user_id = u.user_id 
+         WHERE p.provider_id = ?`,
+        [providerId]
+      );
+
+      const provider = providerRows[0];
+      const providerName = provider
+        ? `${provider.first_name} ${provider.last_name}`
+        : "Provider";
+
+      let title, message;
+      if (is_accept === "accepted") {
+        title = "Booking Accepted";
+        message = `Your booking has been accepted by ${providerName}`;
+      } else if (is_accept === "rejected") {
+        title = "Booking Rejected";
+        message = `Your booking has been rejected by ${providerName}`;
+      } 
+      const sentAt = new Date();
+      await db
+        .promise()
+        .execute(
+          `INSERT INTO notifications (user_id, title, message, sent_at) VALUES (?, ?, ?, ?)`,
+          [userId, title, message, sentAt]
+        );
+
+      return { success: "Update Done and Notification Sent" };
     }
+
     return { error: "Can't Update" };
   }
 }
