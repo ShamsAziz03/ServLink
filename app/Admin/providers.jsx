@@ -43,11 +43,7 @@ export default function ProvidersAdmin() {
     try {
       setLoading(true);
       const res = await axios.get(
-<<<<<<< HEAD
-        `http://192.168.1.12:5000/api/search-providers?search=${text}`
-=======
         `http://${ip}:5000/api/search-providers?search=${text}`
->>>>>>> fb2728f8afa0df6127a6d270d2d743c07b1b16d3
       );
       setProviders(res.data);
     } catch (err) {
@@ -74,11 +70,7 @@ export default function ProvidersAdmin() {
 
   const handleApprove = async (item) => {
     try {
-<<<<<<< HEAD
-      await axios.put("http://192.168.1.12:5000/api/approve-provider", {
-=======
       await axios.put(`http://${ip}:5000/api/approve-provider`, {
->>>>>>> fb2728f8afa0df6127a6d270d2d743c07b1b16d3
         provider_id: item.provider_id,
         approved_by_admin: item.approved_by_admin === 1 ? 0 : 1,
       });
