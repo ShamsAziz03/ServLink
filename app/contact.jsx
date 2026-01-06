@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,13 +14,27 @@ import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ContactUsScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [userId, setUserId] = useState(null);
+  const ip = process.env.EXPO_PUBLIC_IP;
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  useEffect(() => {
+    const getUser = async () => {
+      const storedUser = await AsyncStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserId(user.user_id);
+        setName(user.name || ""); 
+        setEmail(user.email || ""); 
+      }
+    };
+    getUser();
+  }, []);
 
   const handleSubmit = async () => {
     if (!name || !email || !message) {
@@ -28,22 +42,25 @@ export default function ContactUsScreen() {
       return;
     }
 
+    if (!userId) {
+      alert("User not logged in!");
+      return;
+    }
+
     try {
       const response = await fetch(`http://${ip}:5000/contact-us`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ user_id: userId, name, email, message }),
       });
 
       const data = await response.json();
 
       if (data.success) {
         alert("Message sent successfully!");
-        setName("");
-        setEmail("");
         setMessage("");
       } else {
-        alert("Failed to sent message!");
+        alert("Failed to send message!");
       }
     } catch (error) {
       alert("Network error!");
@@ -77,12 +94,7 @@ export default function ContactUsScreen() {
 
           {/* Name */}
           <View style={styles.inputRow}>
-            <Feather
-              name="user"
-              size={20}
-              color="#6a5c7b"
-              style={styles.icon}
-            />
+            <Feather name="user" size={20} color="#6a5c7b" style={styles.icon} />
             <TextInput
               placeholder="Full name"
               placeholderTextColor="#a592b3"
@@ -94,12 +106,7 @@ export default function ContactUsScreen() {
 
           {/* Email */}
           <View style={styles.inputRow}>
-            <Feather
-              name="mail"
-              size={20}
-              color="#6a5c7b"
-              style={styles.icon}
-            />
+            <Feather name="mail" size={20} color="#6a5c7b" style={styles.icon} />
             <TextInput
               placeholder="Email address"
               placeholderTextColor="#a592b3"
@@ -138,7 +145,6 @@ export default function ContactUsScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Social Media */}
           {/* Social Media */}
           <View style={styles.socialRow}>
             <FontAwesome name="facebook-square" size={30} color="#3b2d4bff" />

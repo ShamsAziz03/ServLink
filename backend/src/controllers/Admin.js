@@ -1,4 +1,5 @@
 const db = require("../config/db");
+
 exports.getAdminInfo = async (req, res) => {
   try {
     let query = `
@@ -281,5 +282,68 @@ exports.updateCategory = async (req, res) => {
     res.status(200).json({ message: "Category updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+ 
+
+exports.getServices = async (req, res) => {
+    try {
+    const query = `
+    SELECT
+  s.service_id,
+  s.name AS service_name,
+  s.description,
+  s.image,
+  c.name AS category_name,
+  MIN(sp.base_price) AS base_price
+FROM services s
+JOIN categories c ON s.category_id = c.category_id
+JOIN provider_services sp ON sp.service_id = s.service_id
+GROUP BY s.service_id;
+
+  `;
+
+
+    const [rows] = await db.promise().query(query);
+    res.status(200).json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};   
+exports.get_contact_messages= async (req, res) => {
+  try {
+    const query = `
+     select c.*
+     from contact_messages c
+    `;
+
+    const [rows] = await db.promise().query(query);
+    res.status(200).json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.replyMessage = async (req, res) => {
+  const { contact_id, reply } = req.body;
+
+  if (!contact_id || !reply) {
+    return res.status(400).json({ success: false, message: "Missing data" });
+  }
+
+  try {
+    await db.promise().query(
+      "INSERT INTO contact_replies (contact_id, reply) VALUES (?, ?)",
+      [contact_id, reply]
+    );
+
+    await db.promise().query(
+      "UPDATE contact_messages SET replied = 1 WHERE id = ?",
+      [contact_id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

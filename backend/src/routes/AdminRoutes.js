@@ -24,4 +24,9 @@ router.put(
   AdminController.updateCategory
 );
 
+router.get("/services", AdminController.getServices);
+
+router.get("/get_contact_messages", AdminController.get_contact_messages);
+router.post("/contact_reply", AdminController.replyMessage);
+
 module.exports = router;

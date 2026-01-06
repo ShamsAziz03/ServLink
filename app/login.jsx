@@ -198,8 +198,10 @@ export default function App() {
       alert("Network Error: " + err.message);
     }
   };
+    console.log("IP:", process.env.EXPO_PUBLIC_IP);
 
   return (
+    
     <LinearGradient
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}

@@ -55,7 +55,7 @@ export default function BookingTimer() {
           `Total price: ${actual_total_price} ₪`
       })
     });
-    console.log(currentBooking.user_id,);
+    console.log(currentBooking.user_id);
     alert(
       `Booking completed ✅\n` +
       `Duration: ${hoursDecimal} hours\n` +
