@@ -30,6 +30,7 @@ const AppProvider = ({ children }) => {
       seconds: 0,
     running: false,
   });
+  const [explainEstimateTime,setExplainEstimateTime]=useState("");
 
   return (
     <AppContext.Provider
@@ -51,7 +52,9 @@ const AppProvider = ({ children }) => {
         currentBooking, 
         setCurrentBooking, 
         timerState, 
-        setTimerState
+        setTimerState,
+        explainEstimateTime,
+        setExplainEstimateTime,
       }}
     >
       {children}

@@ -409,7 +409,8 @@ export default function ProviderRequests() {
                     <Text style={styles.categoryName}>{item.categoryName}</Text>
                   </View>
                   <Text style={styles.price}>
-                    {item.actual_total_price === null
+                    {item.actual_total_price === null ||
+                    item.actual_total_price == "0.00"
                       ? item.total_price
                       : item.actual_total_price}
                     ₪

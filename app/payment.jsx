@@ -24,10 +24,11 @@ const Payment = () => {
     currentService,
     userCurrentLocation,
     questionsAnswers,
+    explainEstimateTime,
   } = useContext(AppContext);
   const [selectedOption, setSelectedOption] = useState("cache");
   const [confirmed, setConfirmed] = useState(false);
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const API_URL = `http://${ip}:5000`;
 
   const fetchStoreAnswers = async (bookId) => {
@@ -103,13 +104,12 @@ const Payment = () => {
 
     const transactionData = await result.json();
     console.log("Transaction:", transactionData);
-   
 
     const answersResult = await fetchStoreAnswers(bookingId);
     if (bookingId && transactionData.insertId && answersResult) {
       setConfirmed(true);
     } else {
-       console.log("Transaction FULL RESPONSE:", transactionData);
+      console.log("Transaction FULL RESPONSE:", transactionData);
       console.error("Booking, transaction, or answers failed");
     }
   };
@@ -165,14 +165,17 @@ const Payment = () => {
           style={{
             flexDirection: "column",
             justifyContent: "flex-start",
-            gap: 20,
+            gap: 10,
           }}
         >
-          <Text style={styles.text}>Choose Payment Method:</Text>
+          <Text style={[styles.text, { marginBottom: 10 }]}>
+            Choose Payment Method:
+          </Text>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-evenly",
+              marginBottom: 30,
             }}
           >
             <Pressable
@@ -233,13 +236,28 @@ const Payment = () => {
             </Pressable>
           </View>
           <Text style={styles.notLogText}>
-            {"Pay /hour: " + bookingObject.hourlyRate + " ₪"}
+            {"Hourly Rate:     " + bookingObject.hourlyRate + " ₪"}
           </Text>
           <Text style={styles.notLogText}>
-            {"Your final amount: " +
+            {"Estimation Price:     " +
               bookingObject.hourlyRate * bookingObject.expectedTime +
               " ₪"}
           </Text>
+          {explainEstimateTime !== "" ? (
+            <Text
+              style={{
+                color: "#591c63ff",
+                fontSize: 16,
+                fontWeight: "500",
+                marginTop: 20,
+              }}
+            >
+              {"Estimated Hours:  " +
+                bookingObject.expectedTime +
+                " hours,  \n" +
+                explainEstimateTime}
+            </Text>
+          ) : null}
           {selectedOption === "cache" && !confirmed && (
             <View
               style={{
@@ -248,7 +266,7 @@ const Payment = () => {
                 gap: 20,
               }}
             >
-              <Text style={styles.notLogText}>
+              <Text style={[styles.notLogText, { marginTop: 30 }]}>
                 Please press confim button to confirm your booking
               </Text>
               <TouchableOpacity
@@ -257,7 +275,7 @@ const Payment = () => {
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   borderRadius: 8,
-                  marginTop: 10,
+                  marginTop: 60,
                   marginHorizontal: 50,
                 }}
                 onPress={() => {
@@ -292,7 +310,7 @@ const Payment = () => {
             </View>
           )}
           {selectedOption === "card" && (
-            <View style={{ marginTop: 30 }}>
+            <View>
               <CardPayment />
             </View>
           )}
@@ -378,7 +396,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     paddingTop: 20,
     textShadowColor: "#9c81a9ff",
-    textShadowOffset: { width: 1.5, height: 1.5 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
   successContainer: {
@@ -423,12 +441,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   notLogText: {
-    color: "#7b3685ff",
-    fontSize: 20,
+    color: "#74387eff",
+    fontSize: 18,
     fontWeight: "700",
-    textShadowColor: "#9c81a9ff",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   notSelectedButton: {
     backgroundColor: "#c8a4ccff",

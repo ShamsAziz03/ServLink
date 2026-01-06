@@ -17,7 +17,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { registerForPushNotifications } from "./notifications";
 import { Platform } from "react-native";
 
-
 export default function App() {
   const [isSignup, setIsSignup] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -40,7 +39,7 @@ export default function App() {
   const [Description, setDescription] = useState([]);
   const [idCard, setidCard] = useState("");
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const [showPicker, setShowPicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
@@ -136,10 +135,9 @@ export default function App() {
           certifications,
           aboutYou,
           images,
-        }
+        },
       }),
     };
-
 
     try {
       const response = await fetch(`http://${ip}:5000/api/users/register`, {
@@ -152,7 +150,11 @@ export default function App() {
       console.log("Server response:", text);
 
       let resData;
-      try { resData = JSON.parse(text); } catch (e) { resData = null; }
+      try {
+        resData = JSON.parse(text);
+      } catch (e) {
+        resData = null;
+      }
 
       if (response.ok) {
         alert("Account Created!");
@@ -183,14 +185,15 @@ export default function App() {
           await fetch(`http://${ip}:5000/api/users/save-push-token`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: resData.user.user_id, expoToken: token }),
+            body: JSON.stringify({
+              userId: resData.user.user_id,
+              expoToken: token,
+            }),
           });
         }
-        if (resData.user.role=='user') 
-        router.push("./home");
-        else if(resData.user.role=='provider')
-           router.push("./ProviderPages/providerDashboard");
-
+        if (resData.user.role == "user") router.push("./home");
+        else if (resData.user.role == "provider")
+          router.push("./ProviderPages/providerDashboard");
       } else {
         alert(resData.message || "Login failed");
       }
@@ -198,10 +201,8 @@ export default function App() {
       alert("Network Error: " + err.message);
     }
   };
-    console.log("IP:", process.env.EXPO_PUBLIC_IP);
 
   return (
-    
     <LinearGradient
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
@@ -305,7 +306,7 @@ export default function App() {
                     style={[
                       styles.interestCard,
                       checkedItems.includes(item.name) &&
-                      styles.interestCardSelected,
+                        styles.interestCardSelected,
                     ]}
                     onPress={() => toggleCheckbox(item.name)}
                   >
@@ -317,7 +318,7 @@ export default function App() {
                       style={[
                         styles.interestText,
                         checkedItems.includes(item.name) &&
-                        styles.interestTextSelected,
+                          styles.interestTextSelected,
                       ]}
                     >
                       {item.name}
@@ -409,7 +410,9 @@ export default function App() {
                     value={idCard}
                     onChangeText={setidCard}
                     style={styles.input}
-                    left={<TextInput.Icon icon="card-account-details-outline" />}
+                    left={
+                      <TextInput.Icon icon="card-account-details-outline" />
+                    }
                   />
                   <TextInput
                     label="About You"
@@ -473,7 +476,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </LinearGradient >
+    </LinearGradient>
   );
 }
 

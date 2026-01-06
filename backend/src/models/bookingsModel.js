@@ -40,6 +40,7 @@ WHERE
     u.first_name,
     u.last_name,
     u.phone,
+    u.email,
     s.name AS serviceName,
     c.name AS categoryName
 FROM

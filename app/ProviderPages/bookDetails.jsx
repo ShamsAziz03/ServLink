@@ -11,9 +11,28 @@ import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 const BookDetails = ({ visible, onClose, book }) => {
   const [answers, setAnswers] = useState([]);
+  const [AIAbstractOfBookDetails, setAIAbstractOfBookDetails] = useState("");
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const API_ADDRESS = `http://${ip}:5000`;
+
+  const fetchAIAbstractOfBookDetails = async () => {
+    try {
+      const result = await fetch(
+        `${API_ADDRESS}/providerBookings/getAbstractOfBookDetails`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ book, answers }),
+        }
+      );
+
+      const fetchedData = await result.text();
+      setAIAbstractOfBookDetails(fetchedData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   const fetchAnswers = async () => {
     try {
@@ -31,6 +50,11 @@ const BookDetails = ({ visible, onClose, book }) => {
   useEffect(() => {
     fetchAnswers();
   }, [visible]);
+
+  useEffect(() => {
+    if (!book || answers.length === 0) return;
+    fetchAIAbstractOfBookDetails();
+  }, [answers]);
 
   return (
     <Modal transparent animationType="fade" visible={visible}>
@@ -129,12 +153,12 @@ const BookDetails = ({ visible, onClose, book }) => {
             <View style={styles.card}>
               <Text style={styles.sectionTitle}>Task Details</Text>
               {answers.length > 1 ? (
-                answers.map((item, index) => (
-                  <View key={index} style={styles.qaBox}>
-                    <Text style={styles.question}>{item.question_id}</Text>
-                    <Text style={styles.answer}>→ {item.answer_value}</Text>
-                  </View>
-                ))
+                <View style={styles.qaBox}>
+                  <Text style={styles.question}>
+                    Small Abstract with most importent Info From User
+                  </Text>
+                  <Text style={styles.answer}>→ {AIAbstractOfBookDetails}</Text>
+                </View>
               ) : (
                 <View style={styles.qaBox}>
                   <Text style={styles.question}>No Question had answered</Text>
@@ -275,15 +299,15 @@ const styles = StyleSheet.create({
   },
 
   question: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "700",
-    color: "#4b1458",
+    color: "#ad81b7ff",
   },
 
   answer: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
-    color: "#333",
+    color: "#610466ff",
     marginTop: 4,
   },
 

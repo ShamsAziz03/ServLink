@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bookingServiceController = require("../controllers/bookingServiceController");
+const userAI = require("../controllers/userAI");
 
 router.get(
   "/getServiceProviders/:serviceId",
@@ -43,6 +44,11 @@ router.post("/addBooking", bookingServiceController.addBooking);
 
 router.post("/addTransaction", bookingServiceController.addTransaction);
 
-router.get("/providerFromSearch/:providerId", bookingServiceController.providerFromSearch);
+router.get(
+  "/providerFromSearch/:providerId",
+  bookingServiceController.providerFromSearch
+);
+
+router.post("/getEstimatedTimeBook", userAI.getEstimatedTimeBook);
 
 module.exports = router;
