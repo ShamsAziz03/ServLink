@@ -2,14 +2,12 @@ const db = require("../config/db");
 
 class ServiceProvider {
   static async getServiceProviders(serviceId) {
-    const query = `select sp.*
-,ps.service_id,ps.base_price,ps.images,u.first_name,u.last_name, u.phone,u.email
+    const query = `select sp.*,
+    ps.service_id,ps.base_price,ps.images,u.first_name,u.last_name, u.phone,u.email
 from provider_services ps
 join service_providers sp on ps.provider_id=sp.provider_id
 join users u on sp.user_id= u.user_id
-where ps.service_id=
-? ;
-;
+where ps.service_id= ?;
 `;
     const [result] = await db.promise().execute(query, [serviceId]);
     return result;

@@ -64,7 +64,7 @@ const DashboardLayout = () => {
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name="person-circle-outline"
+              name="list"
               size={30}
               color={focused ? "#1c0223ff" : "#6d5e72ff"}
             />

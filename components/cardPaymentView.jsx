@@ -8,7 +8,7 @@ import {
 import { AppContext } from "../context/AppContext";
 import { Link, useNavigation } from "@react-navigation/native";
 
-  const ip = process.env.EXPO_PUBLIC_IP;
+const ip = process.env.EXPO_PUBLIC_IP;
 const API_URL = `http://${ip}:5000`;
 
 const CardPayment = () => {
@@ -287,7 +287,7 @@ const CardPayment = () => {
         disabled={loading}
         style={{
           width: "85%",
-          marginTop: 80,
+          marginTop: 30,
           backgroundColor: "#750d83",
           paddingVertical: 10,
           borderRadius: 10,

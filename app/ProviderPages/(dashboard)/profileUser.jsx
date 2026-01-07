@@ -50,8 +50,8 @@ export default function ProfileScreen() {
     const IconComponent = iconLib === "Ionicons" ? Ionicons : Feather;
     return (
       <TouchableOpacity style={styles.settingRow} onPress={onPress}>
-        <IconComponent name={icon} size={20} color="#750d83ff" />
-        <Text style={styles.settingText}>{text}</Text>
+        <IconComponent name={icon} size={23} color="#750d83ff" />
+        <Text style={styles.sectionTitle}>{text}</Text>
       </TouchableOpacity>
     );
   };
@@ -170,17 +170,6 @@ export default function ProfileScreen() {
 
           <View style={styles.divider} />
 
-          <Text style={styles.sectionTitle}>Account Settings</Text>
-          <SettingItem
-            icon="edit"
-            text="Edit Profile"
-            onPress={() => router.push("/editProfile")}
-          />
-          <SettingItem
-            icon="lock"
-            text="Change Password"
-            onPress={() => router.push("/changePass")}
-          />
           <SettingItem
             iconLib="Ionicons"
             icon="time-outline"
@@ -199,13 +188,13 @@ export default function ProfileScreen() {
             iconLib="Ionicons"
             icon="help-circle-outline"
             text="FAQ / Questions"
-            onPress={() => router.push("/q&a")}
+            onPress={() => router.push("/ProviderPages/providerQ&A")}
           />
           <SettingItem
             iconLib="Ionicons"
             icon="mail-outline"
             text="Contact Us"
-            onPress={() => router.push("/contact")}
+            onPress={() => router.push("/ProviderPages/providerContact")}
           />
           <SettingItem
             iconLib="Ionicons"
@@ -218,7 +207,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <LinearGradient
-              colors={["#b57edcff", "#750d83ff"]}
+              colors={["#92649eff", "#4c0954ff"]}
               style={styles.logoutGradient}
             >
               <Text style={styles.logoutText}>Logout</Text>
@@ -242,6 +231,7 @@ const styles = StyleSheet.create({
     padding: 25,
     alignItems: "center",
     height: "100%",
+    marginTop: 50,
   },
   avatar: {
     width: 110,
@@ -251,21 +241,23 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#9333ea",
   },
-  name: { fontSize: 22, fontWeight: "bold", color: "#37043a" },
-  email: { color: "#6a5c7b", marginBottom: 3, fontSize: 15 },
-  city: { color: "#6a5c7b", marginBottom: 6, fontSize: 15 },
+  name: { fontSize: 25, fontWeight: "bold", color: "#57125bff" },
+  email: { color: "#413155ff", marginBottom: 3, fontSize: 17 },
+  city: { color: "#38264dff", marginBottom: 6, fontSize: 17 },
   divider: {
     height: 1,
     width: "90%",
     backgroundColor: "#f7eaf9ff",
     marginVertical: 15,
+    marginTop: 50,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: "#750d83ff",
     alignSelf: "flex-start",
     marginBottom: 10,
+    marginLeft: 15,
   },
   settingRow: {
     flexDirection: "row",
@@ -278,7 +270,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
-    marginTop: -20,
   },
   logoutGradient: { paddingVertical: 12, alignItems: "center" },
   logoutText: { color: "#fff", fontSize: 16, fontWeight: "600" },

@@ -23,11 +23,12 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
   const [providerUnavailableDates, setProviderUnavailableDates] = useState([]);
   const [providerBookings, setProviderBookings] = useState([]);
   const [dateHasBooks, setDateHasBooks] = useState([]); //to check if choosed date from user has bookes for SP
-  const { questionsAnswers, setBookingObject } = useContext(AppContext); //to take how many hours the task will be
+  const { questionsAnswers, setBookingObject, setExplainEstimateTime } =
+    useContext(AppContext); //to take how many hours the task will be
   const [day, setDay] = useState(""); //when user set date so we split day to see day schedule
   const navigation = useNavigation();
 
-  const { provider_id, base_price } = provider;
+  const { provider_id, base_price, service_id } = provider;
 
   const ip = process.env.EXPO_PUBLIC_IP;
 
@@ -89,44 +90,72 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
     setRange(r);
   }, [providerUnavailableDates]);
 
-  const getTaskDuration = () => {
-    for (const questionText in questionsAnswers) {
-      const answer = questionsAnswers[questionText];
-      if (!answer) continue;
-      const v = answer.toString().trim().toLowerCase();
-      if (questionText.toLowerCase().includes("big")) {
-        const m = v.match(/(\d+)/);
-        if (m) {
-          setBookingObject((prev) => ({
-            ...prev,
-            expectedTime: parseInt(m[1], 10),
-          }));
-        }
-      }
+  const getTaskDuration = async () => {
+    // for (const questionText in questionsAnswers) {
+    //   const answer = questionsAnswers[questionText];
+    //   if (!answer) continue;
+    //   const v = answer.toString().trim().toLowerCase();
+    //   if (questionText.toLowerCase().includes("big")) {
+    //     const m = v.match(/(\d+)/);
+    //     if (m) {
+    //       setBookingObject((prev) => ({
+    //         ...prev,
+    //         expectedTime: parseInt(m[1], 10),
+    //       }));
+    //     }
+    //   }
 
-      if (questionText.toLowerCase().includes("hours")) {
-        if (/^\d+$/.test(v)) {
-          setBookingObject((prev) => ({
-            ...prev,
-            expectedTime: parseInt(v, 10),
-          }));
-          return parseInt(v, 10) * 60;
+    //   if (questionText.toLowerCase().includes("hours")) {
+    //     if (/^\d+$/.test(v)) {
+    //       setBookingObject((prev) => ({
+    //         ...prev,
+    //         expectedTime: parseInt(v, 10),
+    //       }));
+    //       return parseInt(v, 10) * 60;
+    //     }
+    //     if (v.includes("Full day")) {
+    //       setBookingObject((prev) => ({
+    //         ...prev,
+    //         expectedTime: 8,
+    //       }));
+    //     }
+    //     if (v.includes("Live-in")) {
+    //       setBookingObject((prev) => ({
+    //         ...prev,
+    //         expectedTime: 24,
+    //       }));
+    //     }
+    //   }
+    // }
+    // return;
+
+    try {
+      const response = await fetch(
+        `http://${ip}:5000/bookingService/getEstimatedTimeBook`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionsAnswers, service_id }),
         }
-        if (v.includes("Full day")) {
-          setBookingObject((prev) => ({
-            ...prev,
-            expectedTime: 8,
-          }));
-        }
-        if (v.includes("Live-in")) {
-          setBookingObject((prev) => ({
-            ...prev,
-            expectedTime: 24,
-          }));
-        }
-      }
+      );
+      const fetchedData = await response.json();
+      console.log(
+        "Data from AI for estimate time: " + JSON.stringify(fetchedData)
+      );
+      setExplainEstimateTime(fetchedData.explanation);
+
+      setBookingObject((prev) => ({
+        ...prev,
+        providerId: provider_id,
+        hourlyRate: base_price,
+        serviceDate: selectedDay,
+        serviceTime: time,
+        expectedTime: fetchedData.estimated_time,
+      }));
+      navigation.navigate("payment");
+    } catch (error) {
+      console.error("Error fetching bookings of the SP:", error);
     }
-    return;
   };
 
   const toMinutes = (t) => {
@@ -140,14 +169,12 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
 
   const handlePayment = () => {
     getTaskDuration();
-    setBookingObject((prev) => ({
-      ...prev,
-      providerId: provider_id,
-      hourlyRate: base_price,
-      serviceDate: selectedDay,
-      serviceTime: time,
-    }));
-    navigation.navigate("payment");
+  };
+
+  const minutesToTime = (mins) => {
+    const h = Math.floor(mins / 60) % 24;
+    const m = mins % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   };
 
   return (
@@ -304,8 +331,9 @@ const BookingConfirmation = ({ visible, onClose, provider }) => {
                         selectedMins >= bookedStart &&
                         selectedMins <= bookedEnd
                       ) {
+                        const endTimeStr = minutesToTime(bookedEnd);
                         alert(
-                          "Can't choose this time, SP has a booking at that time!"
+                          `Provider has a booking at this time!\nChoose Time after: ${endTimeStr}`
                         );
                         setShowClock(false);
                         return;
