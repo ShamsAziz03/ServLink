@@ -96,7 +96,7 @@ export default function ProfileScreen() {
           <Ionicons
             name="person-off-outline"
             size={80}
-            color="#7b3685ff"
+            color="#804f88ff"
             style={{ marginBottom: 20 }}
           />
           <Text
@@ -151,82 +151,47 @@ export default function ProfileScreen() {
   }
 
   return (
-    <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.card}>
-          <Image
-            source={{
-              uri:
-                user.image ||
-                "https://cdn-icons-png.flaticon.com/128/11753/11753993.png",
-            }}
-            style={styles.avatar}
-          />
-          <Text style={styles.name}>
-            {user.first_name} {user.last_name}
-          </Text>
-          <Text style={styles.email}>{user.email}</Text>
-          <Text style={styles.city}>{user.city}</Text>
+    <ScrollView contentContainerStyle={styles.scroll}>
+      <View style={styles.card}>
+        <Image
+          source={{
+            uri:
+              user.image ||
+              "https://cdn-icons-png.flaticon.com/128/11753/11753993.png",
+          }}
+          style={styles.avatar}
+        />
+        <Text style={styles.name}>
+          {user.first_name} {user.last_name}
+        </Text>
+        <Text style={styles.email}>{user.email}</Text>
+        <Text style={styles.city}>{user.city}</Text>
 
-          <View style={styles.divider} />
+        <View style={styles.divider} />
 
-          <Text style={styles.sectionTitle}>Account Settings</Text>
-          <SettingItem
-            icon="edit"
-            text="Edit Profile"
-            onPress={() => router.push("/editProfile")}
-          />
-          <SettingItem
-            icon="lock"
-            text="Change Password"
-            onPress={() => router.push("/changePass")}
-          />
-          <SettingItem
-            iconLib="Ionicons"
-            icon="time-outline"
-            text="My Schedule & Unavailable dates"
-            onPress={() =>
-              router.push("/ProviderPages/providerScheduleUnavailableDates")
-            }
-          />
-          <SettingItem
-            iconLib="Ionicons"
-            icon="briefcase-outline"
-            text="Your Requests Bookings"
-            onPress={() => router.push("/ProviderPages/providerRequests")}
-          />
-          <SettingItem
-            iconLib="Ionicons"
-            icon="help-circle-outline"
-            text="FAQ / Questions"
-            onPress={() => router.push("/q&a")}
-          />
-          <SettingItem
-            iconLib="Ionicons"
-            icon="mail-outline"
-            text="Contact Us"
-            onPress={() => router.push("/contact")}
-          />
-          <SettingItem
-            iconLib="Ionicons"
-            icon="chatbubble-ellipses-outline"
-            text="Inbox"
-            onPress={() => router.push("/inbox")}
-          />
+        <Text style={styles.sectionTitle}>Account Settings</Text>
+        <SettingItem
+          icon="edit"
+          text="Edit Profile"
+          onPress={() => router.push("/editProfile")}
+        />
+        <SettingItem
+          icon="lock"
+          text="Change Password"
+          onPress={() => router.push("/changePass")}
+        />
+        <View style={styles.divider} />
 
-          <View style={styles.divider} />
-
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <LinearGradient
-              colors={["#b57edcff", "#750d83ff"]}
-              style={styles.logoutGradient}
-            >
-              <Text style={styles.logoutText}>Logout</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </LinearGradient>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LinearGradient
+            colors={["#a468aaff", "#682471ff"]}
+            style={styles.logoutGradient}
+          >
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -235,12 +200,14 @@ const styles = StyleSheet.create({
   scroll: {
     padding: 20,
     alignItems: "center",
+    backgroundColor: "#f7eaf9ff",
     height: "100%",
   },
   card: {
     width: "95%",
     padding: 25,
     alignItems: "center",
+    backgroundColor: "#f7eaf9ff",
     height: "100%",
   },
   avatar: {
@@ -249,11 +216,21 @@ const styles = StyleSheet.create({
     borderRadius: 55,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: "#9333ea",
+    borderColor: "#5f196bff",
   },
   name: { fontSize: 22, fontWeight: "bold", color: "#37043a" },
-  email: { color: "#6a5c7b", marginBottom: 3, fontSize: 15 },
-  city: { color: "#6a5c7b", marginBottom: 6, fontSize: 15 },
+  email: {
+    color: "#5f3966ff",
+    marginBottom: 3,
+    fontSize: 16,
+    fontWeight: "400",
+  },
+  city: {
+    color: "#5a4b6cff",
+    marginBottom: 6,
+    fontSize: 16,
+    fontWeight: "400",
+  },
   divider: {
     height: 1,
     width: "90%",
@@ -273,12 +250,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     width: "100%",
   },
-  settingText: { marginLeft: 10, color: "#37043a", fontSize: 14 },
+  settingText: { marginLeft: 10, color: "#37043a", fontSize: 17 },
   logoutButton: {
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
-    marginTop: -20,
+    marginTop: -10,
   },
   logoutGradient: { paddingVertical: 12, alignItems: "center" },
   logoutText: { color: "#fff", fontSize: 16, fontWeight: "600" },

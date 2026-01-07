@@ -80,7 +80,7 @@ export default function ContactUsScreen() {
         >
           {/* Illustration */}
           <Link href="/profileUser" style={{ marginRight: 220 }}>
-            <Ionicons name="arrow-back-outline" size={35} color={"#7b3685ff"} />
+            <Ionicons name="arrow-back-outline" size={24} color={"#7b3685ff"} />
           </Link>
           <Image
             source={{

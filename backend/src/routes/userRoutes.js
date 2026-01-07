@@ -10,5 +10,6 @@ router.post("/send-notification", userController.sendPushNotification);
 
 router.patch("/:id", userController.updateUser);
 router.patch("/:id/changePassword", userController.changePassword);
-
+router.get("/user_inbox/:userId", userController.getUserInbox);
+router.put("/mark-read/:reply_id",userController.read_reply); 
 module.exports = router;

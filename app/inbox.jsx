@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -12,6 +11,9 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+
 
 const COLORS = {
   primary: "#6c3483",
@@ -22,10 +24,12 @@ const COLORS = {
   muted: "#9b8ca6",
 };
 
-export default function InboxScreen() {
+export default function InboxScreen({ navigation }) {
   const [messages, setMessages] = useState([]);
   const [selected, setSelected] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+    const router = useRouter();
+  
 
   useEffect(() => {
     fetchMessages();
@@ -33,12 +37,35 @@ export default function InboxScreen() {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get("http://ip:5000/user_inbox"); // API تعرض رسائل المستخدم
+      const storedUser = await AsyncStorage.getItem("user");
+      const user = JSON.parse(storedUser);
+      const userId = user.user_id;
+      const res = await axios.get(
+        `http://192.168.1.12:5000/api/users/user_inbox/${userId}`
+      );
       setMessages(res.data);
     } catch (err) {
       console.log(err);
     }
   };
+
+  // Mark message as read
+ const markAsRead = async (replyId) => {
+  console.log("Marking as read ID:", replyId); // صحح الاسم
+  if (!replyId) return;
+
+  try {
+    await axios.put(`http://192.168.1.12:5000/api/users/mark-read/${replyId}`);
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.reply_id === replyId ? { ...msg, read: 1 } : msg
+      )
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -49,7 +76,11 @@ export default function InboxScreen() {
       }}
     >
       <View style={styles.row}>
-        <Ionicons name="chatbubble-ellipses-outline" size={28} color={COLORS.primary} />
+        <Ionicons
+          name="chatbubble-ellipses-outline"
+          size={28}
+          color={COLORS.primary}
+        />
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Text style={styles.title}>{item.reply_title || "Admin Reply"}</Text>
           <Text style={styles.preview} numberOfLines={1}>
@@ -58,21 +89,32 @@ export default function InboxScreen() {
         </View>
         {!item.read && <View style={styles.dot} />}
       </View>
-      <Text style={styles.date}>{new Date(item.created_at).toLocaleDateString()}</Text>
+      <Text style={styles.date}>
+        {new Date(item.created_at).toLocaleDateString()}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={[COLORS.primary, COLORS.secondary]} style={styles.header}>
+      <LinearGradient
+        colors={[COLORS.primary, COLORS.secondary]}
+        style={styles.header}
+      >
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => router.push("/profileUser")}
+        >
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Inbox</Text>
       </LinearGradient>
 
       {/* Messages list */}
       <FlatList
         data={messages}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.reply_id.toString()}
         renderItem={renderItem}
         contentContainerStyle={{ padding: 16 }}
       />
@@ -82,12 +124,19 @@ export default function InboxScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <ScrollView>
-              <Text style={styles.modalTitle}>Admin Reply</Text>
-              <Text style={styles.modalContent}>{selected?.reply || "No reply yet"}</Text>
+              <Text style={styles.modalTitle}>
+                {selected?.reply_title || "Admin Reply"}
+              </Text>
+              <Text style={styles.modalContent}>
+                {selected?.reply || "No reply yet"}
+              </Text>
 
               <TouchableOpacity
                 style={styles.closeBtn}
-                onPress={() => setModalVisible(false)}
+                onPress={() => {
+                  markAsRead(selected?.reply_id); // Mark read عند الإغلاق
+                  setModalVisible(false);
+                }}
               >
                 <Text style={styles.closeText}>Close</Text>
               </TouchableOpacity>
@@ -102,14 +151,27 @@ export default function InboxScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
 
+  // Header
   header: {
-    padding: 20,
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 50,
+    paddingBottom: 20,
+    paddingHorizontal: 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  headerTitle: { color: "#fff", fontSize: 20, fontWeight: "bold", textAlign: "center" },
+  backBtn: { padding: 6 },
+  headerTitle: {
+    flex: 1,
+    textAlign: "center",
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginRight: 30,
+  },
 
+  // Message Card
   card: {
     backgroundColor: COLORS.card,
     borderRadius: 14,
@@ -123,6 +185,7 @@ const styles = StyleSheet.create({
   date: { fontSize: 12, color: COLORS.muted, marginTop: 4 },
   dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.primary },
 
+  // Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",

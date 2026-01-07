@@ -347,3 +347,117 @@ exports.replyMessage = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+exports.getAdmins = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+      u.user_id,
+  u.first_name,
+  u.last_name,
+  u.email,
+  u.phone,
+  u.city,
+  u.role
+FROM users u
+WHERE u.role = 'admin' OR u.role = 'super_admin'
+GROUP BY u.user_id;
+
+    `;
+
+    const [rows] = await db.promise().query(query);
+    res.status(200).json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const bcrypt = require("bcrypt");
+exports.addAdmin = async (req, res) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      phone,
+      city,
+    } = req.body;
+
+    // ✅ Validate
+    if (!first_name || !last_name || !email || !password) {
+      return res.status(400).json({
+        message: "First name, last name, email and password are required",
+      });
+    }
+
+    // Check if email already exists
+    const [existing] = await db
+      .promise()
+      .query("SELECT user_id FROM users WHERE email = ?", [email]);
+
+    if (existing.length > 0) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+
+    //Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //Insert admin
+    const query = `
+      INSERT INTO users
+      (first_name, last_name, email, password_hash, phone, city, role)
+      VALUES (?, ?, ?, ?, ?, ?, 'admin')
+    `;
+
+    const params = [
+      first_name,
+      last_name,
+      email,
+      hashedPassword,
+      phone || null,
+      city || null,
+    ];
+
+    await db.promise().query(query, params);
+
+    res.status(201).json({
+      message: "Admin added successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Admin ID is required" });
+    }
+
+    const [admin] = await db
+      .promise()
+      .query("SELECT role FROM users WHERE user_id = ?", [id]);
+
+    if (admin.length === 0) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    if (admin[0].role === "super_admin") {
+      return res
+        .status(403)
+        .json({ message: "You cannot delete a super admin" });
+    }
+
+    await db
+      .promise()
+      .query("DELETE FROM users WHERE user_id = ?", [id]);
+
+    res.status(200).json({ message: "Admin deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};

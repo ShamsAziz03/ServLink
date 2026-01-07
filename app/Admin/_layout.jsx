@@ -25,6 +25,8 @@ export default function Layout() {
       <Drawer.Screen name="services" options={{ title: "Services" }} />
       <Drawer.Screen name="messages" options={{ title: "Messages" }} />
       <Drawer.Screen name="users" options={{ title: "Users" }} />
+      <Drawer.Screen name="admins" options={{ title: "Admins" }} />
+      <Drawer.Screen name="profile" options={{ title: "Profile" }} />
     </Drawer>
   );
 }

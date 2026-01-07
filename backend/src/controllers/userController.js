@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const axios = require('axios');
+const db = require("../config/db");
+
 
 const ServiceProvider = require("../models/ProviderModel");
 
@@ -70,7 +72,8 @@ exports.login = async (req, res) => {
       role: user.role,
       phone: user.phone,
       city: user.city,
-      provider_id: provider.provider_id
+      provider_id: provider.provider_id,
+      approved_by_admin:provider.approved_by_admin
     }
   });
 }
@@ -172,5 +175,41 @@ exports.sendPushNotification = async (req, res) => {
     res.status(500).json({ message: "Error sending notification" });
   }
 };
+exports.getUserInbox = async (req, res) => {
+  const { userId } = req.params;
 
+  try {
+    const query = `
+      SELECT 
+        r.reply_id,
+        r.reply,
+        r.read,
+        r.created_at,
+        c.message AS original_message
+      FROM contact_replies r
+      JOIN contact_messages c ON c.id = r.contact_id
+      WHERE c.user_id = ?
+      ORDER BY r.created_at DESC
+    `;
+
+    const [rows] = await db.promise().query(query, [userId]);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.read_reply=async (req, res) => {
+  try {
+    const { reply_id } = req.params;
+await db.promise().query(
+  "UPDATE contact_replies SET `read` = 1 WHERE reply_id = ?",
+  [reply_id]
+);
+
+
+    res.status(200).json({ message: "Marked as read" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 

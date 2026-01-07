@@ -203,6 +203,12 @@ export default function ProfileScreen() {
           text="Contact Us"
           onPress={() => router.push("/contact")}
         />
+        <SettingItem
+            iconLib="Ionicons"
+            icon="chatbubble-ellipses-outline"
+            text="Inbox"
+            onPress={() => router.push("/inbox")}
+          />
 
         <View style={styles.divider} />
 
@@ -274,12 +280,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     width: "100%",
   },
-  settingText: { marginLeft: 10, color: "#37043a", fontSize: 18 },
+  settingText: { marginLeft: 10, color: "#37043a", fontSize: 17 },
   logoutButton: {
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
-    marginTop: 10,
+    marginTop: -10,
   },
   logoutGradient: { paddingVertical: 12, alignItems: "center" },
   logoutText: { color: "#fff", fontSize: 16, fontWeight: "600" },

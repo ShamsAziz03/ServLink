@@ -29,4 +29,10 @@ router.get("/services", AdminController.getServices);
 router.get("/get_contact_messages", AdminController.get_contact_messages);
 router.post("/contact_reply", AdminController.replyMessage);
 
+router.get("/get_admins", AdminController.getAdmins);
+router.delete("/delete_admin/:id",AdminController.deleteAdmin);
+router.post("/add_admin",AdminController.addAdmin);
+
+
+
 module.exports = router;

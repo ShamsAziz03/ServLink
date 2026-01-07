@@ -40,7 +40,7 @@ export default function App() {
   const [Description, setDescription] = useState([]);
   const [idCard, setidCard] = useState("");
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const [showPicker, setShowPicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
@@ -173,35 +173,47 @@ export default function App() {
 
       const resData = await response.json();
 
-      if (response.ok) {
-        await AsyncStorage.setItem("user", JSON.stringify(resData.user));
-        alert("Login Successful! Welcome " + resData.user.first_name);
-        setLoggedUser(resData.user);
-        const token = await registerForPushNotifications();
-        if (token) {
-          console.log("Expo Token:", token);
-          await fetch(`http://${ip}:5000/api/users/save-push-token`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: resData.user.user_id, expoToken: token }),
-          });
-        }
-        if (resData.user.role=='user') 
-        router.push("./home");
-        else if(resData.user.role=='provider')
-           router.push("./ProviderPages/providerDashboard");
-
-      } else {
-        alert(resData.message || "Login failed");
+      if (!response.ok) {
+        return alert(resData.message || "Login failed");
       }
+
+      const user = resData.user;
+      if (user.role === "provider" && Number(user.approved_by_admin) !== 1) {
+        return alert("Your account is pending admin approval.");
+      }
+
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+      setLoggedUser(user);
+
+      const token = await registerForPushNotifications();
+      if (token) {
+        //console.log("Expo Token:", token);
+        await fetch(`http://${ip}:5000/api/users/save-push-token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.user_id, expoToken: token }),
+        });
+      }
+
+      alert("Login Successful! Welcome " + user.first_name);
+
+      if (user.role === "user") {
+        router.push("./home");
+      } else if (user.role === "provider") {
+        router.push("./ProviderPages/providerDashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.push("./Admin/home");
+      }
+
     } catch (err) {
       alert("Network Error: " + err.message);
     }
   };
-    console.log("IP:", process.env.EXPO_PUBLIC_IP);
+
+  //console.log("IP:", process.env.EXPO_PUBLIC_IP);
 
   return (
-    
+
     <LinearGradient
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
