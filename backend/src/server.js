@@ -33,7 +33,7 @@ app.use("/homeInfo", homeRoutes);
 app.use("/categoryPage", categoryPageRoutes);
 app.use("/servicePage", servicePageRoutes);
 app.use("/serviceQuestions", serviceQuestionsRoutes);
-app.use("/assets", express.static("C:/Users/pc/Desktop/ServLink/assets"));
+app.use("/assets", express.static("D:/ServLink/assets"));
 app.use("/api/ratings", ratingRoutes);
 app.use("/api", AdminRoutes);
 app.get("/", (req, res) => {
