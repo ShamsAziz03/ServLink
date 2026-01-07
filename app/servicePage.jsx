@@ -48,7 +48,7 @@ const CategoryPage = () => {
   const { serviceInfo } = route.params;
   const { setCurrentService } = useContext(AppContext);
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
 
   const [serviceMetaData, setServiceMetaData] = useState([
     { base_price: 50, score: 3 },
@@ -220,7 +220,7 @@ const CategoryPage = () => {
                 padding: 8,
               }}
             >
-              {"Starting at: " + (serviceMetaData[0].base_price ?? 0) + " ₪"}
+              {"Starting at: " + (serviceMetaData[0].base_price ?? 0) + " ₪/hr"}
             </Text>
             <View
               style={{

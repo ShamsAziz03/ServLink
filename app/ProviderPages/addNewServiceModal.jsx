@@ -77,12 +77,15 @@ const AddNewServiceModal = ({ visible, onClose }) => {
     }
   };
 
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+
   //on load each modal
   useEffect(() => {
     if (!visible) return;
     setShowOther(false);
     setAddNewCity("");
     setSelectedCities([]);
+    setSelectedQuestions([]);
     fetchCategories();
     setFullFormData({
       serviceName: "",
