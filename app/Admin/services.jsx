@@ -21,13 +21,15 @@ const Colors = {
 export default function ServicesScreen() {
   const [services, setServices] = useState([]);
   const [search, setSearch] = useState("");
+  const ip = process.env.EXPO_PUBLIC_IP;
+
 
   useEffect(() => {
     fetchServices();
   }, []);
 
   const fetchServices = async () => {
-    const res = await axios.get("http://192.168.1.12:5000/api/services");
+    const res = await axios.get(`http://${ip}:5000/api/services`);
     setServices(res.data);
   };
 const filtered = services.filter(

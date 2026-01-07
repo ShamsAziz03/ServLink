@@ -28,6 +28,7 @@ export default function InboxScreen({ navigation }) {
   const [messages, setMessages] = useState([]);
   const [selected, setSelected] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+    const ip = process.env.EXPO_PUBLIC_IP;
     const router = useRouter();
   
 
@@ -41,7 +42,7 @@ export default function InboxScreen({ navigation }) {
       const user = JSON.parse(storedUser);
       const userId = user.user_id;
       const res = await axios.get(
-        `http://192.168.1.12:5000/api/users/user_inbox/${userId}`
+        `http://${ip}:5000/api/users/user_inbox/${userId}`
       );
       setMessages(res.data);
     } catch (err) {
@@ -55,7 +56,7 @@ export default function InboxScreen({ navigation }) {
   if (!replyId) return;
 
   try {
-    await axios.put(`http://192.168.1.12:5000/api/users/mark-read/${replyId}`);
+    await axios.put(`http://${ip}:5000/api/users/mark-read/${replyId}`);
     setMessages((prev) =>
       prev.map((msg) =>
         msg.reply_id === replyId ? { ...msg, read: 1 } : msg

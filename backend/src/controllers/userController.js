@@ -77,7 +77,6 @@ exports.login = async (req, res) => {
     }
   });
 }
-    // إذا User عادي
     return res.status(200).json({
       message: "Login successful",
       user: {
