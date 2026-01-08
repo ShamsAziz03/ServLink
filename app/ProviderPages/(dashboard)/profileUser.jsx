@@ -185,6 +185,17 @@ export default function ProfileScreen() {
             onPress={() => router.push("/ProviderPages/providerRequests")}
           />
           <SettingItem
+            icon="edit"
+            text="Edit Profile"
+            onPress={() => router.push("/editProfile")}
+          />
+          <SettingItem
+            icon="lock"
+            text="Change Password"
+            onPress={() => router.push("/changePass")}
+          />
+
+          <SettingItem
             iconLib="Ionicons"
             icon="help-circle-outline"
             text="FAQ / Questions"
@@ -249,10 +260,10 @@ const styles = StyleSheet.create({
     width: "90%",
     backgroundColor: "#f7eaf9ff",
     marginVertical: 15,
-    marginTop: 50,
+    marginTop: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#750d83ff",
     alignSelf: "flex-start",

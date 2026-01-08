@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableOpacity,} from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
@@ -57,12 +57,9 @@ export default function ChangePassword() {
       colors={["#fcf4fcff", "#94469dff"]}
       style={styles.container}
     >
-     <TouchableOpacity
-          style={styles.backBtn}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={35} color="#94469dff" />
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={35} color="#94469dff" />
+      </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
@@ -140,7 +137,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingVertical: 5,
   },
-  backBtn:{
-    padding:20
+  backBtn: {
+    padding: 20,
+    marginTop: 40,
   },
 });
