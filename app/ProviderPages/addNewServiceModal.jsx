@@ -38,6 +38,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
     description: "",
     base_price: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const WESTBANK_CITIES = [
     "Ramallah",
@@ -78,6 +79,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
   };
 
   const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [questions, setQuestions] = useState([]);
 
   //on load each modal
   useEffect(() => {
@@ -118,6 +120,35 @@ const AddNewServiceModal = ({ visible, onClose }) => {
     }));
   };
 
+  const addQuestions = async (serviceId) => {
+    try {
+      const obj = {
+        serviceId: serviceId,
+        questions: selectedQuestions,
+      };
+      const response = await fetch(
+        `${API_ADDRESS}/serviceProviderServiceList/addServiceQuestions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        }
+      );
+      const fetchedData = await response.json();
+      if (fetchedData.success) {
+        alert(fetchedData.success);
+        setSelectedQuestions([]);
+        onClose();
+      } else {
+        alert(fetchedData.error);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   //to fetch post method in db with new info
   const addService = async (obj) => {
     try {
@@ -133,8 +164,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
       );
       const fetchedData = await response.json();
       if (fetchedData.success) {
-        alert(fetchedData.success);
-        onClose();
+        addQuestions(fetchedData.serviceId);
       } else {
         alert(fetchedData.error);
       }
@@ -156,8 +186,72 @@ const AddNewServiceModal = ({ visible, onClose }) => {
     setProviderExpImages(newImages);
   };
 
+  //to toggle question on select from check box
+  const toggleQuestion = (question) => {
+    if (selectedQuestions.includes(question)) {
+      const newSelectedQuestions = selectedQuestions.filter(
+        (q) => q !== question
+      );
+      setSelectedQuestions(newSelectedQuestions);
+    } else {
+      setSelectedQuestions((prev) => [...prev, question]);
+    }
+  };
+
+  //to generate data from AI
+  const generateFromAI = async () => {
+    try {
+      const result = await fetch(
+        `${API_ADDRESS}/serviceProviderServiceList/getQuestions`
+      );
+      const fetchedQuestions = await result.json();
+      if (fetchedQuestions.length !== 0) {
+        const obj = {
+          serviceData: {
+            service_name: fullFormData.serviceName,
+            raw_description: fullFormData.description,
+            service_cities: selectedCities,
+            base_price: fullFormData.base_price,
+          },
+          questions: fetchedQuestions,
+        };
+        //now fetch data from AI
+        const result = await fetch(
+          `${API_ADDRESS}/providerBookings/getServiceInfoFromAI`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(obj),
+          }
+        );
+
+        const fetchedData = await result.json();
+        if (fetchedData) {
+          const parsed =
+            typeof fetchedData === "string"
+              ? JSON.parse(fetchedData)
+              : fetchedData;
+
+          setFullFormData((prev) => ({
+            ...prev,
+            serviceName: parsed.serviceName,
+            description: parsed.description,
+            base_price: parsed.price.toString(),
+          }));
+
+          setQuestions(parsed.questions || []);
+        } else console.error("error in service info AI");
+      } else console.error("No fetched questions");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   //to save add
   const saveAdd = () => {
+    if (submitting) return;
+    setSubmitting(true);
+
     let finalCities = [...selectedCities];
     if (addNewCity && !finalCities.includes(addNewCity)) {
       finalCities.push(addNewCity);
@@ -175,6 +269,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
         : "",
     };
     addService(obj);
+    setSubmitting(false);
   };
 
   return (
@@ -268,7 +363,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
               Service Description
             </Text>
             <TextInput
-              placeholder="Description"
+              placeholder="Write your description, keywords..."
               style={[styles.input, { height: 80 }]}
               value={fullFormData.description}
               onChangeText={(text) => handleChange("description", text)}
@@ -288,7 +383,7 @@ const AddNewServiceModal = ({ visible, onClose }) => {
               Service Price
             </Text>
             <TextInput
-              placeholder="Price"
+              placeholder="Estimate Price"
               style={styles.input}
               value={fullFormData.base_price}
               onChangeText={(text) => handleChange("base_price", text)}
@@ -348,13 +443,88 @@ const AddNewServiceModal = ({ visible, onClose }) => {
               />
             )}
 
+            {/* for questions */}
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#741f6bff",
+                fontWeight: "500",
+                textShadowColor: "rgba(106, 8, 117, 0.3)",
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 2,
+                marginBottom: 20,
+              }}
+            >
+              Service Questions
+            </Text>
+            {questions?.length > 0 ? (
+              questions.map((question, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    gap: 15,
+                    backgroundColor: selectedQuestions.includes(question)
+                      ? "#854c97ff"
+                      : "#decae4a4",
+                    marginBottom: 5,
+                    padding: 10,
+                    borderRadius: 15,
+                  }}
+                >
+                  <View style={{ alignSelf: "center" }}>
+                    <Checkbox
+                      value={selectedQuestions.includes(question)}
+                      onValueChange={() => toggleQuestion(question)}
+                      color={
+                        selectedQuestions.includes(question)
+                          ? "#750d8fff"
+                          : undefined
+                      }
+                    />
+                  </View>
+                  <View
+                    style={{ flexDirection: "column", gap: 7, width: "85%" }}
+                  >
+                    <Text
+                      style={{
+                        color: selectedQuestions.includes(question)
+                          ? "#f7dcffff"
+                          : "#4c135dff",
+                        fontSize: 17,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {"-> Txt:  " + question.question_text}
+                    </Text>
+                    <Text
+                      style={{
+                        color: selectedQuestions.includes(question)
+                          ? "#f7dcffff"
+                          : "#4c135dff",
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {"-> Options:   " + question.options}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <Text
+                style={{ fontSize: 15, color: "#7e4189ff", marginLeft: 10 }}
+              >
+                No Questions
+              </Text>
+            )}
             {/* for images */}
             <View
               style={{
                 flexDirection: "row",
                 gap: 10,
                 marginBottom: 20,
-                marginTop: 10,
+                marginTop: 20,
               }}
             >
               <FontAwesome name="image" size={18} color="#65186fff" />
@@ -414,6 +584,10 @@ const AddNewServiceModal = ({ visible, onClose }) => {
                 <Ionicons name="add-circle-sharp" size={40} color="#430549ff" />
               </TouchableOpacity>
             </ScrollView>
+
+            <Pressable style={styles.generateBtn} onPress={generateFromAI}>
+              <Text style={styles.saveBtnText}>Generate Info From AI</Text>
+            </Pressable>
 
             <Pressable style={styles.saveBtn} onPress={saveAdd}>
               <Text style={styles.saveBtnText}>Save Changes</Text>
@@ -489,7 +663,7 @@ const styles = StyleSheet.create({
   },
   saveBtnText: { color: "#fff", fontWeight: "700" },
   cancelBtn: {
-    backgroundColor: "#f1e4f5",
+    backgroundColor: "#e2cde9ff",
     padding: 12,
     borderRadius: 12,
     marginTop: 6,
@@ -503,5 +677,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#b289b1ff",
+  },
+  generateBtn: {
+    backgroundColor: "#7d4a8eff",
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 10,
+    alignItems: "center",
   },
 });

@@ -1,11 +1,11 @@
 const ServiceProviderModel = require("../../models/serviceProviderModel");
+const QuestionsModel = require("../../models/questionsModel");
 
 exports.getProviderListServicesInfo = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const result = await ServiceProviderModel.getProviderListServicesInfo(
-      userId
-    );
+    const result =
+      await ServiceProviderModel.getProviderListServicesInfo(userId);
     res.json(result);
   } catch (err) {
     res.status(500).json({
@@ -18,9 +18,10 @@ exports.getProviderListServicesInfo = async (req, res) => {
 exports.getProviderServiceFeedbacks = async (req, res) => {
   try {
     const Provider_Services_id = req.params.Provider_Services_id;
-    const result = await ServiceProviderModel.getProviderServiceFeedbacks(
-      Provider_Services_id
-    );
+    const result =
+      await ServiceProviderModel.getProviderServiceFeedbacks(
+        Provider_Services_id
+      );
     res.json(result);
   } catch (err) {
     res.status(500).json({
@@ -33,9 +34,10 @@ exports.getProviderServiceFeedbacks = async (req, res) => {
 exports.getProviderServiceAvgRating = async (req, res) => {
   try {
     const Provider_Services_id = req.params.Provider_Services_id;
-    const result = await ServiceProviderModel.getProviderServiceAvgRating(
-      Provider_Services_id
-    );
+    const result =
+      await ServiceProviderModel.getProviderServiceAvgRating(
+        Provider_Services_id
+      );
     res.json(result);
   } catch (err) {
     res.status(500).json({
@@ -48,9 +50,8 @@ exports.getProviderServiceAvgRating = async (req, res) => {
 exports.deleteProviderService = async (req, res) => {
   try {
     const Provider_Services_id = req.params.Provider_Services_id;
-    const result = await ServiceProviderModel.deleteProviderService(
-      Provider_Services_id
-    );
+    const result =
+      await ServiceProviderModel.deleteProviderService(Provider_Services_id);
     res.json(result);
   } catch (err) {
     res.status(500).json({
@@ -144,6 +145,34 @@ exports.addCategory = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Error add new category",
+      error: err.message,
+    });
+  }
+};
+
+exports.getServicesQuestions = async (req, res) => {
+  try {
+    const result = await QuestionsModel.getServicesQuestions();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetch questions",
+      error: err.message,
+    });
+  }
+};
+
+exports.addServiceQuestions = async (req, res) => {
+  try {
+    const { serviceId, questions } = req.body;
+    const result = await QuestionsModel.addServiceQuestions(
+      serviceId,
+      questions
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error adding questions",
       error: err.message,
     });
   }

@@ -36,4 +36,14 @@ router.post("/addService", serviceProviderServiceListController.addService);
 
 router.post("/addCategory", serviceProviderServiceListController.addCategory);
 
+router.get(
+  "/getQuestions",
+  serviceProviderServiceListController.getServicesQuestions
+);
+
+router.post(
+  "/addServiceQuestions",
+  serviceProviderServiceListController.addServiceQuestions
+);
+
 module.exports = router;
