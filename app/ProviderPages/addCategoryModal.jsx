@@ -12,12 +12,12 @@ import {
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-const API_ADDRESS = "http://${API_BASE_URL}";
+const API_BASE_URL = process.env.EXPO_PUBLIC_IP;
+const API_ADDRESS =`http://${API_BASE_URL}:5000`;
 
 const AddCategoryModal = ({ visible, onClose, fetchCategories }) => {
   const [image, setImage] = useState(
-    "http://${API_BASE_URL}/assets/handyman.png"
+    `${API_ADDRESS}/assets/handyman.png`
   );
   const [categoryName, setCategoryName] = useState("");
   const [categoryDesc, setCategoryDesc] = useState("");

@@ -29,13 +29,13 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 
+const path = process.env.PATH;
+
 app.use("/homeInfo", homeRoutes);
 app.use("/categoryPage", categoryPageRoutes);
 app.use("/servicePage", servicePageRoutes);
 app.use("/serviceQuestions", serviceQuestionsRoutes);
-//app.use("/assets", express.static("D:/ServLink/assets"));///shams
-app.use("/assets", express.static("C:/Users/pc/Desktop/ServLink/assets"));///rand
-
+app.use("/assets", express.static(path));
 app.use("/api/ratings", ratingRoutes);
 app.use("/api", AdminRoutes);
 app.get("/", (req, res) => {

@@ -42,3 +42,5 @@ yarn-error.*
 
 backend/.env
 credentials.json
+
+.env

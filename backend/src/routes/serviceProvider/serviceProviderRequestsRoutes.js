@@ -7,5 +7,6 @@ router.get("/getProviderBookings/:userId", providerBooks.getProviderBookings);
 router.get("/getBookAnswers/:bookId", providerBooks.getBookAnswers);
 router.put("/updateBook", providerBooks.updateBook);
 router.post("/getAbstractOfBookDetails", providerAI.getAbstractOfBookDetails);
+router.post("/getServiceInfoFromAI", providerAI.getServiceInfoFromAI);
 
 module.exports = router;

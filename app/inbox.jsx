@@ -105,7 +105,7 @@ export default function InboxScreen({ navigation }) {
       >
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => router.push("/profileUser")}
+          onPress={() => router.back()}
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>

@@ -166,57 +166,56 @@ export default function App() {
     }
   };
   const handleLogin = async () => {
-  try {
-    const response = await fetch(`http://${ip}:5000/api/users/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const resData = await response.json();
-
-    if (!response.ok) {
-      return alert(resData.message || "Login failed");
-    }
-
-    const user = resData.user;
-    console.log("Provider approval status:", user.is_accepted);
-
-    if (user.role === "provider" && Number(user.is_accepted) !== 1) {
-      return alert("Your account is pending admin approval.");   
-    }
-
-    await AsyncStorage.setItem("user", JSON.stringify(user));
-    setLoggedUser(user);
-
-    const token = await registerForPushNotifications();
-    if (token) {
-      await fetch(`http://${ip}:5000/api/users/save-push-token`, {
+    try {
+      const response = await fetch(`http://${ip}:5000/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user_id, expoToken: token }),
+        body: JSON.stringify({ email, password }),
       });
+
+      const resData = await response.json();
+
+      if (!response.ok) {
+        return alert(resData.message || "Login failed");
+      }
+
+      const user = resData.user;
+      console.log("Provider approval status:", user.approved_by_admin);
+
+      if (user.role === "provider" && Number(user.approved_by_admin) !== 1) {
+        return alert("Your account is pending admin approval.");
+      }
+
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+      setLoggedUser(user);
+
+      const token = await registerForPushNotifications();
+      if (token) {
+        await fetch(`http://${ip}:5000/api/users/save-push-token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.user_id, expoToken: token }),
+        });
+      }
+
+      alert("Login Successful! Welcome " + user.first_name);
+
+      switch (user.role) {
+        case "user":
+          router.push("./home");
+          break;
+        case "provider":
+          router.push("./ProviderPages/providerDashboard");
+          break;
+        case "admin":
+        case "super_admin":
+          router.push("./Admin/home");
+          break;
+      }
+    } catch (err) {
+      alert("Network Error: " + err.message);
     }
-
-    alert("Login Successful! Welcome " + user.first_name);
-
-    switch (user.role) {
-      case "user":
-        router.push("./home");
-        break;
-      case "provider":
-        router.push("./ProviderPages/providerDashboard");
-        break;
-      case "admin":
-      case "super_admin":
-        router.push("./Admin/home");
-        break;
-    }
-
-  } catch (err) {
-    alert("Network Error: " + err.message);
-  }
-};
+  };
 
   return (
     <LinearGradient

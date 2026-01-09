@@ -461,7 +461,7 @@ VALUES (?, ?, ?, ?, ?);
         ]);
 
       if (result2.affectedRows > 0 && result4.affectedRows > 0)
-        return { success: "Add Success" };
+        return { success: "Add Success", serviceId: serviceId };
       else return { error: "Can't Add" };
     } catch (err) {
       console.error("DB ERROR:", err);
