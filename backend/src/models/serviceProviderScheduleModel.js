@@ -51,5 +51,12 @@ class ServiceProviderSchedule {
 
     return { success: "Update schedule Success!" };
   }
+
+  static async getAllSchedules() {
+    const getAllSchedules = `SELECT * FROM provider_schedule;
+     `;
+    const [response] = await db.promise().execute(getAllSchedules);
+    return response;
+  }
 }
 module.exports = ServiceProviderSchedule;

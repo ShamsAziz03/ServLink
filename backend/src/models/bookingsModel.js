@@ -117,5 +117,12 @@ WHERE
 
     return { error: "Can't Update" };
   }
+
+  static async getAllBooks() {
+    const getBookAnswers = `SELECT * FROM bookings;
+     `;
+    const [response] = await db.promise().execute(getBookAnswers);
+    return response;
+  }
 }
 module.exports = Bookings;

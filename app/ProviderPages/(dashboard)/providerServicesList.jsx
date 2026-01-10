@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { Picker } from "@react-native-picker/picker";
 import ServiceInfoModal from "../serviceInfoModal";
 import EditServiceModal from "../editServiceModal";
 import AddNewServiceModal from "../addNewServiceModal";
+import { AppContext } from "../../../context/AppContext";
 
 export default function ProviderServices() {
   const [services, setServices] = useState([
@@ -37,13 +38,15 @@ export default function ProviderServices() {
   ]);
   const [originalServices, setOriginalServices] = useState(services);
   const [selectedService, setSelectedService] = useState(null);
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const API_ADDRESS = `http://${ip}:5000`;
   const [showEditForm, setShowEditForm] = useState(false); //for edit form modal
   const [showAddForm, setShowAddForm] = useState(false); //for add form modal
   const [currentService, setCurrentService] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const { loggedUser } = useContext(AppContext);
 
   //to delete a service
   const deleteProviderService = async (Provider_Service_id) => {
@@ -80,8 +83,7 @@ export default function ProviderServices() {
   const fetchProviderListServicesInfo = async () => {
     try {
       const response = await fetch(
-        // `${API_ADDRESS}/serviceProviderServiceList/getProviderListServicesInfo/${loggedUser.user_id}`////////////////////////////////to change
-        `${API_ADDRESS}/serviceProviderServiceList/getProviderListServicesInfo/1`
+        `${API_ADDRESS}/serviceProviderServiceList/getProviderListServicesInfo/${loggedUser.user_id}`
       );
       const fetchedData = await response.json();
       setServices(fetchedData);
