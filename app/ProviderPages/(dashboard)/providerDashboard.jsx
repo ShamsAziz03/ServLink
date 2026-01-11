@@ -1,5 +1,5 @@
 import { React, useState, useContext, useEffect } from "react";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -19,10 +19,11 @@ import { LinearGradient } from "expo-linear-gradient";
 const screenWidth = Dimensions.get("window").width;
 
 const ProviderDashboard = () => {
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const { loggedUser } = useContext(AppContext);
   const [visible, setVisibility] = useState(false);
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const API_ADDRESS = `http://${ip}:5000`;
   const [providerStats, setProviderStats] = useState({
     rating: 0,
@@ -131,8 +132,7 @@ const ProviderDashboard = () => {
   const fetch_rating_orders_earnings = async () => {
     try {
       const response = await fetch(
-        // `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/${loggedUser.user_id}`////////////////////////////////to change
-        `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/3`
+        `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/${loggedUser.user_id}`
       );
       const fetchedData = await response.json();
       setProviderStats((prev) => ({
@@ -149,8 +149,7 @@ const ProviderDashboard = () => {
   const fetch_pending_cancelled_orders = async () => {
     try {
       const response = await fetch(
-        // `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`////////////////////////////////to change
-        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/1`
+        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`
       );
       const fetchedData = await response.json();
       setProviderStats((prev) => ({
@@ -166,8 +165,7 @@ const ProviderDashboard = () => {
   const fetch_service_performance = async () => {
     try {
       const response = await fetch(
-        // `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`////////////////////////////////to change
-        `${API_ADDRESS}/serviceProviderStats/getProviderServicePerformance/1`
+        `${API_ADDRESS}/serviceProviderStats/getProviderServicePerformance/${loggedUser.user_id}`
       );
       const fetchedData = await response.json();
       setServicesData(fetchedData);
@@ -179,8 +177,7 @@ const ProviderDashboard = () => {
   const fetch_provider_monthly_earnings = async () => {
     try {
       const response = await fetch(
-        // `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/${loggedUser.user_id}`////////////////////////////////to change
-        `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/1`
+        `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/${loggedUser.user_id}`
       );
       const fetchedData = await response.json();
       const formattedData = fetchedData.map((d) => ({
@@ -315,6 +312,31 @@ const ProviderDashboard = () => {
               </View>
             ))}
           </View>
+          <Pressable
+            style={{
+              marginTop: 15,
+              padding: 10,
+              backgroundColor: "#893696ff",
+              borderRadius: 10,
+              textAlign: "center",
+              width: screenWidth * 0.7,
+              alignSelf: "center",
+            }}
+            onPress={() => {
+              router.push("/ProviderPages/enhanceWorkByAI");
+            }}
+          >
+            <Text
+              style={{
+                color: "#e4e0e6ff",
+                fontSize: 17,
+                textAlign: "center",
+                fontWeight: "700",
+              }}
+            >
+              Enhance My Work Using AI
+            </Text>
+          </Pressable>
 
           {/* Services Performance */}
           <View style={styles.card}>

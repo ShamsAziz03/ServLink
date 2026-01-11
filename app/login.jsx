@@ -484,7 +484,7 @@ export default function App() {
           <TouchableOpacity
             onPress={() =>
               // navigation.navigate("(dashboard)", { screen: "home" })
-              router.push("/ProviderPages/providerDashboard")
+              router.push("/home")
             }
           >
             <Text style={styles.switchText}>GO TO HOME</Text>

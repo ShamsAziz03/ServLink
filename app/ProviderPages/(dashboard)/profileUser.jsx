@@ -184,6 +184,14 @@ export default function ProfileScreen() {
             text="Your Requests Bookings"
             onPress={() => router.push("/ProviderPages/providerRequests")}
           />
+
+          <SettingItem
+            iconLib="Ionicons"
+            icon="cash"
+            text="Offers"
+            onPress={() => router.push("/ProviderPages/providerOffers")}
+          />
+
           <SettingItem
             icon="edit"
             text="Edit Profile"

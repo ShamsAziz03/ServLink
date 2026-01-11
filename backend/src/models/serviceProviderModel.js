@@ -485,5 +485,29 @@ VALUES (?, ?, ?);
       console.error("DB ERROR:", err);
     }
   }
+
+  static async getAllProviders() {
+    const query = `SELECT * from service_providers;`;
+    const [result] = await db.promise().execute(query);
+    return result;
+  }
+
+  static async getAllProviderServices() {
+    const query = `SELECT * from provider_services;`;
+    const [result] = await db.promise().execute(query);
+    return result;
+  }
+
+  static async getAllServices() {
+    const query = `SELECT * from services;`;
+    const [result] = await db.promise().execute(query);
+    return result;
+  }
+
+  static async getProviderID(userId) {
+    const query = `SELECT provider_id from service_providers where user_id= ? ;`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result[0].provider_id;
+  }
 }
 module.exports = ServiceProvider;

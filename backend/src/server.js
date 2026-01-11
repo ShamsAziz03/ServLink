@@ -21,6 +21,7 @@ const serviceProviderScheduleUnavailableDatesRoutes = require("./routes/serviceP
 const providerRoutes = require("./routes/serviceProvider/providerRoutes");
 const AdminRoutes = require("./routes/AdminRoutes");
 const providerBookings = require("./routes/serviceProvider/serviceProviderRequestsRoutes");
+const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
 
 // Middleware
 app.use(cors());
@@ -64,6 +65,7 @@ app.use(
   serviceProviderScheduleUnavailableDatesRoutes
 );
 app.use("/providerBookings", providerBookings);
+app.use("/providerOffers", providerOffers);
 
 app.use("/uploads", express.static("uploads"));
 // Start server
