@@ -1,0 +1,115 @@
+body {
+  background: #f7eaf9ff;
+}
+
+.profile-container {
+   min-height: 100vh;
+  background: linear-gradient( #fcf4fcff, #94469dff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.profile-card {
+  width: 380px;
+  background: #f7eaf9ff;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.profile-card img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px solid #5f196bff;
+}
+
+.profile-card h2 {
+  color: #37043a;
+  margin-top: 10px;
+}
+
+.profile-card p {
+  color: #5f3966ff;
+  margin: 3px 0;
+}
+
+.profile-card hr {
+  margin: 20px 0;
+  border: none;
+  height: 1px;
+  background: #e5cfe8;
+}
+
+.profile-card h3 {
+  text-align: left;
+  color: #750d83ff;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin: 12px 0;
+  color: #37043a;
+}
+
+.setting-row:hover {
+  opacity: 0.8;
+}
+
+.logout-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #a468aaff, #682471ff);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+.loader {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #750d83ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.no-user {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.no-user button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #7b117fff;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+}

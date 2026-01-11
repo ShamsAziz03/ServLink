@@ -30,7 +30,8 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 
-const path = process.env.PATH;
+const path = process.env.EXPO_PUBLIC_PATH;
+
 
 app.use("/homeInfo", homeRoutes);
 app.use("/categoryPage", categoryPageRoutes);
@@ -79,6 +80,7 @@ db.getConnection((err, connection) => {
     console.log("DB connection failed", err);
   } else {
     console.log("DB connected successfully");
+    console.log(process.env.EXPO_PUBLIC_PATH);
     connection.release();
   }
 });

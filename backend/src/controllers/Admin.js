@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const ip = process.env.EXPO_PUBLIC_IP;
 exports.getAdminInfo = async (req, res) => {
   try {
     let query = `
