@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppLayout from "../Pages/admin/layout";
+import Home from "../Pages/admin/homeAdmin";
+import Providers from "../Pages/admin/providers";
+import Categories from "../Pages/admin/categories";
+import Users from "../Pages/admin/users";
+import Services from "../Pages/admin/services";
+import Messages from "../Pages/admin/messages";
+import Admins from "../Pages/admin/admins";
+import Login from "../Pages/login";
+import Profile from "../Pages/admin/profile";
+import EditProfile from "../Pages/editProfile"
+import ChangePass from "../Pages/changePass"
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Admin" element={<AppLayout />}>
+          <Route path="/Admin/home" element={<Home />} />
+          <Route path="/Admin/users" element={<Users />} />
+          <Route path="/Admin/providers" element={<Providers />} />
+          <Route path="/Admin/categories" element={<Categories />} />
+          <Route path="/Admin/services" element={<Services />} />
+          <Route path="/Admin/messages" element={<Messages />} />
+          <Route path="/Admin/admins" element={<Admins />} />
+          <Route path="/Admin/profile" element={<Profile />} />
+          <Route path="/Admin/editProfile" element={<EditProfile />} />
+          <Route path="/Admin/changePass" element={<ChangePass />} />
+
+          {/* باقي الصفحات */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

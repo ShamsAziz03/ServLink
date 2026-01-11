@@ -1,0 +1,126 @@
+body {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.modern-container {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.modern-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modern-header h1 {
+  color: #6c3483;
+  font-size: 28px;
+}
+
+.modern-search {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #c0b4e0;
+  width: 250px;
+}
+
+.modern-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modern-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+.modern-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.modern-avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #d8c4f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.modern-info h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #4b2c83;
+}
+
+.status {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+.btn-approve{
+    width: 100px;
+}
+.approved {
+  background-color: #22C55E33;
+  color: #22C55E;
+}
+
+.unapproved {
+  background-color: #EF444433;
+  color: #EF4444;
+}
+
+.btn-approve {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-approve-now {
+  background-color: #22C55E;
+}
+
+.btn-unapprove {
+  background-color: #EF4444;
+}
+
+.modern-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  font-size: 13px;
+  color: #555;
+}
+
+.modern-about {
+  margin-top: 12px;
+  background-color: #f3e8ff;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.modern-about p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #333;
+}

@@ -1,0 +1,136 @@
+.dashboard {
+  padding: 24px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  color: #6c3483;
+  margin: 0;
+}
+
+.header p {
+  font-size: 14px;
+  color: #6c3483;
+}
+
+/* HERO */
+.hero-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #6c3483, #94469dff);
+  margin-bottom: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.hero-card h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.hero-card span {
+  color: #d1d5db;
+}
+
+/* GRID */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.circle-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.circle {
+  width: 52px;
+  height: 52px;
+  margin: auto;
+  border-radius: 50%;
+  background: #f3e8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.circle-card h3 {
+  margin: 0;
+  color: #6c3483;
+}
+
+.circle-card p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ACTION */
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #94469dff, #6c3483);
+  color: white;
+  margin-bottom: 20px;
+}
+
+.action-text h4 {
+  margin: 0;
+}
+
+.action-text span {
+  font-size: 13px;
+  color: #f3e8ff;
+}
+
+/* MINIMAL */
+.minimal-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #f3e8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimal-card h3 {
+  margin: 0;
+  color: #6c3483;
+}
+
+.minimal-card p {
+  font-size: 13px;
+  color: #6b7280;
+}
