@@ -7,8 +7,10 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const userRequest = {
   description: "I need someone to assemble a large IKEA wardrobe at my home.",
   city: "Jenin",
-  budget: [25, 75], // min and max dollars per hour
-  preferredDate: "2026-01-15",
+  minBudget: "25",
+  maxBudget: "75",
+  preferredStartRangeDate: "2026-01-15",
+  preferredEndRangeDate: "",
 };
 
 const systemData = {
@@ -495,6 +497,31 @@ const systemData = {
         "Skilled in assembling all types of furniture efficiently and safely.",
     },
   ],
+  users: [
+    { user_id: 1, first_name: "Sami", last_name: "Ali", phone: "1234569" },
+    {
+      user_id: 2,
+      first_name: "Omar",
+      last_name: "Khaled",
+      phone: "+1234567890",
+    },
+    { user_id: 3, first_name: "Sara", last_name: "Zahi", phone: "+1987654321" },
+    {
+      user_id: 4,
+      first_name: "Samer",
+      last_name: "Ahmad",
+      phone: "+1123456789",
+    },
+    {
+      user_id: 5,
+      first_name: "Jane",
+      last_name: "Smith",
+      phone: "+1098765432",
+    },
+    { user_id: 6, first_name: "John", last_name: "Doe", phone: "+1012345678" },
+    { user_id: 7, first_name: "Shams", last_name: "Aziz", phone: "1234567890" },
+    { user_id: 8, first_name: "Ahmad", last_name: "Ali", phone: "+123456" },
+  ],
 };
 
 const getSystemPrompt = () => {
@@ -514,9 +541,9 @@ Deeply analyze customer requests and find the best service providers based on pr
  PROVIDER MATCHING CRITERIA:
 1. Specialization (25%): How well provider's field matches requested service
 2. Experience (10%): Years of experience and certifications
-3. Availability (20%): Available on requested date
+3. Availability (15%): Available on requested date
 4. Price (25%): Price suitability for budget
-5. Location (10%): Proximity to customer location (exact or near, using resources from google and internet to know)
+5. Location (15%): Proximity to customer location (exact or near, using resources from google and internet to know)
 6. Service Quality (10%): Variety and quality of offered services
 
  CRITICAL RULES:
@@ -538,18 +565,27 @@ You are an expert in data analysis and smart matching with 10+ years experience 
 };
 
 const buildUserPrompt = (userRequest, systemData) => {
+  const isExact =
+    userRequest.preferredStartRangeDate === userRequest.preferredEndRangeDate;
   return `
   
- CUSTOMER REQUEST 
+ CUSTOMER REQUEST which has these info:
 
- Request Description:
+ Request Description, Request Details(Requested City,)
 "${userRequest.description}"
 
  Request Details:
 • Requested City: ${userRequest.city}
-• Budget: ${userRequest.budget[0]} - ${userRequest.budget[1]} ILS/hour
-• Preferred Date: ${userRequest.preferredDate || "Not specified"}
+• Budget: ${userRequest.minBudget} - ${userRequest.maxBudget} ILS/hour
+•  Preferred Date: ${
+    isExact
+      ? `${userRequest.preferredStartRangeDate} (EXACT DATE — end date not provided, search ONLY this day)`
+      : `${userRequest.preferredStartRangeDate} to ${userRequest.preferredEndRangeDate} (DATE RANGE)`
+  }
 
+IMPORTANT DATE RULE:
+- If the end date is missing, you MUST treat it as an exact single date equal to the start date.
+- Only return providers available on that exact date (and within their working hours and not in unavailable dates).
 
 AVAILABLE CATEGORIES 
 ${JSON.stringify(systemData.categories, null, 2)}
@@ -569,81 +605,51 @@ ${JSON.stringify(systemData.providerWorkingHours, null, 2)}
 PROVIDERS UNAVAILABLE DATES
 ${JSON.stringify(systemData.providerNotes, null, 2)}
 
+USERS INFO
+${JSON.stringify(systemData.users, null, 2)}
+
 Return JSON ONLY in this exact format:
 
 {
   "requestAnalysis": {
     "serviceType": "",
     "detectedCategory": "",
-    "categoryId": 0,
-    "detectedServiceIds": [],
+    "detectedServiceNames": [],
     "urgencyLevel": "",
     "complexityLevel": "",
     "estimatedDuration": "",
-    "estimatedDurationHours": 0,
-    "requiredSkills": [],
-    "budgetAssessment": {
-      "isRealistic": true,
-      "recommendation": "",
-      "suggestedRange": [0, 0]
-    },
     "keyRequirements": []
   },
   
   "matchedProviders": [
     {
+      "providerUserName": "",
+      "UserPhone":"",
+      "providerServiceId": 0,
       "providerId": 0,
-      "matchScore": 0,
-      
+      "serviceId": 0,
+      "matchScore"": 0,
       "availabilityStatus": {
         "isAvailableOnRequestedDate": true,
-        "availableTimeSlots": [],
+        "availableTimeSlots": [{"date": "","startTime": ""},{},...],
       },
-      
-      "scoreBreakdown": {
-        "specializationScore": 0,
-        "experienceScore": 0,
-        "availabilityScore": 0,
-        "priceScore": 0,
-        "locationScore": 0,
-        "qualityScore": 0,
-        "totalScore": 0
-      },
-      
       "strengths": [],
-      
       "servicesMatch": {
         "relevantServices": [
           {
             "serviceName": "",
             "price": 0,
-            "relevanceScore": 0
           }
         ],
-        "totalRelevantServices": 0
       }
     }
   ],
-  
-  "recommendations": {
-    "topPick": { "providerId": 0, "reason": "" },
-    "budgetFriendly": { "providerId": 0, "reason": "" },
-  },
-  
-  "metadata": {
-    "totalProvidersAnalyzed": 0,
-    "totalQualifiedProviders": 0,
-    "analysisTimestamp": "",
-    "confidenceLevel": ""
-  }
 }
 
 REMEMBER:
 - Sort matchedProviders from highest to lowest matchScore
 - Don't recommend unavailable providers
 - Be precise with numbers
-- Use clear professional language
-
 `;
 };
 

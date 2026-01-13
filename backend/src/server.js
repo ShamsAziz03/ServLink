@@ -22,6 +22,7 @@ const providerRoutes = require("./routes/serviceProvider/providerRoutes");
 const AdminRoutes = require("./routes/AdminRoutes");
 const providerBookings = require("./routes/serviceProvider/serviceProviderRequestsRoutes");
 const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
+const matchAI = require("./routes/serviceMatchAI");
 
 // Middleware
 app.use(cors());
@@ -31,7 +32,6 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 
 const path = process.env.EXPO_PUBLIC_PATH;
-
 
 app.use("/homeInfo", homeRoutes);
 app.use("/categoryPage", categoryPageRoutes);
@@ -66,6 +66,9 @@ app.use(
 );
 app.use("/providerBookings", providerBookings);
 app.use("/providerOffers", providerOffers);
+
+//for service match AI
+app.use("/serviceMatchAI", matchAI);
 
 app.use("/uploads", express.static("uploads"));
 // Start server

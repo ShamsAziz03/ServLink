@@ -85,7 +85,7 @@ const home = () => {
               color: "#2f154aff",
               fontSize: 30,
               paddingBottom: 10,
-              fontFamily: "Inter-Black",
+              fontWeight: "500",
             }}
           >
             Trusted help, when and how you need it.
@@ -311,47 +311,27 @@ const home = () => {
               marginBottom: 40,
             }}
           >
-            {loggedUser.user_id ? (
-              <Link
-                href="/categoryPage"
+            <Link
+              href="/AIServiceProviderMatcher"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
                 style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  textShadowColor: "rgb(255, 255, 255)",
+                  textShadowOffset: { width: 0.7, height: 0.7 },
+                  textShadowRadius: 4,
                 }}
               >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Go to services
-                </Text>
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Join Us Now
-                </Text>
-              </Link>
-            )}
+                Find a Professional With AI
+              </Text>
+            </Link>
           </View>
 
           {/* view for catigories */}
@@ -414,7 +394,9 @@ const home = () => {
                     style={{
                       color: "#e4e0e6ff",
                       fontSize: 16,
-                      fontFamily: "Inter-Black",
+                      textShadowColor: "rgb(255, 255, 255)",
+                      textShadowOffset: { width: 0.7, height: 0.7 },
+                      textShadowRadius: 4,
                     }}
                   >
                     Book
