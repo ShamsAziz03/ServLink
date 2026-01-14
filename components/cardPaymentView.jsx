@@ -21,6 +21,7 @@ const CardPayment = () => {
     currentService,
     userCurrentLocation,
     setBookingObject,
+    setCurrentProviderInfo,
   } = useContext(AppContext);
   const [email, setEmail] = useState(loggedUser.email);
   const { confirmSetupIntent } = useStripe();
@@ -250,6 +251,11 @@ const CardPayment = () => {
           alert("payment not success !");
           return;
         }
+        setCurrentProviderInfo({
+          provider_id: 0,
+          base_price: 0,
+          service_id: 0,
+        });
         navigation.navigate("(dashboard)", { screen: "home" });
       } else {
         alert("payment not success xxxx");

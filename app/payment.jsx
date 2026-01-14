@@ -25,6 +25,7 @@ const Payment = () => {
     userCurrentLocation,
     questionsAnswers,
     explainEstimateTime,
+    setCurrentProviderInfo,
   } = useContext(AppContext);
   const [selectedOption, setSelectedOption] = useState("cache");
   const [confirmed, setConfirmed] = useState(false);
@@ -301,9 +302,14 @@ const Payment = () => {
 
               <TouchableOpacity
                 style={styles.button}
-                onPress={() =>
-                  navigation.navigate("(dashboard)", { screen: "home" })
-                }
+                onPress={() => {
+                  setCurrentProviderInfo({
+                    provider_id: 0,
+                    base_price: 0,
+                    service_id: 0,
+                  });
+                  navigation.navigate("(dashboard)", { screen: "home" });
+                }}
               >
                 <Text style={styles.buttonText}>Back To Home</Text>
               </TouchableOpacity>
@@ -356,6 +362,11 @@ const Payment = () => {
           >
             <Pressable
               onPress={() => {
+                setCurrentProviderInfo({
+                  provider_id: 0,
+                  base_price: 0,
+                  service_id: 0,
+                });
                 navigation.navigate("(dashboard)", { screen: "home" });
               }}
             >

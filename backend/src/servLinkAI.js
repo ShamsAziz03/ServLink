@@ -614,6 +614,7 @@ Return JSON ONLY in this exact format:
   "requestAnalysis": {
     "serviceType": "",
     "detectedCategory": "",
+    "categoryId":0,
     "detectedServiceNames": [],
     "urgencyLevel": "",
     "complexityLevel": "",
@@ -625,9 +626,7 @@ Return JSON ONLY in this exact format:
     {
       "providerUserName": "",
       "UserPhone":"",
-      "providerServiceId": 0,
       "providerId": 0,
-      "serviceId": 0,
       "matchScore"": 0,
       "availabilityStatus": {
         "isAvailableOnRequestedDate": true,
@@ -639,6 +638,8 @@ Return JSON ONLY in this exact format:
           {
             "serviceName": "",
             "price": 0,
+            "providerServiceId": 0,
+            "serviceId": 0,
           }
         ],
       }

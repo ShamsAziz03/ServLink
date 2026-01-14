@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Modal,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AppContext } from "../context/AppContext";
+import { useNavigation } from "@react-navigation/native";
 
 function Row({ label, value }) {
   const v =
@@ -57,8 +59,29 @@ export default function ResultsServiceMatcherFromAI({
   onClose,
   visible,
 }) {
+  const { setCurrentService, setCurrentProviderInfo } = useContext(AppContext);
+  const navigation = useNavigation();
+
   const requestAnalysis = aiResponse?.data?.requestAnalysis;
   const matchedProviders = aiResponse?.data?.matchedProviders || [];
+
+  const handleBooking = (provider) => {
+    const obj = {
+      service_id: provider.servicesMatch.relevantServices[0].serviceId,
+      category_id: requestAnalysis.categoryId,
+      title: requestAnalysis.serviceType,
+    };
+    setCurrentService(obj);
+
+    const providerServiceInfo = {
+      provider_id: provider.providerId,
+      base_price: provider.servicesMatch.relevantServices[0].price,
+      service_id: provider.servicesMatch.relevantServices[0].serviceId,
+    };
+    setCurrentProviderInfo(providerServiceInfo);
+
+    navigation.navigate("userLocation");
+  };
 
   return (
     <Modal transparent visible={visible} animationType="fade">
@@ -129,7 +152,7 @@ export default function ResultsServiceMatcherFromAI({
               </Text>
 
               {matchedProviders.map((p, index) => {
-                const matchScorePct = Math.round((p.matchScore || 0));
+                const matchScorePct = Math.round(p.matchScore || 0);
 
                 return (
                   <View key={index} style={styles.card}>
@@ -217,7 +240,12 @@ export default function ResultsServiceMatcherFromAI({
                     </View>
 
                     {/* Book Now */}
-                    <Pressable style={styles.bookBtn} onPress={() => {}}>
+                    <Pressable
+                      style={styles.bookBtn}
+                      onPress={() => {
+                        handleBooking(p);
+                      }}
+                    >
                       <Text style={styles.bookBtnText}>Book Now</Text>
                     </Pressable>
                   </View>
