@@ -265,12 +265,76 @@ const getServiceMatchAI = async (req, res) => {
     };
     res.json(obj);
   } catch (err) {
-    console.error("❌ Groq AI Error:", error);
+    console.error("❌ Groq AI Error:", err);
     res.status(500).json({ error: "error" });
+  }
+};
+
+//to get the recommendation system for user services
+const getRecommendedServices = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const response = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an Advanced Service Recommendation Engine. Your job is to analyze relational data set to build a user persona and recommend the top 5 services they are most likely to love or to buy next.
+
+### YOUR LOGIC ENGINE:
+1.  **Map the Relational Data:**
+    - The userBookings array contains Provider_Services_id. You must cross-reference this with the providerServices array to find the service_id, and finally link that to the services
+     array to know what service was actually booked.
+
+2.  **Analyze Behavior (The "Clever" Analysis):**
+    - **Intent Recovery:** If a booking in userBookings has status "Cancelled" or "Rejected", the user likely still needs this service. Recommend it with second high priority.
+    - **Persona Inference:** Look at the combination of bookings.
+      - *Example:* "Babysitting" + "Helping disabled" = The user is a Caregiver/Head of Household. Suggest time-saving services like "Cleaning".
+      - *Example:* "Furniture Moving" = The user is moving house. Suggest "Assemble Furniture", "Cleaning", or "Installing Sockets".
+    - **Interest Matching:** Compare the userIntrests (e.g., "Cleaning-Decoration") against serviceDescription and categoryName and serviceName and if one mtach by meaning the suggest.
+
+3.  **Select & Score:**
+    - Choose exactly 5 services.
+    - Write a reason that references specific data points (e.g., "Because you cancelled your last appointment..." or "Since you booked Moving services...").
+
+### OUTPUT RULES:
+- Return ONLY a JSON object.
+
+### JSON SCHEMA:
+{ recommendedServices:
+ [ {
+    "service_id": number,
+    "serviceName": "string",
+    "categoryName": "string",
+    "basePrice":number,
+    "serviceImage":string,
+    "reason": "string",
+  },...]
+}`,
+        },
+        {
+          role: "user",
+          content: `Here is the raw data for the current user... ### DATASET: ${JSON.stringify(data)}`,
+        },
+      ],
+      model: "llama-3.1-8b-instant",
+      temperature: 0.3,
+      response_format: { type: "json_object" },
+    });
+
+    const aiResponse = response.choices[0].message.content;
+    const cleanJson = aiResponse.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleanJson);
+    // console.log("result" + aiResponse);
+    res.json(parsed);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
 module.exports = {
   getEstimatedTimeBook,
   getServiceMatchAI,
+  getRecommendedServices,
 };

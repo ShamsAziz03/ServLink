@@ -23,6 +23,7 @@ const AdminRoutes = require("./routes/AdminRoutes");
 const providerBookings = require("./routes/serviceProvider/serviceProviderRequestsRoutes");
 const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
 const matchAI = require("./routes/serviceMatchAI");
+const suggestedServicesAI = require("./routes/suggestedServicesForUser");
 
 // Middleware
 app.use(cors());
@@ -69,6 +70,9 @@ app.use("/providerOffers", providerOffers);
 
 //for service match AI
 app.use("/serviceMatchAI", matchAI);
+
+// for suggested services using AI
+app.use("/getSuggestedServices", suggestedServicesAI);
 
 app.use("/uploads", express.static("uploads"));
 // Start server
