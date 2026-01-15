@@ -124,5 +124,54 @@ WHERE
     const [response] = await db.promise().execute(getBookAnswers);
     return response;
   }
+
+  static async getProviderPendingAcceptedBookings(userId) {
+    const query = `SELECT 
+    sp.provider_id
+FROM
+    service_providers sp
+WHERE
+    sp.user_id = ?
+     `;
+    const [result] = await db.promise().execute(query, [userId]);
+    const providerId = result[0].provider_id;
+
+    const getBooks = `SELECT 
+    b.booking_id,
+    b.status,
+    b.service_date,
+    b.service_time,
+    b.payment_method,
+    b.address,
+    b.notes,
+    b.created_at,
+    b.is_accept,
+    b.estimated_time,
+    b.duration_time,
+    b.actual_total_price,
+    b.total_price,
+    u.user_id as customerId,
+    u.first_name,
+    u.last_name,
+    u.phone,
+    u.email,
+    s.name AS serviceName,
+    c.name AS categoryName
+FROM
+    bookings b
+         JOIN
+    users u ON b.user_id = u.user_id
+         JOIN
+    provider_services ps ON b.Provider_Services_id = ps.Provider_Services_id
+        JOIN
+    services s ON ps.service_id = s.service_id
+        JOIN
+    categories c ON s.category_id = c.category_id
+WHERE
+    ps.provider_id = ? AND b.is_accept='accepted' AND b.status='Pending'
+     `;
+    const [response] = await db.promise().execute(getBooks, [providerId]);
+    return response;
+  }
 }
 module.exports = Bookings;

@@ -24,6 +24,7 @@ const providerBookings = require("./routes/serviceProvider/serviceProviderReques
 const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
 const matchAI = require("./routes/serviceMatchAI");
 const suggestedServicesAI = require("./routes/suggestedServicesForUser");
+const cancelApprovedBookings = require("./routes/serviceProvider/providerCancelApprovedBookingsRoutes");
 
 // Middleware
 app.use(cors());
@@ -67,6 +68,7 @@ app.use(
 );
 app.use("/providerBookings", providerBookings);
 app.use("/providerOffers", providerOffers);
+app.use("/cancelApprovedBookings", cancelApprovedBookings);
 
 //for service match AI
 app.use("/serviceMatchAI", matchAI);

@@ -26,4 +26,7 @@ router.get("/getAllServices", dataForPerformanceAIController.getAllServices);
 
 router.get("/getProviderID/:userId", dataForPerformanceAIController.getProviderID);
 
+router.get("/getProviderPendingAcceptedBookings/:userId", providerBooks.getProviderPendingAcceptedBookings);
+
+
 module.exports = router;
