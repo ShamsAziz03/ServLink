@@ -181,6 +181,16 @@ ${JSON.stringify(systemData.providerNotes, null, 2)}
 USERS INFO
 ${JSON.stringify(systemData.users, null, 2)}
 
+*** DATA LINKING INSTRUCTIONS (STRICT EXECUTION REQUIRED) ***
+To populate "providerName" and "UserPhone", you must perform a strict LOOKUP:
+1. Identify the selected provider from "AVAILABLE PROVIDERS".
+2. Read the value of the key 'user_id' inside that provider object (e.g., "user_id": 8).
+3. Go to "USERS INFO" and find the single user object where 'user_id' matches that value exactly.
+4. Construct "providerName" by combining that user's 'first_name' + " " + 'last_name'.
+5. Use that user's 'phone' as the "UserPhone".
+WARNING: Do not guess. If provider has user_id: 8, you MUST return the name for user_id: 8 (Ahmad Ali), NOT John Doe.
+*************************************************************
+
 Return JSON ONLY in this exact format:
 
 {
@@ -197,10 +207,10 @@ Return JSON ONLY in this exact format:
   
   "matchedProviders": [
     {
-      "providerUserName": "",
-      "UserPhone":"",
+      "providerName": "", // MUST be "first_name" + " " + "last_name" from USERS INFO based on user_id match
+      "UserPhone":"", // MUST be "phone" from USERS INFO based on user_id match
       "providerId": 0,
-      "matchScore"": 0,
+      "matchScore": 0,
       "availabilityStatus": {
         "isAvailableOnRequestedDate": true,
         "availableTimeSlots": [{"date": "","startTime": ""},{},...],

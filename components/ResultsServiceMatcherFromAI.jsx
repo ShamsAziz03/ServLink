@@ -165,7 +165,7 @@ export default function ResultsServiceMatcherFromAI({
 
                         <View>
                           <Text style={styles.providerName}>
-                            {p.providerUserName}
+                            {p.providerName}
                           </Text>
                           <Text
                             style={{
