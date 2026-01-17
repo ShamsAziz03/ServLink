@@ -1,7 +1,7 @@
 body{
   font-family: 'Times New Roman', Times, serif;
 }
-.auth-wrapper {
+.auth {
   min-height: 100vh;
   display: flex;
   justify-content: center;

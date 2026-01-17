@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #7b3685ff;
+  display: flex;
+  align-items: center;
+}
+
+/* .back-btn:hover {
+  opacity: 0.8;
+} */
+
+.header-title {
+  color: #7b3685ff;
+  font-size: 22px;
+  font-weight: 900;
+  padding-left: 20px;
+  margin: 0;
+}

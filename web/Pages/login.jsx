@@ -111,7 +111,7 @@ export default function Auth() {
 
   return (
 
-    <div className="auth-wrapper">
+    <div className="auth">
       <div className="auth-card">
         <img
           src="https://cdn-icons-png.flaticon.com/128/15181/15181334.png"

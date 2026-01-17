@@ -6,8 +6,11 @@ export default function ProvidersAdmin() {
   const [providers, setProviders] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [aiSummaries, setAiSummaries] = useState({});
+  const [aiLoadingId, setAiLoadingId] = useState(null);
 
-  const ip ="localhost";
+
+  const ip = "localhost";
 
   const fetchProviders = async () => {
     try {
@@ -62,6 +65,31 @@ export default function ProvidersAdmin() {
       console.log(err.message);
     }
   };
+  const generateSummary = async (provider) => {
+    try {
+      setAiLoadingId(provider.provider_id);
+
+      const res = await axios.post(
+        `http://${ip}:5000/api/ai/provider-summary`,
+        { provider }
+      );
+
+      setAiSummaries((prev) => ({
+        ...prev,
+        [provider.provider_id]: res.data.summary,
+      }));
+
+    } catch (err) {
+      console.log(err.message);
+      setAiSummaries((prev) => ({
+        ...prev,
+        [provider.provider_id]: "Unable to generate summary right now",
+      }));
+    } finally {
+      setAiLoadingId(null);
+    }
+  };
+
 
   return (
     <div className="modern-container">
@@ -96,6 +124,14 @@ export default function ProvidersAdmin() {
                 >
                   {item.approved_by_admin === 1 ? "Unapprove" : "Approve"}
                 </button>
+                <button
+                  className="btn-ai"
+                  onClick={() => generateSummary(item)}
+                  disabled={aiLoadingId === item.provider_id}
+                >
+                  {aiLoadingId === item.provider_id ? "Analyzing..." : "Summarize"}
+                </button>
+
               </div>
 
               <div className="modern-details">
@@ -105,14 +141,21 @@ export default function ProvidersAdmin() {
                 <div><strong>Field:</strong> {item.field_of_work}</div>
                 <div><strong>Experience:</strong> {item.years_of_experience} yrs</div>
                 <div><strong>Hourly Rate:</strong> ${item.hourly_rate}/hr</div>
-                <div><strong>Locations:</strong> {item.service_locations}</div>
+                <div><strong>Service Locations:</strong> {item.service_locations}</div>
                 <div><strong>Bookings:</strong> {item.bookings_count}</div>
+                <div><strong>Debts:</strong> {item.debt}</div>
               </div>
 
               <div className="modern-about">
                 <strong>About:</strong>
                 <p>{item.aboutProvider}</p>
               </div>
+              {aiSummaries[item.provider_id] && (
+                <div className="modern-ai-summary">
+                  <strong>AI Summary about {item.first_name} {item.last_name} :</strong>
+                  <p>{aiSummaries[item.provider_id]}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>

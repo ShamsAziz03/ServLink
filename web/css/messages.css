@@ -1,18 +1,18 @@
-.contact-container {
+.messages-container {
   padding: 24px;
   background-color: #f6f1fa;
   min-height: 100vh;
   font-family: 'Times New Roman', Times, serif;
 }
 
-.contact-header h1 {
+.messages-header h1 {
   color: #6c3483;
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
-.contact-header p {
+.messages-header p {
   font-size: 14px;
   color: #9b8ca6;
   margin-bottom: 16px;
@@ -24,7 +24,7 @@
   gap: 16px;
 }
 
-.contact-card {
+.messages-card {
   background-color: #fff;
   border-radius: 18px;
   padding: 16px;
@@ -90,12 +90,16 @@
   align-items: center;
 }
 
-.modal-card {
+.reply-card {
+  position: fixed;
+  top:10px;
   background-color: #fff;
   border-radius: 26px;
   padding: 24px;
-  width: 400px;
+  width: 600px;
   max-width: 90%;
+  overflow-y: auto; 
+  max-height: 550px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -114,7 +118,7 @@
 }
 
 .modal-textarea {
-  width: 100%;
+  width: 95%;
   height: 100px;
   padding: 12px;
   border-radius: 14px;

@@ -221,6 +221,12 @@ export default function ProfileScreen() {
             text="Inbox"
             onPress={() => router.push("/inbox")}
           />
+          <SettingItem
+            iconLib="Ionicons"
+            icon="wallet"
+            text="Wallet"
+            onPress={() => router.push("/ProviderPages/wallet")}
+          />
 
           <View style={styles.divider} />
 
@@ -241,20 +247,20 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f7eaf9ff", height: "100%" },
   scroll: {
-    padding: 20,
+    marginTop:-40,
+    padding: 10,
     alignItems: "center",
-    height: "100%",
   },
   card: {
     width: "95%",
-    padding: 25,
+    padding: 15,
     alignItems: "center",
     height: "100%",
     marginTop: 50,
   },
   avatar: {
-    width: 110,
-    height: 110,
+    width: 60,
+    height: 60,
     borderRadius: 55,
     marginBottom: 10,
     borderWidth: 2,
@@ -284,11 +290,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     width: "100%",
   },
-  settingText: { marginLeft: 10, color: "#37043a", fontSize: 14 },
+  settingText: { marginLeft: 10, color: "#37043a", fontSize: 10 },
   logoutButton: {
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
+    marginTop:-20,
   },
   logoutGradient: { paddingVertical: 12, alignItems: "center" },
   logoutText: { color: "#fff", fontSize: 16, fontWeight: "600" },

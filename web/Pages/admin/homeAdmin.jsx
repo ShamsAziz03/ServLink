@@ -24,6 +24,11 @@ export default function AdminDashboard() {
     provider_count: 0,
     category_count: 0,
   });
+  const [aiReport, setAiReport] = useState("");
+  const [showReport, setShowReport] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+
+
 
   const ip = "localhost";
 
@@ -34,18 +39,73 @@ export default function AdminDashboard() {
       .then((res) => setStats(res.data))
       .catch((err) => console.log(err.message));
   }, []);
+  const generateAIReport = async () => {
+    try {
+      setAiLoading(true);
+
+      const res = await axios.post(
+        `http://${ip}:5000/api/ai/admin-report`,
+        stats
+      );
+
+      setAiReport(res.data.report);
+    } catch (err) {
+      console.log(err.message);
+      setAiReport("Unable to generate report right now");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
 
   return (
     <div className="dashboard">
       {/* HEADER */}
       <div className="header">
-        <MdApps size={28} color={Colors.primary} />
-        <div>
-          <h2>ServLink</h2>
-          <p>Admin Dashboard</p>
+        <div className="header-sec1">
+          <MdApps size={28} color={Colors.primary} />
+          <div>  
+            <h2>ServLink</h2>
+            <p>Admin Dashboard</p>
+          </div>
         </div>
+        <button
+          className="ai-report-btn"
+          onClick={() => {
+            setShowReport(true);
+            if (!aiReport) generateAIReport();
+          }}
+        >
+          View AI Report
+        </button>
+      </div>
+      {showReport && (
+  <div className="ai-modal-overlay" onClick={() => setShowReport(false)}>
+    <div className="ai-modal" onClick={(e) => e.stopPropagation()}>
+      
+      <div className="ai-modal-header">
+        <h3>AI Platform Report</h3>
+        <button onClick={() => setShowReport(false)}>✕</button>
       </div>
 
+      <div className="ai-modal-body">
+        {aiLoading ? (
+          <p>Analyzing platform data...</p>
+        ) : (
+          aiReport.split("\n\n").map((block, i) => (
+            <div key={i} className="ai-section">
+              {block.startsWith("Overview") && <h4>Overview</h4>}
+              {block.startsWith("Key Insights") && <h4>Key Insights</h4>}
+              {block.startsWith("Suggestion") && <h4>Suggestion</h4>}
+              <p>{block.replace(/^(Overview:|Key Insights:|Suggestion:)/, "")}</p>
+            </div>
+          ))
+        )}
+      </div>
+
+    </div>
+  </div>
+)}
       {/* HERO CARD */}
       <div className="hero-card"
         onClick={() => {
@@ -82,8 +142,8 @@ export default function AdminDashboard() {
 
       {/* ACTION CARD */}
       <div className="action-card" onClick={() => {
-          window.location.href = "/admin/categories";
-        }}>
+        window.location.href = "/admin/categories";
+      }}>
         <MdBuild size={28} color="#fff" />
         <div className="action-text">
           <h4>{stats.category_count} Categories</h4>
@@ -93,9 +153,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* MINIMAL CARD */}
-      <div className="minimal-card"onClick={() => {
-          window.location.href = "/admin/services";
-        }}>
+      <div className="minimal-card" onClick={() => {
+        window.location.href = "/admin/services";
+      }}>
         <div className="icon-box">
           <MdBuild size={24} color={Colors.primary} />
         </div>
@@ -108,5 +168,6 @@ export default function AdminDashboard() {
         <MdChevronRight size={28} color={Colors.primary} />
       </div>
     </div>
+    
   );
 }

@@ -9,8 +9,15 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 24px;
+  justify-content: space-between;
 }
+.header-sec1{
+   display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
 
+}
 .header h2 {
   color: #6c3483;
   margin: 0;
@@ -133,4 +140,130 @@
 .minimal-card p {
   font-size: 13px;
   color: #6b7280;
+}
+
+.ai-report-btn {
+  background: #6c3483;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  width: 200px;
+}
+
+.ai-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.55)
+  );
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* MODAL */
+.ai-modal {
+  width: 620px;
+  max-width: 92%;
+  max-height: 82vh;
+  background: linear-gradient(145deg, #ffffff, #f5f0fa);
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(108, 52, 131, 0.35);
+  animation: scaleIn 0.35s cubic-bezier(0.25, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* ANIMATION */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.92) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* HEADER */
+.ai-modal-header {
+  padding: 20px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #6c3483, #94469d);
+  color: white;
+}
+
+.ai-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* CLOSE BUTTON */
+.ai-modal-header button {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-modal-header button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* BODY */
+.ai-modal-body {
+  padding: 22px 26px;
+  overflow-y: auto;
+  background: transparent;
+}
+
+/* SECTIONS */
+.ai-section {
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+  transition: 0.25s ease;
+}
+
+.ai-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(108, 52, 131, 0.2);
+}
+
+/* SECTION TITLES */
+.ai-section h4 {
+  color: #6c3483;
+  margin-bottom: 8px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* TEXT */
+.ai-section p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #333;
 }

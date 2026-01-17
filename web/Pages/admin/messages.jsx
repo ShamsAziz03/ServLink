@@ -17,8 +17,10 @@ export default function AdminContactMessages() {
   const [messages, setMessages] = useState([]);
   const [selected, setSelected] = useState(null);
   const [reply, setReply] = useState("");
+  const [simplifiedReply, setSimplifiedReply] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const ip ="localhost";
+  const ip = "localhost";
 
   useEffect(() => {
     fetchMessages();
@@ -50,6 +52,8 @@ export default function AdminContactMessages() {
       }
 
       setReply("");
+      setSimplifiedReply("");
+      setSuggestions([]);
       setModalVisible(false);
       fetchMessages();
     } catch (err) {
@@ -57,9 +61,35 @@ export default function AdminContactMessages() {
     }
   };
 
+  // Generate AI reply suggestions
+  const generateSuggestions = async () => {
+    if (!selected) return;
+    try {
+      const res = await axios.post(`http://${ip}:5000/api/ai/generate_reply_suggestions`, {
+        message: selected.message,
+      });
+      setSuggestions(res.data.suggestions || []);
+    } catch (err) {
+      console.error("Error generating suggestions:", err);
+    }
+  };
+
+  // Simplify current reply
+  const simplifyReply = async () => {
+    if (!reply.trim()) return;
+    try {
+      const res = await axios.post(`http://${ip}:5000/api/ai/simplify_reply`, {
+        text: reply,
+      });
+      setSimplifiedReply(res.data.simplified || "");
+    } catch (err) {
+      console.error("Error simplifying reply:", err);
+    }
+  };
+
   return (
-    <div className="contact-container">
-      <div className="contact-header">
+    <div className="messages-container">
+      <div className="messages-header">
         <h1>Contact Messages</h1>
         <p>Manage & reply to user inquiries</p>
       </div>
@@ -68,9 +98,12 @@ export default function AdminContactMessages() {
         {messages.map((item) => (
           <div
             key={item.id}
-            className="contact-card"
+            className="messages-card"
             onClick={() => {
               setSelected(item);
+              setReply(""); 
+              setSimplifiedReply(""); 
+              setSuggestions([]);
               setModalVisible(true);
             }}
           >
@@ -90,16 +123,47 @@ export default function AdminContactMessages() {
 
       {modalVisible && selected && (
         <div className="modal-overlay" onClick={() => setModalVisible(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="reply-card" onClick={(e) => e.stopPropagation()}>
             <h2>Reply to Message</h2>
             <p className="modal-name">{selected.name}</p>
             <p className="modal-message">{selected.message}</p>
+
+            {/* Textarea for reply */}
             <textarea
               value={reply}
               onChange={(e) => setReply(e.target.value)}
               placeholder="Write your reply..."
               className="modal-textarea"
             />
+
+            {/* Buttons for AI features */}
+            <div className="modal-ai-buttons">
+              <button onClick={generateSuggestions}>AI-Suggested Replies 🤖</button>
+              <button onClick={simplifyReply}>Enhance Your Message with AI ✨</button>
+            </div>
+
+            {/* Show AI suggestions */}
+            {suggestions.length > 0 && (
+              <div className="suggestions">
+                <p>Suggested Replies:</p>
+                {suggestions.map((s, i) => (
+                  <button key={i} onClick={() => setReply(s)}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Show simplified reply */}
+            {simplifiedReply && (
+              <div className="simplified-output">
+                <p>Simplified version:</p>
+                <button onClick={() => setReply(simplifiedReply)}>
+                  {simplifiedReply}
+                </button>
+              </div>
+            )}
+
             <div className="modal-actions">
               <button className="cancel-btn" onClick={() => setModalVisible(false)}>
                 Cancel

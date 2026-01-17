@@ -1,0 +1,141 @@
+.category-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fcf4fcff, #bd88c3ff);
+  padding: 20px;
+  font-family: "Times New Roman", serif;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-header h1 {
+  color: #7b3685;
+  font-size: 30px;
+}
+
+.category-tabs {
+  display: flex;
+  overflow-x: auto;
+  margin: 20px 0;
+  border-bottom: 3px solid #bfbcbc;
+}
+
+.category-tab {
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  color: #727171;
+}
+#cat_name{
+    font-size: 14px;
+    padding: 10px;
+}
+.category-tab.active {
+  border-bottom: 3px solid #7b3685;
+  color: #7b3685;
+  font-weight: bold;
+}
+
+.category-info {
+  background: linear-gradient(135deg, #f8e1fbff, #bf73c6ff);
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.category-services {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.category-service-card {
+  background: linear-gradient(135deg, #fdfbff, #f1dbf4ff);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  height: 300px;
+}
+
+.category-service-card img {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.category-service-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.category-service-actions button {
+  background: #651072;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 20px;
+  cursor: pointer;
+}
+
+.category-cart {
+  background: #682972;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.category-feedback-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+  color: #5e1675;
+}
+
+.category-feedback-card {
+  background: linear-gradient(135deg, #f1ebf6ff, #dfbfe2ff);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.category-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-stars {
+  text-align: center;
+}
+
+.category-star-filled {
+  color: #660468;
+  font-size: 22px;
+}
+
+.category-star-empty {
+  color: #000;
+  font-size: 22px;
+}
+
+.category-feedback-btn {
+  display: block;
+  margin: 30px auto;
+  background: #7b117f;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 300px;
+}

@@ -22,6 +22,8 @@ const providerRoutes = require("./routes/serviceProvider/providerRoutes");
 const AdminRoutes = require("./routes/AdminRoutes");
 const providerBookings = require("./routes/serviceProvider/serviceProviderRequestsRoutes");
 const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
+const aiRoutes = require("./routes/adminAi");
+const wallet= require("./routes/walletRoutes");
 
 // Middleware
 app.use(cors());
@@ -53,6 +55,7 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/bookingService", bookingServiceRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/provider/bookings", providerRoutes);
+app.use("/api/provider/wallet",wallet);
 
 //for payment
 app.use("/payment", paymentRoutes);
@@ -68,6 +71,10 @@ app.use("/providerBookings", providerBookings);
 app.use("/providerOffers", providerOffers);
 
 app.use("/uploads", express.static("uploads"));
+
+
+app.use("/api/ai", aiRoutes);
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
