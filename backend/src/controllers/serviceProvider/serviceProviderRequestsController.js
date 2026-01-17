@@ -44,3 +44,17 @@ exports.updateBook = async (req, res) => {
     });
   }
 };
+
+exports.getProviderPendingAcceptedBookings = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const result =
+      await BookingModel.getProviderPendingAcceptedBookings(userId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching provider Pending approved bookings",
+      error: err.message,
+    });
+  }
+};

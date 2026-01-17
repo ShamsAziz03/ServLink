@@ -220,7 +220,12 @@ const CategoryPage = () => {
                 padding: 8,
               }}
             >
-              {"Starting at: " + (serviceMetaData[0].base_price ?? 0) + " ₪/hr"}
+              {"Starting at: " +
+                (serviceMetaData[0]?.base_price || 0) +
+                " ₪/hr"}
+              {!serviceMetaData[0]?.base_price && (
+                <Text>  No Provider Gives this service yet!</Text>
+              )}
             </Text>
             <View
               style={{
@@ -230,7 +235,7 @@ const CategoryPage = () => {
                 marginTop: 15,
               }}
             >
-              {getStars(serviceMetaData[0].score ?? 0)}
+              {getStars(serviceMetaData[0]?.score || 0)}
             </View>
           </View>
         </LinearGradient>

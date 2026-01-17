@@ -40,6 +40,7 @@ function getStars(rating) {
 
 const home = () => {
   const ip = process.env.EXPO_PUBLIC_IP;
+  const API_ADDRESS = `http://${ip}:5000`;
   const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisibility] = useState(false);
@@ -85,7 +86,7 @@ const home = () => {
               color: "#2f154aff",
               fontSize: 30,
               paddingBottom: 10,
-              fontFamily: "Inter-Black",
+              fontWeight: "500",
             }}
           >
             Trusted help, when and how you need it.
@@ -138,36 +139,7 @@ const home = () => {
     },
   ];
 
-  const suggested = [
-    {
-      id: 1,
-      title: "Assemble furniture",
-      category: "Handyman",
-      img: require("../../assets/Assemble_and_install_furniture2.jpg"),
-      price: 50,
-    },
-    {
-      id: 2,
-      title: "Baby Sitting",
-      category: "Children",
-      img: require("../../assets/Babysitting.jpg"),
-      price: 20,
-    },
-    {
-      id: 3,
-      title: "Helping disabled at home",
-      category: "Home Help",
-      img: require("../../assets/Helping_elderly_disabled_at_home.jpg"),
-      price: 70,
-    },
-    {
-      id: 4,
-      title: "Full Furniture Relocation",
-      category: "Furniture Moving Services",
-      img: require("../../assets/Full_furniture_relocation.jpg"),
-      price: 50,
-    },
-  ];
+  const [suggestedServices, setSuggestedServices] = useState([]);
 
   //for fetch categories
   const [categoriesData, setcategoriesData] = useState([]);
@@ -176,7 +148,7 @@ const home = () => {
       const response = await fetch(`http://${ip}:5000/homeInfo/categories`);
       const fetchedData = await response.json();
       setcategoriesData(fetchedData[0]);
-      console.log("Response:", fetchedData[0]);
+      // console.log("Response:", fetchedData[0]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -189,7 +161,7 @@ const home = () => {
       const response = await fetch(`http://${ip}:5000/homeInfo/offers`);
       const fetchedDataOffers = await response.json();
       setOffersData(fetchedDataOffers[0]);
-      console.log("Response:", fetchedDataOffers[0]);
+      // console.log("Response:", fetchedDataOffers[0]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -203,7 +175,7 @@ const home = () => {
       const fetchedData = await response.json();
       setTopProviders(fetchedData);
 
-      console.log("top providers:", fetchedData);
+      // console.log("top providers:", fetchedData);
     } catch (error) {
       console.error("Error fetching top providers:", error);
     }
@@ -216,17 +188,83 @@ const home = () => {
       const response = await fetch(`http://${ip}:5000/homeInfo/mostBooked`);
       const fetchedData = await response.json();
       setMostBooked(fetchedData);
-      console.log("most booked:", fetchedData);
+      // console.log("most booked:", fetchedData);
     } catch (error) {
       console.error("Error fetching most booked:", error);
     }
   };
 
+  //for recommendation by AI
+
+  const getRecommendedServicesByAI = async (aiData) => {
+    try {
+      const obj = { data: aiData };
+
+      const response = await fetch(
+        `http://${ip}:5000/getSuggestedServices/getRecommendedServices`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(obj),
+        }
+      );
+
+      const fetchedData = await response.json();
+      setSuggestedServices(fetchedData?.recommendedServices);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchSuggestedDataForAI = async () => {
+    const baseUrl = `${API_ADDRESS}/getSuggestedServices`;
+    let aiData = {};
+
+    try {
+      // User interests
+      const resUserInterests = await fetch(
+        `${baseUrl}/getUserIntrests/${loggedUser?.user_id || 7}`
+      );
+      const userInterestsData = await resUserInterests.json();
+      aiData.userIntrests = userInterestsData[0]
+        ? userInterestsData[0].interests
+        : "";
+
+      // Categories
+      const resCategories = await fetch(`${baseUrl}/getCategories`);
+      const categories = await resCategories.json();
+      aiData.categories = categories;
+
+      // Services
+      const resServices = await fetch(`${baseUrl}/getServices`);
+      const services = await resServices.json();
+      aiData.services = services;
+
+      // Provider services
+      const resProviderServices = await fetch(`${baseUrl}/getProviderServices`);
+      const providerServices = await resProviderServices.json();
+      aiData.providerServices = providerServices;
+
+      // User bookings
+      const resUserBookings = await fetch(
+        `${baseUrl}/getUserBookings/${loggedUser?.user_id || 7}`
+      );
+      const userBookings = await resUserBookings.json();
+      aiData.userBookings = userBookings;
+
+      getRecommendedServicesByAI(aiData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  //use effect
   useEffect(() => {
     fetchData(); // Initial load
     fetchOffers();
     fetchTopProviders();
     fetchMostBooked();
+    fetchSuggestedDataForAI();
   }, []);
 
   return (
@@ -311,47 +349,27 @@ const home = () => {
               marginBottom: 40,
             }}
           >
-            {loggedUser.user_id ? (
-              <Link
-                href="/categoryPage"
+            <Link
+              href="/AIServiceProviderMatcher"
+              style={{
+                marginTop: 20,
+                backgroundColor: "#750d83ff",
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text
                 style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
+                  color: "#e4e0e6ff",
+                  fontSize: 20,
+                  textShadowColor: "rgb(255, 255, 255)",
+                  textShadowOffset: { width: 0.7, height: 0.7 },
+                  textShadowRadius: 4,
                 }}
               >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Go to services
-                </Text>
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#750d83ff",
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#e4e0e6ff",
-                    fontSize: 20,
-                    fontFamily: "Inter-Black",
-                  }}
-                >
-                  Join Us Now
-                </Text>
-              </Link>
-            )}
+                Find a Professional With AI
+              </Text>
+            </Link>
           </View>
 
           {/* view for catigories */}
@@ -414,7 +432,9 @@ const home = () => {
                     style={{
                       color: "#e4e0e6ff",
                       fontSize: 16,
-                      fontFamily: "Inter-Black",
+                      textShadowColor: "rgb(255, 255, 255)",
+                      textShadowOffset: { width: 0.7, height: 0.7 },
+                      textShadowRadius: 4,
                     }}
                   >
                     Book
@@ -437,22 +457,111 @@ const home = () => {
               paddingHorizontal: 10,
             }}
           >
-            {suggested.map((suggest, index) => (
-              <Pressable
-                key={`${suggest.id}-${index}`}
-                onPress={() => {
-                  console.log("test");
-                }}
-              >
-                <Card
-                  id={suggest.id}
-                  img={suggest.img}
-                  title={suggest.title}
-                  category={suggest.category}
-                  price={suggest.price}
-                />
-              </Pressable>
-            ))}
+            {suggestedServices.length > 0 &&
+              suggestedServices.map((suggest, index) => (
+                <Pressable
+                  key={`${suggest.service_id}-${index}`}
+                  onPress={() => {
+                    console.log("test");
+                  }}
+                >
+                  <View
+                    key={suggest.service_id}
+                    style={{
+                      alignItems: "center",
+                      backgroundColor: "#f3e8f7ff",
+                      borderRadius: 20,
+                      padding: 20,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 6 },
+                      shadowOpacity: 0.15,
+                      shadowRadius: 10,
+                      elevation: 8,
+                      width: 250,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: suggest.serviceImage }}
+                      resizeMode="contain"
+                      style={styles.img}
+                    />
+
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        width: 250,
+                        height: 190,
+                        padding: 10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          textAlign: "center",
+                          color: "#17041c",
+                          fontWeight: "700",
+                          textShadowColor: "#e0c0f0",
+                          textShadowOffset: { width: 1, height: 1 },
+                          textShadowRadius: 2,
+                          letterSpacing: 1,
+                          lineHeight: 28,
+                        }}
+                      >
+                        {suggest.serviceName}
+                      </Text>
+
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: "center",
+                          color: "#5b106b",
+                          fontWeight: "600",
+                          textTransform: "uppercase", // makes it more "badge-like"
+                          letterSpacing: 2,
+                          paddingTop: 10,
+                          textShadowColor: "#d8a3ff",
+                          textShadowOffset: { width: 1, height: 1 },
+                          textShadowRadius: 1,
+                        }}
+                      >
+                        {suggest.categoryName}
+                      </Text>
+
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          textAlign: "center",
+                          color: "#653470",
+                          fontWeight: "500",
+                          marginTop: 15,
+                          letterSpacing: 0.5,
+                          backgroundColor: "#f0e0f5",
+                          borderRadius: 6,
+                          paddingHorizontal: 6,
+                          paddingVertical: 5,
+                          alignSelf: "center",
+                          shadowColor: "#000",
+                          shadowOpacity: 0.1,
+                          shadowRadius: 2,
+                        }}
+                      >
+                        {"Starting at: " + suggest.basePrice + " ₪"}
+                      </Text>
+                      <Text
+                        style={{
+                          marginTop: 7,
+                          paddingHorizontal: 5,
+                          color: "rgb(61, 59, 62)",
+                          fontSize: 12,
+                        }}
+                      >
+                        {"Reason: " + suggest.reason}
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
+              ))}
           </ScrollView>
 
           {/* view for most booked services */}
@@ -847,5 +956,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#37043aff",
     width: 10,
     height: 10,
+  },
+  img: {
+    width: "100%",
+    height: 170,
+    marginBottom: 10,
   },
 });

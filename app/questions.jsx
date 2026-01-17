@@ -15,13 +15,18 @@ import HeaderLogoReturn from "../components/headerLogoReturn";
 import { Link } from "expo-router";
 import { AppContext } from "../context/AppContext"; //for global states
 import { useNavigation } from "@react-navigation/native";
+import BookingConfirmation from "./bookingConfirmation";
 
 const Questions = () => {
   const width = Dimensions.get("window").width;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { userCurrentLocation, currentService, setQuestionsAnswers } =
-    useContext(AppContext); //to use golbal var
+  const {
+    userCurrentLocation,
+    currentService,
+    setQuestionsAnswers,
+    cuerrentProviderInfo,
+  } = useContext(AppContext); //to use golbal var
 
   const [serviceQuestions, setServiceQuestions] = useState([
     {
@@ -41,6 +46,8 @@ const Questions = () => {
   const currentQuestion = serviceQuestions[currentIndex];
   const [otherAnswers, setOtherAnswers] = useState(true);
   const [selectedOption, setSelectedOption] = useState({});
+  const [showBookConfirmation, setShowBookConfirmation] = useState(false);
+
   const ip = process.env.EXPO_PUBLIC_IP;
 
   const fetchServiceQuestions = async () => {
@@ -56,7 +63,6 @@ const Questions = () => {
     }
   };
 
-
   const handleNext = () => {
     const q = currentQuestion;
 
@@ -68,7 +74,11 @@ const Questions = () => {
       setCurrentIndex(currentIndex + 1);
     } else {
       setQuestionsAnswers(answers);
-      navigation.navigate("serviceBooking");
+      if (cuerrentProviderInfo.provider_id === 0) {
+        navigation.navigate("serviceBooking");
+      } else {
+        setShowBookConfirmation(true);
+      }
     }
     setOtherAnswers(false);
   };
@@ -175,7 +185,10 @@ const Questions = () => {
               placeholder="Write Your answer here..."
               value={answers[currentQuestion.question_text] || ""}
               onChangeText={(text) =>
-                setAnswers({ ...answers, [currentQuestion.question_text]: text })
+                setAnswers({
+                  ...answers,
+                  [currentQuestion.question_text]: text,
+                })
               }
             />
           )}
@@ -297,6 +310,11 @@ const Questions = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <BookingConfirmation
+        visible={showBookConfirmation}
+        onClose={() => setShowBookConfirmation(false)}
+        provider={cuerrentProviderInfo}
+      />
     </LinearGradient>
   );
 };

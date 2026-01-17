@@ -9,7 +9,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome, Feather, Ionicons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  Feather,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -46,8 +51,8 @@ export default function ProfileScreen() {
     router.replace("/login");
   };
 
-  const SettingItem = ({ iconLib = "Feather", icon, text, onPress }) => {
-    const IconComponent = iconLib === "Ionicons" ? Ionicons : Feather;
+  const SettingItem = ({ iconLib = "MaterialIcons", icon, text, onPress }) => {
+    const IconComponent = iconLib === "Ionicons" ? Ionicons : MaterialIcons;
     return (
       <TouchableOpacity style={styles.settingRow} onPress={onPress}>
         <IconComponent name={icon} size={23} color="#750d83ff" />
@@ -152,8 +157,8 @@ export default function ProfileScreen() {
 
   return (
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.card}>
+      <View style={styles.card}>
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <Image
             source={{
               uri:
@@ -191,6 +196,16 @@ export default function ProfileScreen() {
             text="Offers"
             onPress={() => router.push("/ProviderPages/providerOffers")}
           />
+
+          <SettingItem
+            iconLib="MaterialIcons"
+            icon="cancel"
+            text="Cancel Accepted Bookings"
+            onPress={() =>
+              router.push("/ProviderPages/providerCancelApprovedBookings")
+            }
+          />
+          
 
           <SettingItem
             icon="edit"
@@ -238,8 +253,8 @@ export default function ProfileScreen() {
               <Text style={styles.logoutText}>Logout</Text>
             </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </LinearGradient>
   );
 }
@@ -256,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     height: "100%",
-    marginTop: 50,
+    marginTop: 30,
   },
   avatar: {
     width: 60,
@@ -274,7 +289,7 @@ const styles = StyleSheet.create({
     width: "90%",
     backgroundColor: "#f7eaf9ff",
     marginVertical: 15,
-    marginTop: 20,
+    marginTop: 15,
   },
   sectionTitle: {
     fontSize: 16,
@@ -297,6 +312,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop:-20,
   },
-  logoutGradient: { paddingVertical: 12, alignItems: "center" },
+  logoutGradient: { paddingVertical: 10, alignItems: "center" },
   logoutText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });

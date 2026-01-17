@@ -7,8 +7,10 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const userRequest = {
   description: "I need someone to assemble a large IKEA wardrobe at my home.",
   city: "Jenin",
-  budget: [25, 75], // min and max dollars per hour
-  preferredDate: "2026-01-15",
+  minBudget: "25",
+  maxBudget: "75",
+  preferredStartRangeDate: "2026-01-15",
+  preferredEndRangeDate: "",
 };
 
 const systemData = {
@@ -495,6 +497,31 @@ const systemData = {
         "Skilled in assembling all types of furniture efficiently and safely.",
     },
   ],
+  users: [
+    { user_id: 1, first_name: "Sami", last_name: "Ali", phone: "1234569" },
+    {
+      user_id: 2,
+      first_name: "Omar",
+      last_name: "Khaled",
+      phone: "+1234567890",
+    },
+    { user_id: 3, first_name: "Sara", last_name: "Zahi", phone: "+1987654321" },
+    {
+      user_id: 4,
+      first_name: "Samer",
+      last_name: "Ahmad",
+      phone: "+1123456789",
+    },
+    {
+      user_id: 5,
+      first_name: "Jane",
+      last_name: "Smith",
+      phone: "+1098765432",
+    },
+    { user_id: 6, first_name: "John", last_name: "Doe", phone: "+1012345678" },
+    { user_id: 7, first_name: "Shams", last_name: "Aziz", phone: "1234567890" },
+    { user_id: 8, first_name: "Ahmad", last_name: "Ali", phone: "+123456" },
+  ],
 };
 
 const getSystemPrompt = () => {
@@ -514,9 +541,9 @@ Deeply analyze customer requests and find the best service providers based on pr
  PROVIDER MATCHING CRITERIA:
 1. Specialization (25%): How well provider's field matches requested service
 2. Experience (10%): Years of experience and certifications
-3. Availability (20%): Available on requested date
+3. Availability (15%): Available on requested date
 4. Price (25%): Price suitability for budget
-5. Location (10%): Proximity to customer location (exact or near, using resources from google and internet to know)
+5. Location (15%): Proximity to customer location (exact or near, using resources from google and internet to know)
 6. Service Quality (10%): Variety and quality of offered services
 
  CRITICAL RULES:
@@ -538,18 +565,27 @@ You are an expert in data analysis and smart matching with 10+ years experience 
 };
 
 const buildUserPrompt = (userRequest, systemData) => {
+  const isExact =
+    userRequest.preferredStartRangeDate === userRequest.preferredEndRangeDate;
   return `
   
- CUSTOMER REQUEST 
+ CUSTOMER REQUEST which has these info:
 
- Request Description:
+ Request Description, Request Details(Requested City,)
 "${userRequest.description}"
 
  Request Details:
 • Requested City: ${userRequest.city}
-• Budget: ${userRequest.budget[0]} - ${userRequest.budget[1]} ILS/hour
-• Preferred Date: ${userRequest.preferredDate || "Not specified"}
+• Budget: ${userRequest.minBudget} - ${userRequest.maxBudget} ILS/hour
+•  Preferred Date: ${
+    isExact
+      ? `${userRequest.preferredStartRangeDate} (EXACT DATE — end date not provided, search ONLY this day)`
+      : `${userRequest.preferredStartRangeDate} to ${userRequest.preferredEndRangeDate} (DATE RANGE)`
+  }
 
+IMPORTANT DATE RULE:
+- If the end date is missing, you MUST treat it as an exact single date equal to the start date.
+- Only return providers available on that exact date (and within their working hours and not in unavailable dates).
 
 AVAILABLE CATEGORIES 
 ${JSON.stringify(systemData.categories, null, 2)}
@@ -569,81 +605,62 @@ ${JSON.stringify(systemData.providerWorkingHours, null, 2)}
 PROVIDERS UNAVAILABLE DATES
 ${JSON.stringify(systemData.providerNotes, null, 2)}
 
+USERS INFO
+${JSON.stringify(systemData.users, null, 2)}
+
+*** DATA LINKING INSTRUCTIONS (STRICT EXECUTION REQUIRED) ***
+To populate "providerName" and "UserPhone", you must perform a strict LOOKUP:
+1. Identify the selected provider from "AVAILABLE PROVIDERS".
+2. Read the value of the key 'user_id' inside that provider object (e.g., "user_id": 8).
+3. Go to "USERS INFO" and find the single user object where 'user_id' matches that value exactly.
+4. Construct "providerName" by combining that user's 'first_name' + " " + 'last_name'.
+5. Use that user's 'phone' as the "UserPhone".
+WARNING: Do not guess. If provider has user_id: 8, you MUST return the name for user_id: 8 (Ahmad Ali), NOT John Doe.
+*************************************************************
+
 Return JSON ONLY in this exact format:
 
 {
   "requestAnalysis": {
     "serviceType": "",
     "detectedCategory": "",
-    "categoryId": 0,
-    "detectedServiceIds": [],
+    "categoryId":0,
+    "detectedServiceNames": [],
     "urgencyLevel": "",
     "complexityLevel": "",
     "estimatedDuration": "",
-    "estimatedDurationHours": 0,
-    "requiredSkills": [],
-    "budgetAssessment": {
-      "isRealistic": true,
-      "recommendation": "",
-      "suggestedRange": [0, 0]
-    },
     "keyRequirements": []
   },
   
   "matchedProviders": [
     {
+      "providerName": "", // MUST be "first_name" + " " + "last_name" from USERS INFO based on user_id match
+      "UserPhone":"", // MUST be "phone" from USERS INFO based on user_id match
       "providerId": 0,
       "matchScore": 0,
-      
       "availabilityStatus": {
         "isAvailableOnRequestedDate": true,
-        "availableTimeSlots": [],
+        "availableTimeSlots": [{"date": "","startTime": ""},{},...],
       },
-      
-      "scoreBreakdown": {
-        "specializationScore": 0,
-        "experienceScore": 0,
-        "availabilityScore": 0,
-        "priceScore": 0,
-        "locationScore": 0,
-        "qualityScore": 0,
-        "totalScore": 0
-      },
-      
       "strengths": [],
-      
       "servicesMatch": {
         "relevantServices": [
           {
             "serviceName": "",
             "price": 0,
-            "relevanceScore": 0
+            "providerServiceId": 0,
+            "serviceId": 0,
           }
         ],
-        "totalRelevantServices": 0
       }
     }
   ],
-  
-  "recommendations": {
-    "topPick": { "providerId": 0, "reason": "" },
-    "budgetFriendly": { "providerId": 0, "reason": "" },
-  },
-  
-  "metadata": {
-    "totalProvidersAnalyzed": 0,
-    "totalQualifiedProviders": 0,
-    "analysisTimestamp": "",
-    "confidenceLevel": ""
-  }
 }
 
 REMEMBER:
 - Sort matchedProviders from highest to lowest matchScore
 - Don't recommend unavailable providers
 - Be precise with numbers
-- Use clear professional language
-
 `;
 };
 
@@ -688,3 +705,296 @@ const analyze = async (userRequest, systemData) => {
 };
 
 analyze(userRequest, systemData);
+
+// import * as dotenv from "dotenv";
+// dotenv.config();
+// import Groq from "groq-sdk";
+
+// const data = {
+//   userIntrests: "Cleaning-Decoration",
+//   categories: [
+//     { category_id: 1, categoryName: "Handyman" },
+//     { category_id: 2, categoryName: "Agriculture" },
+//     { category_id: 3, categoryName: "Cleaning" },
+//     { category_id: 4, categoryName: "Furniture Moving" },
+//     { category_id: 5, categoryName: "Child Care" },
+//     { category_id: 6, categoryName: "Pet Care" },
+//     { category_id: 7, categoryName: "IT / Computer Services" },
+//     { category_id: 8, categoryName: "Private Lessons" },
+//   ],
+//   services: [
+//     {
+//       service_id: 1,
+//       category_id: 1,
+//       serviceName: "Assemble furniture",
+//       serviceDescription:
+//         "Professional help assembling and installing furniture at your home.",
+//       service_image:
+//         "http://10.0.2.2:5000/assets/Assemble_and_install_furniture2.jpg",
+//     },
+//     {
+//       service_id: 2,
+//       category_id: 5,
+//       serviceName: "Baby Sitting",
+//       serviceDescription: "Reliable babysitting services for your children.",
+//       service_image: "http://10.0.2.2:5000/assets/Babysitting.jpg",
+//     },
+//     {
+//       service_id: 3,
+//       category_id: 3,
+//       serviceName: "Helping disabled at home",
+//       serviceDescription:
+//         "Assistance and care for the elderly or disabled at home.",
+//       service_image:
+//         "http://10.0.2.2:5000/assets/Helping_elderly_disabled_at_home.jpg",
+//     },
+//     {
+//       service_id: 4,
+//       category_id: 4,
+//       serviceName: "Full Furniture Relocation",
+//       serviceDescription:
+//         "Complete moving service for furniture and household items.",
+//       service_image:
+//         "http://10.0.2.2:5000/assets/Full_furniture_relocation.jpg",
+//     },
+//     {
+//       service_id: 5,
+//       category_id: 1,
+//       serviceName: "Installing Electrical Sockets",
+//       serviceDescription:
+//         "Installation of electrical sockets by a professional handyman.",
+//       service_image:
+//         "http://10.0.2.2:5000/assets/Installing_electrical_sockets.jpg",
+//     },
+//     {
+//       service_id: 6,
+//       category_id: 1,
+//       serviceName: "Pipe Work (Plumbing)",
+//       serviceDescription:
+//         "Plumbing and pipe work services for homes and offices.",
+//       service_image: "http://10.0.2.2:5000/assets/pipe_work (plumbing).jpg",
+//     },
+//     {
+//       service_id: 7,
+//       category_id: 8,
+//       serviceName: "Academic tutoring (math/science)",
+//       serviceDescription:
+//         "Private academic lessons in math and science subjects.",
+//       service_image: "http://10.0.2.2:5000/assets/private_language_lessons.jpg",
+//     },
+//     {
+//       service_id: 8,
+//       category_id: 2,
+//       serviceName: "Tree Trimming",
+//       serviceDescription:
+//         "Gardening service specializing in tree trimming and maintenance.",
+//       service_image: "http://10.0.2.2:5000/assets/Tree_trimming.jpg",
+//     },
+//     {
+//       service_id: 9,
+//       category_id: 2,
+//       serviceName: "Crop Maintenance",
+//       serviceDescription:
+//         "Regular crop monitoring, watering, and pest control for farms.",
+//       service_image: "http://10.0.2.2:5000/assets/weed_removal.jpg",
+//     },
+//     {
+//       service_id: 10,
+//       category_id: 6,
+//       serviceName: "Pet Grooming",
+//       serviceDescription:
+//         "Full grooming service for dogs and cats, including bathing and trimming.",
+//       service_image: "http://10.0.2.2:5000/assets/Pet_sitting_at_home.jpg",
+//     },
+//     {
+//       service_id: 11,
+//       category_id: 7,
+//       serviceName: "Computer Repair",
+//       serviceDescription:
+//         "Troubleshooting and repairing desktops, laptops, and peripherals.",
+//       service_image:
+//         "http://10.0.2.2:5000/assets/Troubleshoot_computer_hardware.jpg",
+//     },
+//     {
+//       service_id: 12,
+//       category_id: 3,
+//       serviceName: "Cleaning Service",
+//       serviceDescription:
+//         "Comprehensive cleaning service: house, appliances, clothes, or car cleaning, with customizable duration and materials.",
+//       service_image: "http://10.0.2.2:5000/assets/Regular_house_cleaning.jpg",
+//     },
+//   ],
+//   providerServices: [
+//     { Provider_Services_id: 1, service_id: 3, base_price: "28.00" },
+//     { Provider_Services_id: 2, service_id: 2, base_price: "25.00" },
+//     { Provider_Services_id: 3, service_id: 1, base_price: "30.00" },
+//     { Provider_Services_id: 4, service_id: 4, base_price: "30.00" },
+//     { Provider_Services_id: 5, service_id: 8, base_price: "28.50" },
+//     { Provider_Services_id: 6, service_id: 3, base_price: "28.50" },
+//     { Provider_Services_id: 7, service_id: 6, base_price: "35.00" },
+//     { Provider_Services_id: 8, service_id: 5, base_price: "40.00" },
+//     { Provider_Services_id: 9, service_id: 7, base_price: "40.00" },
+//     { Provider_Services_id: 10, service_id: 9, base_price: "30.00" },
+//     { Provider_Services_id: 11, service_id: 10, base_price: "35.00" },
+//     { Provider_Services_id: 12, service_id: 11, base_price: "40.00" },
+//     { Provider_Services_id: 13, service_id: 1, base_price: "70.00" },
+//   ],
+//   userBookings: [
+//     {
+//       booking_id: 14,
+//       user_id: 7,
+//       Provider_Services_id: 2,
+//       status: "Completed",
+//       booking_date: "2025-10-29T22:00:00.000Z",
+//       service_date: "2025-11-01T22:00:00.000Z",
+//       service_time: "15:30:00",
+//       total_price: "120.00",
+//       payment_method: "Credit Card",
+//       address: "Nablus - Rafidia",
+//       notes: "Client requested eco-friendly materials",
+//       created_at: "2025-11-30T10:20:30.000Z",
+//       is_accept: "accepted",
+//       estimated_time: "2.50",
+//       duration_time: "2.00",
+//       actual_total_price: "120.00",
+//     },
+//     {
+//       booking_id: 15,
+//       user_id: 7,
+//       Provider_Services_id: 3,
+//       status: "Cancelled",
+//       booking_date: "2025-11-04T22:00:00.000Z",
+//       service_date: "2025-11-06T22:00:00.000Z",
+//       service_time: "09:00:00",
+//       total_price: "60.00",
+//       payment_method: "Cash",
+//       address: "Hebron - Ein Sarah St.",
+//       notes: "Cancelled due to provider unavailability",
+//       created_at: "2025-11-30T10:20:30.000Z",
+//       is_accept: "rejected",
+//       estimated_time: "2.00",
+//       duration_time: "2.00",
+//       actual_total_price: null,
+//     },
+//     {
+//       booking_id: 16,
+//       user_id: 7,
+//       Provider_Services_id: 1,
+//       status: "Completed",
+//       booking_date: "2025-10-24T21:00:00.000Z",
+//       service_date: "2025-11-27T22:00:00.000Z",
+//       service_time: "17:45:00",
+//       total_price: "95.00",
+//       payment_method: "Cash",
+//       address: "Jenin - City Center",
+//       notes: "Customer satisfied with the service",
+//       created_at: "2025-11-30T10:20:30.000Z",
+//       is_accept: "accepted",
+//       estimated_time: "2.00",
+//       duration_time: "2.50",
+//       actual_total_price: "100.00",
+//     },
+//     {
+//       booking_id: 17,
+//       user_id: 7,
+//       Provider_Services_id: 2,
+//       status: "Pending",
+//       booking_date: "2025-11-08T22:00:00.000Z",
+//       service_date: "2026-01-12T22:00:00.000Z",
+//       service_time: "11:00:00",
+//       total_price: "150.00",
+//       payment_method: "Online Payment",
+//       address: "Bethlehem - Old City",
+//       notes: "Includes kitchen and bathroom cleaning",
+//       created_at: "2025-11-30T10:20:30.000Z",
+//       is_accept: "pending",
+//       estimated_time: "2.00",
+//       duration_time: null,
+//       actual_total_price: null,
+//     },
+//     {
+//       booking_id: 18,
+//       user_id: 7,
+//       Provider_Services_id: 3,
+//       status: "Pending",
+//       booking_date: "2026-01-03T22:00:00.000Z",
+//       service_date: "2026-01-14T22:00:00.000Z",
+//       service_time: "11:30:00",
+//       total_price: "30.00",
+//       payment_method: "cache",
+//       address: "Jenin, Area A, West Bank, Palestinian Territories",
+//       notes: null,
+//       created_at: "2026-01-04T13:06:59.000Z",
+//       is_accept: "pending",
+//       estimated_time: "1.00",
+//       duration_time: null,
+//       actual_total_price: null,
+//     },
+//   ],
+// };
+
+// const systemPromt = `
+// You are an Advanced Service Recommendation Engine. Your job is to analyze relational data set to build a user persona and recommend the top 5 services they are most likely to love or to buy next.
+
+// ### YOUR LOGIC ENGINE:
+// 1.  **Map the Relational Data:**
+//     - The userBookings array contains Provider_Services_id. You must cross-reference this with the providerServices array to find the service_id, and finally link that to the services
+//      array to know what service was actually booked.
+
+// 2.  **Analyze Behavior (The "Clever" Analysis):**
+//     - **Intent Recovery:** If a booking in userBookings has status "Cancelled" or "Rejected", the user likely still needs this service. Recommend it with second high priority.
+//     - **Persona Inference:** Look at the combination of bookings.
+//       - *Example:* "Babysitting" + "Helping disabled" = The user is a Caregiver/Head of Household. Suggest time-saving services like "Cleaning".
+//       - *Example:* "Furniture Moving" = The user is moving house. Suggest "Assemble Furniture", "Cleaning", or "Installing Sockets".
+//     - **Interest Matching:** Compare the userIntrests (e.g., "Cleaning-Decoration") against serviceDescription and categoryName and serviceName and if one mtach by meaning the suggest.
+
+// 3.  **Select & Score:**
+//     - Choose exactly 5 services.
+//     - Write a reason that references specific data points (e.g., "Because you cancelled your last appointment..." or "Since you booked Moving services...").
+
+// ### OUTPUT RULES:
+// - Return ONLY a JSON object.
+
+// ### JSON SCHEMA:
+// { recommendedServices:
+//  [ {
+//     "service_id": number,
+//     "serviceName": "string",
+//     "categoryName": "string",
+//     "basePrice":number,
+//     "serviceImage":string,
+//     "reason": "string",
+//   },...]
+// }`;
+
+// const userPrompt = `Here is the raw data for the current user... ### DATASET: ${JSON.stringify(data)}`;
+
+// const analyze = async (userPrompt, systemPromt) => {
+//   try {
+//     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+//     const response = await groq.chat.completions.create({
+//       messages: [
+//         {
+//           role: "system",
+//           content: systemPromt,
+//         },
+//         {
+//           role: "user",
+//           content: userPrompt,
+//         },
+//       ],
+//       model: "llama-3.1-8b-instant",
+//       temperature: 0.3,
+//       response_format: { type: "json_object" },
+//     });
+
+//     const result = response.choices[0].message.content;
+//     console.log(result);
+//     // res.json(result);
+//   } catch (err) {
+//     console.error(err.message);
+//     // res.status(500).json({ error: err.message });
+//   }
+// };
+
+// analyze(userPrompt, systemPromt);

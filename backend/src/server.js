@@ -24,6 +24,9 @@ const providerBookings = require("./routes/serviceProvider/serviceProviderReques
 const providerOffers = require("./routes/serviceProvider/serviceProviderOffers");
 const aiRoutes = require("./routes/adminAi");
 const wallet= require("./routes/walletRoutes");
+const matchAI = require("./routes/serviceMatchAI");
+const suggestedServicesAI = require("./routes/suggestedServicesForUser");
+const cancelApprovedBookings = require("./routes/serviceProvider/providerCancelApprovedBookingsRoutes");
 
 // Middleware
 app.use(cors());
@@ -33,7 +36,6 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 
 const path = process.env.EXPO_PUBLIC_PATH;
-
 
 app.use("/homeInfo", homeRoutes);
 app.use("/categoryPage", categoryPageRoutes);
@@ -69,6 +71,13 @@ app.use(
 );
 app.use("/providerBookings", providerBookings);
 app.use("/providerOffers", providerOffers);
+app.use("/cancelApprovedBookings", cancelApprovedBookings);
+
+//for service match AI
+app.use("/serviceMatchAI", matchAI);
+
+// for suggested services using AI
+app.use("/getSuggestedServices", suggestedServicesAI);
 
 app.use("/uploads", express.static("uploads"));
 

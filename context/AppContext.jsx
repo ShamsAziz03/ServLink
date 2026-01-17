@@ -24,13 +24,19 @@ const AppProvider = ({ children }) => {
     walletId: 10,
     typeOfPayment: "cache",
   });
-  const [selected_from_searchPage, setSelected_from_searchPage] = useState(null);
-   const [currentBooking, setCurrentBooking] = useState(null); // لتخزين بيانات الحجز
+  const [selected_from_searchPage, setSelected_from_searchPage] =
+    useState(null);
+  const [currentBooking, setCurrentBooking] = useState(null); // لتخزين بيانات الحجز
   const [timerState, setTimerState] = useState({
-      seconds: 0,
+    seconds: 0,
     running: false,
   });
-  const [explainEstimateTime,setExplainEstimateTime]=useState("");
+  const [explainEstimateTime, setExplainEstimateTime] = useState("");
+  const [cuerrentProviderInfo, setCurrentProviderInfo] = useState({
+    provider_id: 0,
+    base_price: 0,
+    service_id: 0,
+  });
 
   return (
     <AppContext.Provider
@@ -49,12 +55,14 @@ const AppProvider = ({ children }) => {
         setBookingObject,
         selected_from_searchPage,
         setSelected_from_searchPage,
-        currentBooking, 
-        setCurrentBooking, 
-        timerState, 
+        currentBooking,
+        setCurrentBooking,
+        timerState,
         setTimerState,
         explainEstimateTime,
         setExplainEstimateTime,
+        cuerrentProviderInfo,
+        setCurrentProviderInfo,
       }}
     >
       {children}
