@@ -150,25 +150,31 @@ WHERE
     b.duration_time,
     b.actual_total_price,
     b.total_price,
-    u.user_id as customerId,
+    u.user_id AS customerId,
     u.first_name,
     u.last_name,
     u.phone,
     u.email,
     s.name AS serviceName,
-    c.name AS categoryName
+    c.name AS categoryName,
+    ps.Provider_Services_id,
+    ps.service_id,
+    ps.provider_id,
+    ps.base_price as providerPricePerHour
 FROM
     bookings b
-         JOIN
+        JOIN
     users u ON b.user_id = u.user_id
-         JOIN
+        JOIN
     provider_services ps ON b.Provider_Services_id = ps.Provider_Services_id
         JOIN
     services s ON ps.service_id = s.service_id
         JOIN
     categories c ON s.category_id = c.category_id
 WHERE
-    ps.provider_id = ? AND b.is_accept='accepted' AND b.status='Pending'
+    ps.provider_id = ?
+        AND b.is_accept = 'accepted'
+        AND b.status = 'Pending'
      `;
     const [response] = await db.promise().execute(getBooks, [providerId]);
     return response;

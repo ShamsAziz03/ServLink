@@ -416,8 +416,148 @@ function cleanOldCache() {
   }
 }
 
+//to do automatic booking for user if his book cancelled
+const findBestProvider = async (data) => {
+  try {
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+    // Calculate Day of Week
+    const targetDate = new Date(data.cancelledBook.service_date);
+    const days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    const targetDayOfWeek = days[targetDate.getDay()];
+
+    const systemPrompt = `
+You are a strict Database Query Engine for a Palestinian Service Booking App. Your task is to find a replacement provider for a cancelled booking.
+
+### CRITICAL EXECUTION ORDER (MUST FOLLOW STRICTLY):
+
+**PHASE 1: SERVICE SEMANTIC MATCHING (PRIMARY FILTER)**
+- Examine the cancelled service: serviceName AND description.
+- Scan 'serviceProviderTable' and cross-reference with 'services' table.
+- For each provider in serviceProviderTable:
+  1. Get their service_id
+  2. Look up that service_id in the 'services' table
+  3. Compare the serviceName and description by MEANING, not exact text match
+- **MATCHING LOGIC:**
+  - Look for services that accomplish the same goal or serve the same purpose
+- **KEEP:** Providers whose service has semantic similarity to the requested service
+- **REJECT:** Providers whose service is completely unrelated in purpose/meaning
+
+**PHASE 2: CATEGORY VERIFICATION (SECONDARY FILTER)**
+- From providers who passed Phase 1, check their categoryName
+- **PREFERENCE LOGIC:**
+  - **Perfect Match:** Same category as requested (highest priority)
+  - **Related Match:** Similar/complementary category (acceptable)
+  - **Unrelated:** Completely different category (lowest priority, but don't eliminate if service meaning matched in Phase 1)
+
+**PHASE 3: GEOGRAPHIC PROXIMITY FILTER**
+- Extract the user's city from the cancelled booking address
+- For providers who passed Phases 1 & 2, check their service_location
+- Use West Bank geographic clustering:
+  - **North Cluster:** Jenin, Nablus, Tulkarm, Qalqilya
+  - **Center Cluster:** Ramallah, Al-Bireh, Jerusalem, Jericho (Ariha), Bethlehem, Beit Jala, Beit Sahour
+  - **South Cluster:** Hebron (Al-Khalil), Dura, Yatta
+- **Selection Logic:**
+  1. First Priority: Exact city match
+  2. Second Priority: Same cluster
+  3. Third Priority: Adjacent cluster (North↔Center, Center↔South)
+  4. Fourth Priority: Opposite cluster (North↔South)
+
+**PHASE 4: AVAILABILITY VERIFICATION (MANDATORY)**
+- For all remaining providers, verify:
+  1. **Schedule Check:** In 'providersSchedules', confirm the provider works on ${targetDayOfWeek} and the requested time falls within their start_time and end_time
+  2. **Holiday Check:** In 'providersHolidays', confirm the provider does NOT have an entry for the requested date
+  3. **Booking Conflict Check:** In 'providersBookings', verify no existing booking conflicts with the requested date and time
+- **ELIMINATE:** Any provider who fails availability check
+
+**PHASE 5: PRICE OPTIMIZATION (FINAL TIEBREAKER)**
+- Among all providers who passed Phases 1-4, select the one whose base_price is closest to the user's original providerPricePerHour
+
+### OUTPUT FORMAT (JSON ONLY):
+{
+  "found": boolean,
+  "best_provider": {
+    "provider_name": "First Last",
+    "service_name_offered_by_provider": "Exact service name from services table",
+    "service_id": number,
+    "service_category": "Category name",
+    "base_price": number,
+    "providerServiceId": number,
+    "scheduled_date": "YYYY-MM-DD",
+    "scheduled_time": "HH:MM:SS",
+  }
+}
+
+If no provider passes all phases, return:
+{
+  "found": false,
+  "reason": "Detailed explanation of which phase eliminated all candidates"
+}
+`;
+
+    const userPrompt = `
+Database Content: ${JSON.stringify(data)}
+
+### CANCELLED BOOKING DETAILS:
+- **Service Requested:** "${data.cancelledBook.serviceName}"
+- **Service Description Context:** Look up service_id ${data.cancelledBook.service_id} in the services table to understand what the user actually needs
+- **Service Category:** "${data.cancelledBook.categoryName}"
+- **User Location:** "${data.cancelledBook.address}"
+- **Service Date:** ${data.cancelledBook.service_date}
+- **Day of Week:** ${targetDayOfWeek}
+- **Service Time:** ${data.cancelledBook.service_time}
+- **Estimated Duration:** ${data.cancelledBook.estimated_time} hour(s)
+- **Target Price Per Hour:** $${data.cancelledBook.providerPricePerHour}
+
+### YOUR TASK:
+Find the best replacement provider using the strict 5-phase filtering process.
+
+**EXECUTION PRIORITY:**
+1. SERVICE MEANING (most important - what does the service actually do?)
+2. CATEGORY (secondary - does it fall under similar work type?)
+3. LOCATION (third - how close is the provider?)
+4. AVAILABILITY (mandatory - must be free on the date/time)
+5. PRICE (final tiebreaker - closest to target price)
+
+**CRITICAL RULES:**
+- Phase 1 filters by what the service actually DOES, not category labels
+- A provider offering a semantically similar service in a different category is BETTER than a provider in the same category offering an unrelated service
+- Never sacrifice service meaning for location proximity
+- Availability is mandatory - no exceptions
+
+Begin your analysis now. Work through each phase systematically.
+`;
+
+    const response = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      model: "llama-3.1-8b-instant",
+      temperature: 0.0,
+      response_format: { type: "json_object" },
+    });
+
+    const aiResponse = response.choices[0].message.content;
+    const cleanJson = aiResponse.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleanJson);
+    return parsed;
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 module.exports = {
   getAbstractOfBookDetails,
   getServiceInfoFromAI,
   getAIPerformenceInsights,
+  findBestProvider,
 };

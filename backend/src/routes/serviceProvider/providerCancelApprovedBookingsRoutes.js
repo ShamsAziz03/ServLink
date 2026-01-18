@@ -6,6 +6,9 @@ const PendingAcceptedCancellations = require("../../controllers/serviceProvider/
 router.post("/addNewCancelledBooking", PendingAcceptedCancellations.addNewCancelledBooking);
 router.put("/updateBookStatus", PendingAcceptedCancellations.updateBookStatus);
 router.post("/addNotification", PendingAcceptedCancellations.addNotification);
+router.post("/automaticBookUsingAI", PendingAcceptedCancellations.automaticBookUsingAI);
+router.post("/sendFailureNotificationToUser", PendingAcceptedCancellations.sendFailureNotificationToUser);
+
 
 
 
