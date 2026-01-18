@@ -9,8 +9,11 @@ import Messages from "../Pages/admin/messages";
 import Admins from "../Pages/admin/admins";
 import Login from "../Pages/login";
 import Profile from "../Pages/admin/profile";
-import EditProfile from "../Pages/editProfile"
-import ChangePass from "../Pages/changePass"
+import EditProfile from "../Pages/editProfile";
+import ChangePass from "../Pages/changePass";
+import Inbox from "../Pages/inbox";
+
+
 
 
 function App() {
@@ -18,22 +21,22 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/inbox" element={<Inbox />} />
         <Route path="/Admin" element={<AppLayout />}>
-          <Route path="/Admin/home" element={<Home />} />
-          <Route path="/Admin/users" element={<Users />} />
-          <Route path="/Admin/providers" element={<Providers />} />
-          <Route path="/Admin/categories" element={<Categories />} />
-          <Route path="/Admin/services" element={<Services />} />
-          <Route path="/Admin/messages" element={<Messages />} />
-          <Route path="/Admin/admins" element={<Admins />} />
-          <Route path="/Admin/profile" element={<Profile />} />
-          <Route path="/Admin/editProfile" element={<EditProfile />} />
-          <Route path="/Admin/changePass" element={<ChangePass />} />
-
-          {/* باقي الصفحات */}
+          <Route path="home" element={<Home />} />
+          <Route path="users" element={<Users />} />
+          <Route path="providers" element={<Providers />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="services" element={<Services />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="admins" element={<Admins />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="editProfile" element={<EditProfile />} />
+          <Route path="changePass" element={<ChangePass />} />
         </Route>
       </Routes>
     </BrowserRouter>
+
   );
 }
 

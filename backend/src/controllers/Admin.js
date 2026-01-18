@@ -115,6 +115,7 @@ exports.getProvidersWithBookings = async (req, res) => {
       SELECT 
   u.*,
   p.*,
+  w.*,
   COUNT(b.booking_id) AS bookings_count
 FROM users u
 JOIN service_providers p
@@ -123,17 +124,13 @@ JOIN service_providers p
         ON ps.provider_id = p.provider_id
       LEFT JOIN bookings b
         ON b.Provider_Services_id = ps.Provider_Services_id
+         LEFT JOIN providerswallets w
+        ON w.owner_id = p.provider_id
       GROUP BY 
         u.user_id,
         p.provider_id,
-        p.field_of_work,
-        p.description,
-        p.certifications,
-        p.years_of_experience,
-        p.hourly_rate,
-        p.service_locations,
-        p.approved_by_admin
-
+        p.approved_by_admin,
+        w.id
     `;
 
     const [rows] = await db.promise().query(query);

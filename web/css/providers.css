@@ -124,3 +124,26 @@ body {
   font-size: 13px;
   color: #333;
 }
+.btn-ai {
+  background-color: #6c3483;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+  width: 200px;
+}
+
+.btn-ai:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modern-ai-summary {
+  margin-top: 12px;
+  background: #f5f0fa;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 14px;
+}

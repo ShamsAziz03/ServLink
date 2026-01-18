@@ -49,13 +49,11 @@ ORDER BY b.service_date, b.service_time;
   }
 };
 
-// PUT: تحديث حالة الحجز
 exports.updateBookingStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
   try {
-    // التحقق من القيم المسموح بها
     const allowedStatuses = ['Confirmed', 'Pending', 'Cancelled'];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ 
@@ -87,7 +85,6 @@ exports.updateBookingStatus = async (req, res) => {
   }
 };
 
-// GET: جلب حجوزات يوم معين (اختياري - مفيد للبحث)
 exports.getBookingsByDate = async (req, res) => {
   const { provider_id, date } = req.params; // date format: YYYY-MM-DD
 
@@ -122,8 +119,6 @@ JOIN users c
   ON b.user_id = c.user_id
 WHERE ps.provider_id = ?
 ORDER BY b.service_date, b.service_time;
-
-
     `;
     
     const [rows] = await db.promise().query(query, [provider_id, date]);
@@ -133,16 +128,18 @@ ORDER BY b.service_date, b.service_time;
     res.status(500).json({ error: err.message });
   }
 };
-// PUT /api/bookings/:id/complete
 // PUT /api/bookings/:booking_id/complete
 exports.completeBooking = async (req, res) => {
   const { booking_id } = req.params;
   const { actual_time } = req.body;
 
   try {
-    const [rateRows] = await db.promise().query(
+    const [rows] = await db.promise().query(
       `
-      SELECT sp.hourly_rate
+      SELECT 
+        sp.hourly_rate,
+        sp.provider_id,
+        LOWER(b.payment_method) AS payment_method
       FROM bookings b
       JOIN provider_services ps 
         ON b.Provider_Services_id = ps.Provider_Services_id
@@ -153,40 +150,94 @@ exports.completeBooking = async (req, res) => {
       [booking_id]
     );
 
-    if (rateRows.length === 0) {
-      return res.status(404).json({ message: "Booking or provider not found" });
-    }
-
-    const hourlyRate = rateRows[0].hourly_rate;
-
-    const actualTotalPrice = actual_time * hourlyRate;
-
-    const [result] = await db.promise().query(
-      `
-      UPDATE bookings 
-      SET 
-        duration_time = ?,
-        actual_total_price = ?,
-        status = 'Completed'
-      WHERE booking_id = ?
-      `,
-      [actual_time, actualTotalPrice, booking_id]
-    );
-
-    if (result.affectedRows === 0) {
+    if (!rows.length) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    res.status(200).json({
+    const { hourly_rate, provider_id, payment_method } = rows[0];
+
+    const total = Number((actual_time * hourly_rate).toFixed(2));
+    const providerShare = Number((total * 0.8).toFixed(2));
+    const commission = Number((total * 0.2).toFixed(2));
+
+    // تحديث الحجز
+    await db.promise().query(
+      `
+      UPDATE bookings
+      SET duration_time = ?, actual_total_price = ?, status = 'Completed'
+      WHERE booking_id = ?
+      `,
+      [actual_time, total, booking_id]
+    );
+
+    // تأكيد وجود المحافظ (app فقط)
+    await db.promise().query(
+      `INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
+       VALUES ('app', 0)`
+    );
+
+    // 💳 CREDIT CARD
+    if (payment_method === "credit card") {
+      // تحديث أرصدة المحفظة
+      await db.promise().query(
+        `
+        INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
+        VALUES ('provider', ?)
+        `,
+        [provider_id]
+      );
+
+      await db.promise().query(
+        `
+        UPDATE ProvidersWallets 
+        SET balance = balance + ?
+        WHERE owner_type='provider' AND owner_id=?
+        `,
+        [providerShare, provider_id]
+      );
+
+      await db.promise().query(
+        `
+        UPDATE ProvidersWallets 
+        SET balance = balance + ?
+        WHERE owner_type='app' AND owner_id=0
+        `,
+        [commission]
+      );
+    }
+
+    // 💵 CASH
+    if (payment_method === "cash") {
+      // فقط تسجيل دين البروفايدر
+      await db.promise().query(
+        `
+        INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
+        VALUES ('provider', ?)
+        `,
+        [provider_id]
+      );
+
+      await db.promise().query(
+        `
+        UPDATE ProvidersWallets 
+        SET debt = debt + ?
+        WHERE owner_type='provider' AND owner_id=?
+        `,
+        [commission, provider_id]
+      );
+    }
+
+    return res.json({
       success: true,
-      booking_id,
-      actual_time,
-      hourly_rate: hourlyRate,
-      actual_total_price: actualTotalPrice
+      total,
+      hourly_rate,
+      provider_earned: providerShare,
+      app_earned: payment_method === "credit card" ? commission : 0,
+      provider_debt: payment_method === "cash" ? commission : 0
     });
 
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };

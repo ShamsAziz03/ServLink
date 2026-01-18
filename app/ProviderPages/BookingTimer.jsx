@@ -9,7 +9,7 @@ export default function BookingTimer() {
   const { currentBooking, timerState, setTimerState } = useContext(AppContext);
   const router = useRouter();
   const timerRef = useRef(null);
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
 
   if (!currentBooking) return <Text>No booking selected</Text>;
   const { booking_id } = currentBooking;
@@ -33,43 +33,46 @@ export default function BookingTimer() {
   };
 
   const endTimer = async () => {
-  pauseTimer();
-  const hoursDecimal = (timerState.seconds / 3600).toFixed(2);
+    pauseTimer();
+    const hoursDecimal = (timerState.seconds / 3600).toFixed(2);
 
-  try {
-    const res = await axios.put(
-      `http://${ip}:5000/api/provider/bookings/booking/${booking_id}/complete`,
-      { actual_time: hoursDecimal }
-    );
+    try {
+      const res = await axios.put(
+        `http://${ip}:5000/api/provider/bookings/booking/${booking_id}/complete`,
+        { actual_time: hoursDecimal }
+      );
 
-    const { actual_total_price, hourly_rate, user_id } = res.data;
-    await fetch(`http://${ip}:5000/api/users/send-notification`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: currentBooking.user_id,
-        title: 'Booking Completed',
-        message:
-          `Service finished ✅\n` +
-          `Duration: ${hoursDecimal} hours\n` +
-          `Total price: ${actual_total_price} ₪`
-      })
-    });
-    console.log(currentBooking.user_id);
-    alert(
-      `Booking completed ✅\n` +
-      `Duration: ${hoursDecimal} hours\n` +
-      `Hourly rate: ${hourly_rate} ₪\n` +
-      `Total price: ${actual_total_price} ₪`
-    );
+      const { total, hourly_rate, user_id } = res.data;
+      await fetch(`http://${ip}:5000/api/users/send-notification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentBooking.user_id,
+          title: 'Booking Completed',
+          message: `
+Service finished ✅
+Duration: ${hoursDecimal} hours
+Total price: ${total} ₪
 
-    resetTimer();
-    router.back();
-  } catch (err) {
-    console.log(err);
-    alert("Error saving time");
-  }
-};
+If you have any questions or feedback, feel free to reach us from the Contact Us page.
+    `
+        })
+      });
+      console.log(currentBooking.user_id);
+      alert(
+        `Booking completed ✅\n` +
+        `Duration: ${hoursDecimal} hours\n` +
+        `Hourly rate: ${hourly_rate} ₪\n` +
+        `Total price: ${total} ₪`
+      );
+
+      resetTimer();
+      router.back();
+    } catch (err) {
+      console.log(err);
+      alert("Error saving time");
+    }
+  };
 
 
   const hours = Math.floor(timerState.seconds / 3600);

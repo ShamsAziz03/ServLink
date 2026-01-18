@@ -1,64 +1,72 @@
 .change-container {
   min-height: 100vh;
-  background: linear-gradient( #fcf4fcff, #94469dff);
+  background: linear-gradient(180deg, #fcf4fcff, #94469dff);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 30px;
   position: relative;
 }
 
-.back-btn {
-  position: absolute;
-  top: 30px;
-  left: -500px;
-  background: none;
-  border: none;
-  color: #94469dff;
-  cursor: pointer;
-}
 
+/* Card */
 .change-card {
-  width: 380px;
-  background: #f5f0fa;
-  border-radius: 25px;
-  padding: 25px;
-  box-shadow: 0 6px 15px rgba(55, 4, 58, 0.2);
+  width: 100%;
+  max-width: 450px;
+  background: rgba(245, 240, 250, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 30px;
+  padding: 35px;
+  box-shadow: 0 20px 45px rgba(55, 4, 58, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.change-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px rgba(55, 4, 58, 0.25);
+}
+
+/* Title */
 .change-card h2 {
   text-align: center;
-  margin-bottom: 15px;
-  color: #6a5c7b;
+  margin-bottom: 25px;
+  color: #37043a;
 }
 
+/* Inputs */
 .change-card input {
   width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 12px;
-  border: 1px solid #ddd;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 16px;
+  border: 1px solid #e1d5ea;
   background: #f1ebf6ff;
   font-size: 15px;
+  transition: border 0.25s ease, box-shadow 0.25s ease;
 }
 
 .change-card input:focus {
   outline: none;
   border-color: #750d83ff;
+  box-shadow: 0 0 0 3px rgba(117, 13, 131, 0.15);
 }
 
+/* Update button */
 .update-btn {
- width: 200px !important;
-  margin: 20px 85px  !important;
-  padding: 12px;
-  background: #750d83ff;
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  background: linear-gradient(135deg, #a468aaff, #682471ff);
   color: white;
   border: none;
-  border-radius: 15px;
+  border-radius: 18px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .update-btn:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }

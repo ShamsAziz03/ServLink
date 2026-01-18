@@ -49,9 +49,6 @@ export default function ChangePassword() {
 
   return (
     <div className="change-container">
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        <IoArrowBack size={32} />
-      </button>
 
       <div className="change-card">
         <h2>Change Password</h2>

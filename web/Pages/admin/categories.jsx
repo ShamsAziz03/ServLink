@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../css/categories.css";
-import { FaPlus, FaPencilAlt } from "react-icons/fa";
+import { FaPlus, FaPencilAlt, FaMagic } from "react-icons/fa";
 
 const Colors = {
   primary: "#6c3483",
@@ -27,17 +27,43 @@ export default function CategoriesAdmin() {
   const [editDescription, setEditDescription] = useState("");
   const [editImage, setEditImage] = useState(null);
 
-  const ip ="localhost";
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const ip = "localhost";
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
+  /* ================= Fetch Categories ================= */
   const fetchCategories = async () => {
-    const res = await axios.get(`http://${ip}:5000/api/categories`);
-    setCategories(res.data);
+    try {
+      const res = await axios.get(`http://${ip}:5000/api/categories`);
+      setCategories(res.data);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
   };
 
+  /* ================= AI Function ================= */
+  const generateNameAndDescription = async (currentName, setNameFn, setDescriptionFn) => {
+    if (!currentName) return;
+    setAiLoading(true);
+    try {
+      const res = await axios.post(`http://${ip}:5000/api/ai/category-suggest`, {
+        name: currentName,
+      });
+
+      setNameFn(res.data.name);
+      setDescriptionFn(res.data.description);
+    } catch (err) {
+      console.error("AI generation failed:", err);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  /* ================= CRUD ================= */
   const addCategory = async () => {
     if (!name || !description || !image) return;
 
@@ -46,22 +72,26 @@ export default function CategoriesAdmin() {
     formData.append("description", description);
     formData.append("cover_image", image);
 
-    await axios.post(`http://${ip}:5000/api/addCategory`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      await axios.post(`http://${ip}:5000/api/addCategory`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    setAddModalVisible(false);
-    setName("");
-    setDescription("");
-    setImage(null);
-    fetchCategories();
+      setAddModalVisible(false);
+      setName("");
+      setDescription("");
+      setImage(null);
+      fetchCategories();
+    } catch (err) {
+      console.error("Add category failed:", err);
+    }
   };
 
   const openEditModal = (cat) => {
     setEditCategoryId(cat.category_id);
     setEditName(cat.name);
     setEditDescription(cat.description);
-    setEditImage(cat.cover_image);
+    setEditImage(null);
     setEditModalVisible(true);
   };
 
@@ -72,22 +102,28 @@ export default function CategoriesAdmin() {
     formData.append("category_id", editCategoryId);
     formData.append("name", editName);
     formData.append("description", editDescription);
+
     if (editImage && editImage instanceof File) {
       formData.append("cover_image", editImage);
     }
 
-    await axios.put(`http://${ip}:5000/api/updateCategory`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      await axios.put(`http://${ip}:5000/api/updateCategory`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    setEditModalVisible(false);
-    setEditCategoryId(null);
-    setEditName("");
-    setEditDescription("");
-    setEditImage(null);
-    fetchCategories();
+      setEditModalVisible(false);
+      setEditCategoryId(null);
+      setEditName("");
+      setEditDescription("");
+      setEditImage(null);
+      fetchCategories();
+    } catch (err) {
+      console.error("Edit category failed:", err);
+    }
   };
 
+  /* ================= Filtered List ================= */
   const filtered = categories.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -100,6 +136,7 @@ export default function CategoriesAdmin() {
     }
   };
 
+  /* ================= UI ================= */
   return (
     <div className="categories-container">
       <div className="header-row">
@@ -132,7 +169,7 @@ export default function CategoriesAdmin() {
         ))}
       </div>
 
-      {/* Add Modal */}
+      {/* ================= Add Modal ================= */}
       {addModalVisible && (
         <div className="modal">
           <h3>Add Category</h3>
@@ -142,13 +179,25 @@ export default function CategoriesAdmin() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+
+          <div className="ai-row">
+            <input
+              type="text"
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <button
+              className="ai-btn"
+              disabled={aiLoading}
+              onClick={() => generateNameAndDescription(name, setName, setDescription)}
+            >
+              {aiLoading ? "Generating..." : "✨ Improve Name & Description with AI"}
+            </button>
+          </div>
+
           <input type="file" onChange={(e) => handleImageChange(e, setImage)} />
+
           <div className="modal-buttons">
             <button className="save-btn-category" onClick={addCategory}>
               Save
@@ -160,7 +209,7 @@ export default function CategoriesAdmin() {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* ================= Edit Modal ================= */}
       {editModalVisible && (
         <div className="modal">
           <h3>Edit Category</h3>
@@ -170,13 +219,27 @@ export default function CategoriesAdmin() {
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Description"
-            value={editDescription}
-            onChange={(e) => setEditDescription(e.target.value)}
-          />
+
+          <div className="ai-row">
+            <input
+              type="text"
+              placeholder="Description"
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+            <button
+              className="ai-btn"
+              disabled={aiLoading}
+              onClick={() =>
+                generateNameAndDescription(editName, setEditName, setEditDescription)
+              }
+            >
+              {aiLoading ? "Generating..." : "✨ Edit Name & Description with AI"}
+            </button>
+          </div>
+
           <input type="file" onChange={(e) => handleImageChange(e, setEditImage)} />
+
           <div className="modal-buttons">
             <button className="save-btn-category" onClick={saveEditCategory}>
               Save
@@ -189,5 +252,4 @@ export default function CategoriesAdmin() {
       )}
     </div>
   );
-  
 }

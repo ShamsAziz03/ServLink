@@ -67,10 +67,6 @@ export default function EditProfile() {
 
   return (
     <div className="edit-profile-container">
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        <IoArrowBack size={32} />
-      </button>
-
       <div className="edit-card">
         <h2>Edit Profile</h2>
 
