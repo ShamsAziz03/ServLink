@@ -11,7 +11,7 @@ import Login from "../Pages/login";
 import Profile from "../Pages/admin/profile";
 import EditProfile from "../Pages/editProfile";
 import ChangePass from "../Pages/changePass";
-import Inbox from "../Pages/inbox";
+
 
 
 
@@ -21,7 +21,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/inbox" element={<Inbox />} />
         <Route path="/Admin" element={<AppLayout />}>
           <Route path="home" element={<Home />} />
           <Route path="users" element={<Users />} />
