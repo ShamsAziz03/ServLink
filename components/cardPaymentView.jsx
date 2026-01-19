@@ -68,7 +68,7 @@ const CardPayment = () => {
             customerId: customerId,
             paymentMethodId: paymentMethodId,
           }),
-        }
+        },
       );
       const result = await response.json();
       return result;
@@ -153,7 +153,6 @@ const CardPayment = () => {
     if (customer.user_id) {
       //exist in db
       console.log("customer exist in db  = ", customer);
-      alert("Success - (from DB)");
       await addBookAndAnswers();
       return;
     } else if (customer.id) {
@@ -173,7 +172,8 @@ const CardPayment = () => {
       const result = await updatePaymentMethod(paymentMethodId.id, customer.id);
       if (result.success) {
         await addBookAndAnswers();
-        alert("Success, ", result.message);
+        // alert("Success, ", result.message);
+        await pay();
       } else {
         alert("Bad not Success, ", result.message);
       }
@@ -215,7 +215,7 @@ const CardPayment = () => {
       `${API_URL}/payment/getUserWallet?userId=${loggedUser.user_id}`,
       {
         method: "GET",
-      }
+      },
     );
     const result = await response.json();
     if (result.userWallet) {
@@ -225,7 +225,7 @@ const CardPayment = () => {
       const status = await fetchPaymentIntent(
         userWallet.stripe_customer_id,
         userWallet.stripe_payment_method_id,
-        among
+        among,
       );
       if (status === "succeeded") {
         const result = await updateAmongWallet(among);
@@ -241,7 +241,7 @@ const CardPayment = () => {
                 type: bookingObject.typeOfPayment,
                 amount: bookingObject.hourlyRate * bookingObject.expectedTime,
               }),
-            }
+            },
           );
           const transactionData = await result.json();
           console.log("Transaction:", transactionData);
@@ -258,7 +258,7 @@ const CardPayment = () => {
         });
         navigation.navigate("(dashboard)", { screen: "home" });
       } else {
-        alert("payment not success xxxx");
+        alert("payment not success!");
       }
     } else {
       console.error("No user Wallet to take money from");
@@ -311,15 +311,6 @@ const CardPayment = () => {
         >
           Pay
         </Text>
-      </Pressable>
-
-      <Pressable
-        style={{ padding: 20, backgroundColor: "#888" }}
-        onPress={() => {
-          pay();
-        }}
-      >
-        <Text>test</Text>
       </Pressable>
     </View>
   );

@@ -23,4 +23,9 @@ router.get(
   serviceProviderStatsController.getProviderMonthlyEarnings
 );
 
+router.get(
+  "/getCancelledBooks/:userId",
+  serviceProviderStatsController.getCancelledBooks
+);
+
 module.exports = router;

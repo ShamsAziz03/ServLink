@@ -69,7 +69,7 @@ where sp.provider_id= ? ;
     userId,
     serviceId,
     location,
-    estimated_time
+    estimated_time,
   ) {
     const psSql = `
   SELECT Provider_Services_id, base_price
@@ -363,7 +363,7 @@ WHERE
     serviceName,
     categoryName,
     description,
-    images
+    images,
   ) {
     try {
       const query = `
@@ -415,7 +415,7 @@ WHERE ps.Provider_Services_id = ?;`;
     description,
     images,
     user_id,
-    service_cover_image
+    service_cover_image,
   ) {
     try {
       const query = ` SELECT category_id from categories where name = ?;
@@ -508,6 +508,18 @@ VALUES (?, ?, ?);
     const query = `SELECT provider_id from service_providers where user_id= ? ;`;
     const [result] = await db.promise().execute(query, [userId]);
     return result[0].provider_id;
+  }
+
+  static async getCancelledBooks(userId) {
+    const query = `SELECT *
+ FROM pending_accepted_cancellations pac
+join bookings b on pac.booking_id=b.booking_id
+join provider_services ps on b.Provider_Services_id=ps.Provider_Services_id
+join service_providers sp on ps.provider_id=sp.provider_id
+where sp.user_id= ? ;
+`;
+    const [result] = await db.promise().execute(query, [userId]);
+    return result;
   }
 }
 module.exports = ServiceProvider;

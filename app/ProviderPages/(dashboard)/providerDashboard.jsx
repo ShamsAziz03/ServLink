@@ -129,10 +129,12 @@ const ProviderDashboard = () => {
     },
   };
 
+  const [cancelledBooks, setCancelledBooks] = useState(0);
+
   const fetch_rating_orders_earnings = async () => {
     try {
       const response = await fetch(
-        `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/${loggedUser.user_id}`
+        `${API_ADDRESS}/serviceProviderStats/getProviderRatingOrdersEarning/${loggedUser.user_id}`,
       );
       const fetchedData = await response.json();
       setProviderStats((prev) => ({
@@ -149,7 +151,7 @@ const ProviderDashboard = () => {
   const fetch_pending_cancelled_orders = async () => {
     try {
       const response = await fetch(
-        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`
+        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`,
       );
       const fetchedData = await response.json();
       setProviderStats((prev) => ({
@@ -165,7 +167,7 @@ const ProviderDashboard = () => {
   const fetch_service_performance = async () => {
     try {
       const response = await fetch(
-        `${API_ADDRESS}/serviceProviderStats/getProviderServicePerformance/${loggedUser.user_id}`
+        `${API_ADDRESS}/serviceProviderStats/getProviderServicePerformance/${loggedUser.user_id}`,
       );
       const fetchedData = await response.json();
       setServicesData(fetchedData);
@@ -177,7 +179,7 @@ const ProviderDashboard = () => {
   const fetch_provider_monthly_earnings = async () => {
     try {
       const response = await fetch(
-        `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/${loggedUser.user_id}`
+        `${API_ADDRESS}/serviceProviderStats/getProviderMonthlyEarnings/${loggedUser.user_id}`,
       );
       const fetchedData = await response.json();
       const formattedData = fetchedData.map((d) => ({
@@ -191,11 +193,24 @@ const ProviderDashboard = () => {
     }
   };
 
+  const fetch_cancelled_books = async () => {
+    try {
+      const response = await fetch(
+        `${API_ADDRESS}/serviceProviderStats/getCancelledBooks/${loggedUser.user_id}`,
+      );
+      const fetchedData = await response.json();
+      setCancelledBooks(fetchedData.length);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetch_rating_orders_earnings();
     fetch_pending_cancelled_orders();
     fetch_service_performance();
     fetch_provider_monthly_earnings();
+    fetch_cancelled_books();
   }, []);
 
   const getEarningsByMonth = () => {
@@ -338,13 +353,38 @@ const ProviderDashboard = () => {
             </Text>
           </Pressable>
 
+          {cancelledBooks > 0 && (
+            <View style={styles.container2}>
+              <View style={styles.header2}>
+                <Ionicons name="warning-outline" size={27} color="#c62828" />
+                <Text style={styles.title2}>
+                  Important Warning: Cancelling bookings affects your
+                  reputation!
+                </Text>
+              </View>
+
+              {/* Points */}
+              <View style={styles.points}>
+                <Text style={styles.point}>
+                  {"You have : " + cancelledBooks.length + " Cancelled Books!"}
+                </Text>
+                <Text style={styles.point}>
+                  • Each cancellation adds a negative record to your account
+                </Text>
+                <Text style={styles.point}>
+                  • Repeated cancellations may lead to account Block
+                </Text>
+              </View>
+            </View>
+          )}
+
           {/* Services Performance */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Services Performance</Text>
             <BarChart
               data={{
                 labels: servicesData.map((s) =>
-                  s.name.length > 12 ? s.name.slice(0, 12) + "..." : s.name
+                  s.name.length > 12 ? s.name.slice(0, 12) + "..." : s.name,
                 ),
                 datasets: [
                   { data: servicesData.map((s) => parseInt(s.totalBookings)) },
@@ -460,5 +500,40 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomColor: "#888",
     borderBottomWidth: 0.8,
+  },
+  container2: {
+    backgroundColor: "#fff5f5",
+    borderColor: "#f44336",
+    borderWidth: 1,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 17,
+  },
+
+  header2: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    gap: 6,
+  },
+
+  title2: {
+    color: "#b71c1c",
+    fontWeight: "700",
+    fontSize: 17,
+    flex: 1,
+    marginBottom: 5,
+  },
+
+  points: {
+    marginBottom: 10,
+  },
+
+  point: {
+    color: "#c62828",
+    fontSize: 14,
+    marginBottom: 4,
+    lineHeight: 18,
+    fontWeight: "600",
   },
 });

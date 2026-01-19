@@ -23,7 +23,7 @@ We built **ServLink** as a **mobile-first app (not a website only)** because:
 - 📱 **Most users request home or field services on-the-go.**  
 - 🧭 **Providers use their phones to accept jobs and navigate to clients.**  
 - 🔔 **Real-time notifications and location-based services work better natively on mobile.**  
-- 💬 **Chat, booking, and feedback flows feel faster and more natural in a mobile UX.**
+- 💬 **Booking, and feedback flows feel faster and more natural in a mobile UX.**
 
 ---
 
@@ -49,12 +49,11 @@ It serves **three main user types:**
 - 🔍 **Search services by category or keyword**  
 - 🧩 **Filter by price, rating, or location**  
 - 📅 **Book service & pick provider based on ratings**  
-- 💬 **Chat directly with providers**  
-- 💰 **Pay through in-app wallet or card**  
+- 💰 **Pay through card or cash**  
 - ⭐ **Rate service & write feedback**  
 - ❤️ **Save favorite providers**  
 - 🔔 **Receive live notifications for booking status**  
-- 🚫 **Cancel / finish bookings with policy-based refunds**
+- 🚫 **Cancel / finish bookings**
 
 ---
 
@@ -67,11 +66,7 @@ It serves **three main user types:**
 - 🧭 **Define service areas, pricing, and availability calendar**  
 - 📩 **Receive job requests & accept or decline**  
 - 📊 **See stats: revenue, completed jobs, feedback**  
-- 💬 **Chat directly with customers**  
 - 🧠 **Manage portfolio and update services anytime**  
-- 🔁 **Switch easily between “Customer” and “Provider” mode**  
-- 🪙 **Subscription system or commission per completed service**
-
 ---
 
 ### 🧑‍💻 **Admin**  
@@ -82,11 +77,9 @@ It serves **three main user types:**
 - 📊 **Dashboard with global metrics (users, providers, revenue, bookings)**  
 - 🧾 **Manage all user & provider accounts**  
 - 🧰 **Approve / reject provider registrations**  
-- ⚙️ **Manage categories & subservices**  
+- ⚙️ **Manage categories**  
 - 💵 **Track financial operations and commissions**  
 - 🚨 **Handle complaints, disputes, and refunds**  
-- 🧹 **Clean up fake profiles or policy violations**  
-- 📈 **Generate detailed reports by time period**
 
 ---
 
@@ -104,23 +97,16 @@ It serves **three main user types:**
 ## 💡 **Key Highlights**
 
 - 🏷️ **Multi-category system** (Home, Tech, Care, Education, etc.)  
-- ⚡ **Real-time chat between users and providers**  
 - 🔔 **Push notifications for updates**  
-- 🧾 **Smart recommendation engine** (based on interests + history)  
+- 🧾 **Smart recommendation engine** (based on interests + booking history)  
 - 💳 **In-app wallet for secure payments and refunds**  
-- 🌐 **Dual interface** (App for users, Web for admin)  
+- 🌐 **Dual interface** (App for users, provider and admins, Web for admin)  
 - 📆 **Provider calendar to avoid booking conflicts**  
-- 🧠 **AI-ready architecture for future enhancements**
   
 ---
 
 ## 📅 **Future Enhancements**
-
-- 🤖 **AI-based provider recommendations**  
-- 🌍 **Multi-language support (Arabic / English)**  
-- 🧾 **Auto-generated invoices for providers**  
-- 🗺️ **Real-time provider tracking**  
-
+- 🌍 **Multi-language support (Arabic / English)**  *  
 ---
 
 ## ❤️ **Final Note**

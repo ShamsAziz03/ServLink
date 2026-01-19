@@ -3,9 +3,8 @@ const ServiceProviderModel = require("../../models/serviceProviderModel");
 exports.getProviderRatingOrdersEarning = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const result = await ServiceProviderModel.getProviderRatingOrdersEarning(
-      userId
-    );
+    const result =
+      await ServiceProviderModel.getProviderRatingOrdersEarning(userId);
     res.json(result[0]);
   } catch (err) {
     res.status(500).json({
@@ -18,12 +17,11 @@ exports.getProviderRatingOrdersEarning = async (req, res) => {
 exports.getProviderCancelledPendingOrders = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const result = await ServiceProviderModel.getProviderCancelledPendingOrders(
-      userId
-    );
+    const result =
+      await ServiceProviderModel.getProviderCancelledPendingOrders(userId);
     if (!result.length) {
-  console.log("no");
-}
+      console.log("no");
+    }
 
     res.json(result[0]);
   } catch (err) {
@@ -37,9 +35,8 @@ exports.getProviderCancelledPendingOrders = async (req, res) => {
 exports.getProviderServicePerformance = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const result = await ServiceProviderModel.getProviderServicePerformance(
-      userId
-    );
+    const result =
+      await ServiceProviderModel.getProviderServicePerformance(userId);
     res.json(result);
   } catch (err) {
     res.status(500).json({
@@ -52,13 +49,25 @@ exports.getProviderServicePerformance = async (req, res) => {
 exports.getProviderMonthlyEarnings = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const result = await ServiceProviderModel.getProviderMonthlyEarnings(
-      userId
-    );
+    const result =
+      await ServiceProviderModel.getProviderMonthlyEarnings(userId);
     res.json(result);
   } catch (err) {
     res.status(500).json({
       message: "Error fetching monthly earnings",
+      error: err.message,
+    });
+  }
+};
+
+exports.getCancelledBooks = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const result = await ServiceProviderModel.getCancelledBooks(userId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching cancelled Books",
       error: err.message,
     });
   }

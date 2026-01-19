@@ -58,7 +58,7 @@ export default function ProviderRequests() {
   const fetchBooks = async () => {
     const id = loggedUser?.user_id || 2;
     const result = await fetch(
-      `${API_ADDRESS}/providerBookings/getProviderPendingAcceptedBookings/${id}`
+      `${API_ADDRESS}/providerBookings/getProviderPendingAcceptedBookings/${id}`,
     );
     const fetchedData = await result.json();
     setPendingBookings(fetchedData);
@@ -67,7 +67,7 @@ export default function ProviderRequests() {
   const fetch_pending_cancelled_orders = async () => {
     try {
       const response = await fetch(
-        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`
+        `${API_ADDRESS}/serviceProviderStats/getProviderCancelledPendingOrders/${loggedUser.user_id}`,
       );
       const fetchedData = await response.json();
       setProviderStats((prev) => ({
@@ -77,6 +77,59 @@ export default function ProviderRequests() {
       }));
     } catch (error) {
       console.error(error.message);
+    }
+  };
+
+  // to send noti for user that auto book isn't work so he must do it by himself
+  const sendFailureNotificationToUser = async (book) => {
+    try {
+      const obj = {
+        book: book,
+        provider: loggedUser,
+      };
+      const response = await fetch(
+        `${API_ADDRESS}/cancelApprovedBookings/sendFailureNotificationToUser`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        },
+      );
+      const fetchedData = await response.json();
+      if (fetchedData.error) {
+        alert(fetchedData.error);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  // for auto booking for user with diff provider using AI
+  const automaticBookUsingAI = async (book) => {
+    try {
+      const obj = { book: book };
+      const result = await fetch(
+        `${API_ADDRESS}/cancelApprovedBookings/automaticBookUsingAI`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        },
+      );
+
+      const response = await result.json();
+      if (response.error) {
+        // code to send notification for user to do his booking by hand
+        alert("System Can't do auto book, " + response.error);
+        sendFailureNotificationToUser(book);
+      } else if (response.success) {
+        alert(response.success);
+      }
+    } catch (err) {
+      console.error(err.message);
     }
   };
 
@@ -94,13 +147,14 @@ export default function ProviderRequests() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(obj),
-        }
+        },
       );
       const fetchedData = await response.json();
       if (fetchedData.success) {
         alert(fetchedData.success);
         fetchBooks();
         fetch_pending_cancelled_orders();
+        automaticBookUsingAI(book);
       } else {
         console.error(fetchedData.error);
       }
@@ -122,7 +176,7 @@ export default function ProviderRequests() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(obj),
-        }
+        },
       );
       const fetchedData = await response.json();
       if (fetchedData.success) {
@@ -140,6 +194,7 @@ export default function ProviderRequests() {
       const obj = {
         booking_id: book.booking_id,
         reason: cancelReason,
+        provider: loggedUser,
       };
       const response = await fetch(
         `${API_ADDRESS}/cancelApprovedBookings/addNewCancelledBooking`,
@@ -149,10 +204,14 @@ export default function ProviderRequests() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(obj),
-        }
+        },
       );
       const fetchedData = await response.json();
       if (fetchedData.success) {
+        if (fetchedData.blocked)
+          alert(
+            "Sorry, You had been Blocked for 30 days, since you exceeded max cancelled books!",
+          );
         updateBookStauts(book);
       } else {
         console.error(fetchedData.error);
@@ -176,7 +235,7 @@ export default function ProviderRequests() {
             else cancelApprovedBook(book);
           },
         },
-      ]
+      ],
     );
   };
 
