@@ -22,7 +22,7 @@ export default function AppLayout() {
       </aside>
 
       <main className="main-content">
-        <Outlet /> {/* هنا بتظهر كل صفحة حسب Route */}
+        <Outlet /> 
       </main>
     </div>
   );

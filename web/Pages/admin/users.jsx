@@ -76,7 +76,7 @@ export default function UsersAdmin() {
   return (
     <div className="users-container">
       {/* Header */}
-      <div className="header">
+      <div className="header_user">
         <FaUser size={28} color={Colors.primary} />
         <div style={{ marginLeft: 10 }}>
           <h2 style={{ color: Colors.primary }}>ServLink</h2>
