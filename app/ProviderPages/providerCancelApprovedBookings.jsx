@@ -101,6 +101,28 @@ export default function ProviderRequests() {
       if (fetchedData.error) {
         alert(fetchedData.error);
       }
+
+      await fetch(`http://${ip}:5000/api/users/send-notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: loggedUser.user_id,
+          title: `System Fails to Auto booking For User!`,
+          message: `The System can't add new booking automatically with another provider.`,
+        }),
+      });
+
+      await fetch(`http://${ip}:5000/api/users/send-notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: book.customerId,
+          title: `System Fails to Auto booking For You!`,
+          message: `The System can't add new booking automatically with another provider, since your booking with ${loggedUser.first_name} ${loggedUser.last_name} Cancelled,
+      it was in ${book.service_date} at ${book.service_time}, for ${book.serviceName} - ${book.categoryName}, in ${book.address}.
+      Please book with another one and if you have any problem, tell use Using Contact Us page`,
+        }),
+      });
     } catch (error) {
       console.error(error.message);
     }
@@ -127,6 +149,27 @@ export default function ProviderRequests() {
         sendFailureNotificationToUser(book);
       } else if (response.success) {
         alert(response.success);
+
+        //notify user and provider that process success
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: loggedUser.user_id,
+            title: `System Success to Auto booking For User!`,
+            message: response.success,
+          }),
+        });
+
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: book.customerId,
+            title: `System Success to Auto booking For You!`,
+            message: response.success,
+          }),
+        });
       }
     } catch (err) {
       console.error(err.message);
@@ -152,6 +195,29 @@ export default function ProviderRequests() {
       const fetchedData = await response.json();
       if (fetchedData.success) {
         alert(fetchedData.success);
+        /////
+
+        //notify user and provider that process success
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: loggedUser.user_id,
+            title: `Cancel Booking`,
+            message: `The System Cancel book Success`,
+          }),
+        });
+
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: book.customerId,
+            title: `Cancel Booking`,
+            message: `The Provider ${loggedUser.first_name} Cancel book, check app!`,
+          }),
+        });
+        ///////
         fetchBooks();
         fetch_pending_cancelled_orders();
         automaticBookUsingAI(book);

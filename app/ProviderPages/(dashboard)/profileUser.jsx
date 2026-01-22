@@ -159,14 +159,7 @@ export default function ProfileScreen() {
     <LinearGradient colors={["#edd2f0ff", "#f1ebf6"]} style={styles.container}>
       <View style={styles.card}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          <Image
-            source={{
-              uri:
-                user.image ||
-                "https://cdn-icons-png.flaticon.com/128/11753/11753993.png",
-            }}
-            style={styles.avatar}
-          />
+      
           <Text style={styles.name}>
             {user.first_name} {user.last_name}
           </Text>
@@ -273,15 +266,7 @@ const styles = StyleSheet.create({
     height: "100%",
     marginTop: 30,
   },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 55,
-    marginBottom: 10,
-    borderWidth: 2,
-    borderColor: "#9333ea",
-  },
-  name: { fontSize: 25, fontWeight: "bold", color: "#57125bff" },
+  name: { fontSize: 25, fontWeight: "bold", color: "#57125bff" , marginTop: 60,},
   email: { color: "#413155ff", marginBottom: 3, fontSize: 17 },
   city: { color: "#38264dff", marginBottom: 6, fontSize: 17 },
   divider: {

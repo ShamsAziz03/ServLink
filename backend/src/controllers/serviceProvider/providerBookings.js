@@ -36,12 +36,12 @@ ORDER BY b.service_date, b.service_time;
 
     `;
     const [rows] = await db.promise().query(query, [provider_id]);
-    
-    const formattedRows = rows.map(row => ({
+
+    const formattedRows = rows.map((row) => ({
       ...row,
-      service_date: formatDate(row.service_date) 
+      service_date: formatDate(row.service_date),
     }));
-    
+
     res.status(200).json(formattedRows);
   } catch (err) {
     console.log(err.message);
@@ -54,10 +54,11 @@ exports.updateBookingStatus = async (req, res) => {
   const { status } = req.body;
 
   try {
-    const allowedStatuses = ['Confirmed', 'Pending', 'Cancelled'];
+    const allowedStatuses = ["Confirmed", "Pending", "Cancelled"];
     if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({ 
-        error: 'Invalid status value. Allowed values: Confirmed, Pending, Cancelled' 
+      return res.status(400).json({
+        error:
+          "Invalid status value. Allowed values: Confirmed, Pending, Cancelled",
       });
     }
 
@@ -66,18 +67,18 @@ exports.updateBookingStatus = async (req, res) => {
       SET status = ?, updated_at = NOW() 
       WHERE booking_id = ?
     `;
-    
+
     const [result] = await db.promise().query(query, [status, id]);
-    
+
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Booking not found' });
+      return res.status(404).json({ error: "Booking not found" });
     }
-    
-    res.status(200).json({ 
-      success: true, 
-      message: 'Booking status updated successfully',
+
+    res.status(200).json({
+      success: true,
+      message: "Booking status updated successfully",
       booking_id: id,
-      new_status: status
+      new_status: status,
     });
   } catch (err) {
     console.log(err.message);
@@ -120,7 +121,7 @@ JOIN users c
 WHERE ps.provider_id = ?
 ORDER BY b.service_date, b.service_time;
     `;
-    
+
     const [rows] = await db.promise().query(query, [provider_id, date]);
     res.status(200).json(rows);
   } catch (err) {
@@ -147,7 +148,7 @@ exports.completeBooking = async (req, res) => {
         ON ps.provider_id = sp.provider_id
       WHERE b.booking_id = ?
       `,
-      [booking_id]
+      [booking_id],
     );
 
     if (!rows.length) {
@@ -167,42 +168,42 @@ exports.completeBooking = async (req, res) => {
       SET duration_time = ?, actual_total_price = ?, status = 'Completed'
       WHERE booking_id = ?
       `,
-      [actual_time, total, booking_id]
+      [actual_time, total, booking_id],
     );
 
     // تأكيد وجود المحافظ (app فقط)
     await db.promise().query(
-      `INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
-       VALUES ('app', 0)`
+      `INSERT IGNORE INTO providerswallets (owner_type, owner_id)
+       VALUES ('app', 0)`,
     );
 
     // 💳 CREDIT CARD
-    if (payment_method === "credit card") {
+    if (payment_method === "card") {
       // تحديث أرصدة المحفظة
       await db.promise().query(
         `
-        INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
+        INSERT IGNORE INTO providerswallets (owner_type, owner_id)
         VALUES ('provider', ?)
         `,
-        [provider_id]
+        [provider_id],
       );
 
       await db.promise().query(
         `
-        UPDATE ProvidersWallets 
-        SET balance = balance + ?
+        UPDATE providerswallets 
+        SET balance = COALESCE(balance,0) + ?
         WHERE owner_type='provider' AND owner_id=?
         `,
-        [providerShare, provider_id]
+        [providerShare, provider_id],
       );
 
       await db.promise().query(
         `
-        UPDATE ProvidersWallets 
-        SET balance = balance + ?
+        UPDATE providerswallets 
+        SET balance = COALESCE(balance,0) + ?
         WHERE owner_type='app' AND owner_id=0
         `,
-        [commission]
+        [commission],
       );
     }
 
@@ -211,19 +212,19 @@ exports.completeBooking = async (req, res) => {
       // فقط تسجيل دين البروفايدر
       await db.promise().query(
         `
-        INSERT IGNORE INTO ProvidersWallets (owner_type, owner_id)
+        INSERT IGNORE INTO providerswallets (owner_type, owner_id)
         VALUES ('provider', ?)
         `,
-        [provider_id]
+        [provider_id],
       );
 
       await db.promise().query(
         `
-        UPDATE ProvidersWallets 
-        SET debt = debt + ?
+        UPDATE providerswallets 
+         SET debt = COALESCE(debt,0) + ?
         WHERE owner_type='provider' AND owner_id=?
         `,
-        [commission, provider_id]
+        [commission, provider_id],
       );
     }
 
@@ -232,25 +233,23 @@ exports.completeBooking = async (req, res) => {
       total,
       hourly_rate,
       provider_earned: providerShare,
-      app_earned: payment_method === "credit card" ? commission : 0,
-      provider_debt: payment_method === "cash" ? commission : 0
+      app_earned: payment_method === "card" ? commission : 0,
+      provider_debt: payment_method === "Cash" ? commission : 0,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
 
-
 function formatDate(date) {
   if (!date) return null;
-  
+
   const d = new Date(date);
-  if (isNaN(d.getTime())) return date; 
-  
+  if (isNaN(d.getTime())) return date;
+
   const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }

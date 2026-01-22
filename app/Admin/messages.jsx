@@ -48,10 +48,20 @@ export default function AdminContactMessagesScreen() {
       });
 
       if (selected.user_id) {
-        await axios.post(`http://${ip}:5000/api/users/send-notification`, {
-          userId: selected.user_id,
-          title: "New Reply 💬",
-          message: reply,
+        // await axios.post(`http://${ip}:5000/api/users/send-notification`, {
+        //   userId: selected.user_id,
+        //   title: "New Reply 💬",
+        //   message: reply,
+        // });
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: selected.user_id,
+            // userId: 9,
+            title: "New Reply 💬",
+            message: reply,
+          }),
         });
       }
 
@@ -72,7 +82,11 @@ export default function AdminContactMessagesScreen() {
       }}
     >
       <View style={styles.row}>
-        <Ionicons name="person-circle-outline" size={36} color={COLORS.primary} />
+        <Ionicons
+          name="person-circle-outline"
+          size={36}
+          color={COLORS.primary}
+        />
         <View style={{ flex: 1 }}>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.email}>{item.email}</Text>
@@ -93,9 +107,10 @@ export default function AdminContactMessagesScreen() {
       {/* Header */}
       <View style={styles.pageTitle}>
         <Text style={styles.pageTitleText}>Contact Messages</Text>
-        <Text style={styles.pageSubtitle}>Manage & reply to user inquiries</Text>
+        <Text style={styles.pageSubtitle}>
+          Manage & reply to user inquiries
+        </Text>
       </View>
-
 
       {/* List */}
       <FlatList
@@ -138,10 +153,7 @@ export default function AdminContactMessagesScreen() {
               </TouchableOpacity>
 
               {/* Send */}
-              <TouchableOpacity
-                style={styles.actionBtn}
-                onPress={sendReply}
-              >
+              <TouchableOpacity style={styles.actionBtn} onPress={sendReply}>
                 <LinearGradient
                   colors={[COLORS.primary, COLORS.secondary]}
                   style={styles.sendBtn}
@@ -315,37 +327,36 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
+  actionRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 12,
+  },
 
-actionRow: {
-  flexDirection: "row",
-  gap: 12,
-  marginTop: 12,
-},
+  actionBtn: {
+    flex: 1, // ⭐ السر هون
+  },
 
-actionBtn: {
-  flex: 1,          // ⭐ السر هون
-},
+  cancelBtn: {
+    height: 50,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: COLORS.muted,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
 
-cancelBtn: {
-  height: 50,
-  borderRadius: 16,
-  borderWidth: 1.5,
-  borderColor: COLORS.muted,
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "#fff",
-},
-
-sendBtn: {
-  height: 50,
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: 8,
-  borderRadius: 16,
-  shadowColor: COLORS.primary,
-  shadowOpacity: 0.35,
-  shadowRadius: 8,
-  elevation: 6,
-},
+  sendBtn: {
+    height: 50,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 16,
+    shadowColor: COLORS.primary,
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
+  },
 });

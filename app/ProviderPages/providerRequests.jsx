@@ -171,28 +171,28 @@ export default function ProviderRequests() {
       const newBooks = originalBookings.filter(
         (b) =>
           b.status.toLowerCase() === "cancelled" &&
-          b.is_accept.toLowerCase() === "rejected"
+          b.is_accept.toLowerCase() === "rejected",
       );
       setBookings(newBooks);
     } else if (selectedOption === "Completed") {
       const newBooks = originalBookings.filter(
         (b) =>
           b.status.toLowerCase() === "completed" &&
-          b.is_accept.toLowerCase() === "accepted"
+          b.is_accept.toLowerCase() === "accepted",
       );
       setBookings(newBooks);
     } else if (selectedOption === "Pending Response") {
       const newBooks = originalBookings.filter(
         (b) =>
           b.status.toLowerCase() === "pending" &&
-          b.is_accept.toLowerCase() === "pending"
+          b.is_accept.toLowerCase() === "pending",
       );
       setBookings(newBooks);
     } else if (selectedOption === "In Progress") {
       const newBooks = originalBookings.filter(
         (b) =>
           b.status.toLowerCase() === "pending" &&
-          b.is_accept.toLowerCase() === "accepted"
+          b.is_accept.toLowerCase() === "accepted",
       );
       setBookings(newBooks);
     }
@@ -201,7 +201,7 @@ export default function ProviderRequests() {
   const fetchBooks = async () => {
     const id = loggedUser?.user_id || 2;
     const result = await fetch(
-      `${API_ADDRESS}/providerBookings/getProviderBookings/${id}`
+      `${API_ADDRESS}/providerBookings/getProviderBookings/${id}`,
     );
     const fetchedData = await result.json();
     setOriginalBookings(fetchedData);
@@ -218,11 +218,31 @@ export default function ProviderRequests() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(obj),
-        }
+        },
       );
       const fetchedData = await response.json();
       if (fetchedData.success) {
         fetchBooks();
+        //send notification for user and provider
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: obj.providerId,
+            title: "Update for your book !",
+            message: `you have been ${obj.is_accept} for your book Success!`,
+          }),
+        });
+
+        await fetch(`http://${ip}:5000/api/users/send-notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: obj.userId,
+            title: "Update for your book !",
+            message: `provider ${loggedUser.first_name} has ${obj.is_accept} for your book with him, check app now!`,
+          }),
+        });
       } else {
         console.error(fetchedData.error);
       }
@@ -488,7 +508,7 @@ export default function ProviderRequests() {
                                   handleAccept(item);
                                 },
                               },
-                            ]
+                            ],
                           );
                         }}
                       >
@@ -520,7 +540,7 @@ export default function ProviderRequests() {
                                   handleReject(item);
                                 },
                               },
-                            ]
+                            ],
                           );
                         }}
                       >

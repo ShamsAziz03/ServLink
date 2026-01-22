@@ -141,45 +141,6 @@ const CardPayment = () => {
     }
   };
 
-  const handlePayPress = async () => {
-    if (!cardDetails?.complete || !email) {
-      alert("Please enter Complete card details and Email");
-      return;
-    }
-    console.log("card details : ", cardDetails);
-
-    //to create customer or get it from db
-    const customer = await fetchCustomer();
-    if (customer.user_id) {
-      //exist in db
-      console.log("customer exist in db  = ", customer);
-      await addBookAndAnswers();
-      return;
-    } else if (customer.id) {
-      //does not exist in db
-      console.log("customer added to db = ", customer);
-      const clientSecret = await fetchSetupIntent(customer.id);
-
-      const { error, setupIntent } = await confirmSetupIntent(clientSecret, {
-        paymentMethodType: "Card",
-      });
-      if (error) {
-        alert(error.message);
-        return;
-      }
-      const paymentMethodId = setupIntent.paymentMethod;
-      console.log("Payment method ID:", paymentMethodId);
-      const result = await updatePaymentMethod(paymentMethodId.id, customer.id);
-      if (result.success) {
-        await addBookAndAnswers();
-        // alert("Success, ", result.message);
-        await pay();
-      } else {
-        alert("Bad not Success, ", result.message);
-      }
-    }
-  };
-
   const fetchPaymentIntent = async (customerId, paymentMethodId, amount) => {
     const response = await fetch(`${API_URL}/payment/paymentIntent`, {
       method: "POST",
@@ -247,6 +208,16 @@ const CardPayment = () => {
           console.log("Transaction:", transactionData);
 
           alert("payment success");
+          //notify user
+          await fetch(`http://${ip}:5000/api/users/send-notification`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: loggedUser.user_id,
+              title: "Success Book!",
+              message: "Your Booking has been Success!",
+            }),
+          });
         } else {
           alert("payment not success !");
           return;
@@ -262,6 +233,45 @@ const CardPayment = () => {
       }
     } else {
       console.error("No user Wallet to take money from");
+    }
+  };
+
+  const handlePayPress = async () => {
+    if (!cardDetails?.complete || !email) {
+      alert("Please enter Complete card details and Email");
+      return;
+    }
+    console.log("card details : ", cardDetails);
+
+    //to create customer or get it from db
+    const customer = await fetchCustomer();
+    if (customer.user_id) {
+      //exist in db
+      console.log("customer exist in db  = ", customer);
+      await addBookAndAnswers();
+      return;
+    } else if (customer.id) {
+      //does not exist in db
+      console.log("customer added to db = ", customer);
+      const clientSecret = await fetchSetupIntent(customer.id);
+
+      const { error, setupIntent } = await confirmSetupIntent(clientSecret, {
+        paymentMethodType: "Card",
+      });
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      const paymentMethodId = setupIntent.paymentMethod;
+      console.log("Payment method ID:", paymentMethodId);
+      const result = await updatePaymentMethod(paymentMethodId.id, customer.id);
+      if (result.success) {
+        await addBookAndAnswers();
+        // alert("Success, ", result.message);
+        await pay();
+      } else {
+        alert("Bad not Success, ", result.message);
+      }
     }
   };
 

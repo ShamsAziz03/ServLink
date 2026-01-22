@@ -10,7 +10,7 @@ Notifications.setNotificationHandler({
 });
 
 export async function registerForPushNotifications() {
-  if (!Device.isDevice) return null;
+ // if (!Device.isDevice) return null;
 
   const { status } = await Notifications.requestPermissionsAsync();
   if (status !== "granted") return null;

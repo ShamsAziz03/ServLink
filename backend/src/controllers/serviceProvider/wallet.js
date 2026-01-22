@@ -6,7 +6,7 @@ exports.getProviderWallet = async (req, res) => {
   try {
     const [rows] = await db.promise().query(
       `SELECT balance, debt
-       FROM ProvidersWallets
+       FROM providerswallets
        WHERE owner_type='provider' AND owner_id=?`,
       [provider_id]
     );
@@ -30,7 +30,7 @@ exports.payProviderDebt = async (req, res) => {
     // جلب المحفظة مع FOR UPDATE لمنع السباق
     const [[wallet]] = await db.promise().query(
       `SELECT balance, debt
-       FROM ProvidersWallets
+       FROM providerswallets
        WHERE owner_type='provider' AND owner_id=?
        FOR UPDATE`,
       [provider_id]
@@ -42,7 +42,7 @@ exports.payProviderDebt = async (req, res) => {
 
     // خصم من البروفايدر
     await db.promise().query(
-      `UPDATE ProvidersWallets
+      `UPDATE providerswallets
        SET balance = balance - ?, debt = debt - ?
        WHERE owner_type='provider' AND owner_id=?`,
       [amount, amount, provider_id]
@@ -50,7 +50,7 @@ exports.payProviderDebt = async (req, res) => {
 
     // إضافة للتطبيق
     await db.promise().query(
-      `UPDATE ProvidersWallets
+      `UPDATE providerswallets
        SET balance = balance + ?
        WHERE owner_type='app' AND owner_id=0`,
       [amount]

@@ -90,7 +90,7 @@ const Payment = () => {
     // 2. create transaction linked to booking
     console.log(
       bookingObject.typeOfPayment +
-        bookingObject.hourlyRate * bookingObject.expectedTime
+        bookingObject.hourlyRate * bookingObject.expectedTime,
     );
     const result = await fetch(`${API_URL}/bookingService/addTransaction`, {
       method: "POST",
@@ -109,6 +109,16 @@ const Payment = () => {
     const answersResult = await fetchStoreAnswers(bookingId);
     if (bookingId && transactionData.insertId && answersResult) {
       setConfirmed(true);
+      //send notification for user
+      await fetch(`http://${ip}:5000/api/users/send-notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: loggedUser.user_id,
+          title: "Success Book!",
+          message: "Your Booking has been Success!",
+        }),
+      });
     } else {
       console.log("Transaction FULL RESPONSE:", transactionData);
       console.error("Booking, transaction, or answers failed");

@@ -18,13 +18,13 @@ export default function BookingTimer() {
     if (timerState.running) return;
     setTimerState({ ...timerState, running: true });
     timerRef.current = setInterval(() => {
-      setTimerState(prev => ({ ...prev, seconds: prev.seconds + 1 }));
+      setTimerState((prev) => ({ ...prev, seconds: prev.seconds + 1 }));
     }, 1000);
   };
 
   const pauseTimer = () => {
     clearInterval(timerRef.current);
-    setTimerState(prev => ({ ...prev, running: false }));
+    setTimerState((prev) => ({ ...prev, running: false }));
   };
 
   const resetTimer = () => {
@@ -39,31 +39,32 @@ export default function BookingTimer() {
     try {
       const res = await axios.put(
         `http://${ip}:5000/api/provider/bookings/booking/${booking_id}/complete`,
-        { actual_time: hoursDecimal }
+        { actual_time: hoursDecimal },
       );
 
       const { total, hourly_rate, user_id } = res.data;
       await fetch(`http://${ip}:5000/api/users/send-notification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: currentBooking.user_id,
-          title: 'Booking Completed',
+          // userId: 1,
+          title: "Booking Completed",
           message: `
 Service finished ✅
 Duration: ${hoursDecimal} hours
 Total price: ${total} ₪
 
 If you have any questions or feedback, feel free to reach us from the Contact Us page.
-    `
-        })
+    `,
+        }),
       });
       console.log(currentBooking.user_id);
       alert(
         `Booking completed ✅\n` +
-        `Duration: ${hoursDecimal} hours\n` +
-        `Hourly rate: ${hourly_rate} ₪\n` +
-        `Total price: ${total} ₪`
+          `Duration: ${hoursDecimal} hours\n` +
+          `Hourly rate: ${hourly_rate} ₪\n` +
+          `Total price: ${total} ₪`,
       );
 
       resetTimer();
@@ -74,7 +75,6 @@ If you have any questions or feedback, feel free to reach us from the Contact Us
     }
   };
 
-
   const hours = Math.floor(timerState.seconds / 3600);
   const minutes = Math.floor((timerState.seconds % 3600) / 60);
   const seconds = timerState.seconds % 60;
@@ -82,32 +82,48 @@ If you have any questions or feedback, feel free to reach us from the Contact Us
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <TouchableOpacity style={styles.backBtn} onPress={() => { pauseTimer(); router.back(); }}>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => {
+          pauseTimer();
+          router.back();
+        }}
+      >
         <Feather name="arrow-left" size={24} color="#fff" />
       </TouchableOpacity>
 
       {/* Timer Display */}
       <Text style={styles.time}>
-        {String(hours).padStart(2, "0")}:
-        {String(minutes).padStart(2, "0")}:
+        {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
         {String(seconds).padStart(2, "0")}
       </Text>
 
       {/* Buttons Row */}
       <View style={styles.buttonsRow}>
         {!timerState.running ? (
-          <TouchableOpacity style={[styles.button, { backgroundColor: "#27ae60" }]} onPress={startOrResume}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#27ae60" }]}
+            onPress={startOrResume}
+          >
             <FontAwesome name="play" size={24} color="#fff" />
-            <Text style={styles.buttonText}>{timerState.seconds === 0 ? "Start" : "Resume"}</Text>
+            <Text style={styles.buttonText}>
+              {timerState.seconds === 0 ? "Start" : "Resume"}
+            </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={[styles.button, { backgroundColor: "#f39c12" }]} onPress={pauseTimer}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#f39c12" }]}
+            onPress={pauseTimer}
+          >
             <FontAwesome name="pause" size={24} color="#fff" />
             <Text style={styles.buttonText}>Pause</Text>
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={[styles.button, { backgroundColor: "#c0392b" }]} onPress={resetTimer}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#c0392b" }]}
+          onPress={resetTimer}
+        >
           <FontAwesome name="refresh" size={24} color="#fff" />
           <Text style={styles.buttonText}>Reset</Text>
         </TouchableOpacity>
@@ -124,17 +140,27 @@ If you have any questions or feedback, feel free to reach us from the Contact Us
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, justifyContent: "center", alignItems: "center",
-    backgroundColor: "#f0e6fa", padding: 20,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0e6fa",
+    padding: 20,
   },
   time: {
-    fontSize: 72, fontWeight: "bold", marginBottom: 40,
-    color: "#6c3483", fontFamily: "Courier",
+    fontSize: 72,
+    fontWeight: "bold",
+    marginBottom: 40,
+    color: "#6c3483",
+    fontFamily: "Courier",
   },
   backBtn: {
-    position: "absolute", top: 50, left: 20,
-    padding: 10, backgroundColor: "#8e44ad",
-    borderRadius: 30, elevation: 3,
+    position: "absolute",
+    top: 50,
+    left: 20,
+    padding: 10,
+    backgroundColor: "#8e44ad",
+    borderRadius: 30,
+    elevation: 3,
   },
   buttonsRow: {
     flexDirection: "row",

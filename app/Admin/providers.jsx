@@ -26,11 +26,13 @@ export default function ProvidersAdmin() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-    const ip = process.env.EXPO_PUBLIC_IP;
+  const ip = process.env.EXPO_PUBLIC_IP;
   const fetchProviders = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://${ip}:5000/api/ProviderswithBookings`);
+      const res = await axios.get(
+        `http://${ip}:5000/api/ProviderswithBookings`,
+      );
       setProviders(res.data);
     } catch (err) {
       console.log(err.message);
@@ -43,7 +45,7 @@ export default function ProvidersAdmin() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://${ip}:5000/api/search-providers?search=${text}`
+        `http://${ip}:5000/api/search-providers?search=${text}`,
       );
       setProviders(res.data);
     } catch (err) {
@@ -99,9 +101,7 @@ export default function ProvidersAdmin() {
               styles.statusDot,
               {
                 backgroundColor:
-                  item.approved_by_admin === 1
-                    ? Colors.success
-                    : Colors.danger,
+                  item.approved_by_admin === 1 ? Colors.success : Colors.danger,
               },
             ]}
           />
@@ -115,9 +115,7 @@ export default function ProvidersAdmin() {
             styles.approveBtn,
             {
               backgroundColor:
-                item.approved_by_admin === 1
-                  ? Colors.danger
-                  : Colors.success,
+                item.approved_by_admin === 1 ? Colors.danger : Colors.success,
             },
           ]}
         >
@@ -144,9 +142,7 @@ export default function ProvidersAdmin() {
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>Experience</Text>
-        <Text style={styles.value}>
-          {item.years_of_experience} years
-        </Text>
+        <Text style={styles.value}>{item.years_of_experience} years</Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>Hourly Rate</Text>
@@ -199,7 +195,7 @@ export default function ProvidersAdmin() {
         <FlatList
           data={providers}
           keyExtractor={(item, index) =>
-            (item.provider_id || item.user_id || index).toString()
+            `${item.provider_id ?? "p"}-${item.user_id ?? "u"}-${index}`
           }
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 30 }}

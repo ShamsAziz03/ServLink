@@ -15,7 +15,7 @@ import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 import { AppContext } from "../../../context/AppContext";
 const COLORS = {
   background: "#f6f0fa",
@@ -28,15 +28,24 @@ const COLORS = {
 
 const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function BookingCalendarScreen() {
   const today = new Date();
   const router = useRouter();
   const { setCurrentBooking } = useContext(AppContext);
-
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -64,7 +73,7 @@ export default function BookingCalendarScreen() {
       }
 
       const res = await axios.get(
-        `http://${ip}:5000/api/provider/bookings/${provider_id}`
+        `http://${ip}:5000/api/provider/bookings/${provider_id}`,
       );
       // console.log(res);
 
@@ -76,11 +85,11 @@ export default function BookingCalendarScreen() {
     }
   };
 
- useFocusEffect(
-  useCallback(() => {
-    fetchBookings();
-  }, [])
-);
+  useFocusEffect(
+    useCallback(() => {
+      fetchBookings();
+    }, []),
+  );
 
   /* ================= FILTER BY DATE ================= */
   const filteredAppointments = appointments.filter((a) => {
@@ -129,7 +138,9 @@ export default function BookingCalendarScreen() {
         {/* Week Days */}
         <View style={styles.weekRow}>
           {weekDays.map((d, i) => (
-            <Text key={i} style={styles.weekDay}>{d}</Text>
+            <Text key={i} style={styles.weekDay}>
+              {d}
+            </Text>
           ))}
         </View>
 
@@ -144,7 +155,9 @@ export default function BookingCalendarScreen() {
                 onPress={() => setSelectedDay(day)}
               >
                 <View style={[styles.dayCircle, active && styles.activeDay]}>
-                  <Text style={[styles.dayText, active && styles.activeDayText]}>
+                  <Text
+                    style={[styles.dayText, active && styles.activeDayText]}
+                  >
                     {day}
                   </Text>
                 </View>
@@ -157,7 +170,8 @@ export default function BookingCalendarScreen() {
       {/* ===== Appointments ===== */}
       <ScrollView contentContainerStyle={styles.appointments}>
         <Text style={styles.sectionTitle}>
-          Appointments for {selectedDay} {monthNames[currentMonth]} {currentYear}
+          Appointments for {selectedDay} {monthNames[currentMonth]}{" "}
+          {currentYear}
         </Text>
 
         {loading ? (
@@ -174,15 +188,14 @@ export default function BookingCalendarScreen() {
                 <Text style={styles.time}>{item.service_time}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    if (item.status.toLowerCase() !== "pending") return; 
-                    setCurrentBooking(item); 
-                    router.push("../BookingTimer"); 
+                    if (item.status.toLowerCase() !== "pending") return;
+                    setCurrentBooking(item);
+                    router.push("../BookingTimer");
                   }}
-                  disabled={item.status.toLowerCase() !== "pending"} 
+                  disabled={item.status.toLowerCase() !== "pending"}
                 >
-                
                   <View style={styles.card}>
-                     <View style={styles.labelRow}>
+                    <View style={styles.labelRow}>
                       <Text style={styles.labelTitle}>Service:</Text>
                       <Text style={styles.labelText}>{item.name}</Text>
                     </View>
@@ -198,53 +211,78 @@ export default function BookingCalendarScreen() {
                     </View>
 
                     <View style={styles.labelRow}>
-                      <Feather name="map-pin" size={16} color={COLORS.primary} />
-                      <Text style={styles.labelText}> Address: {item.address}</Text>
+                      <Feather
+                        name="map-pin"
+                        size={16}
+                        color={COLORS.primary}
+                      />
+                      <Text style={[styles.labelText,{flexWrap:"wrap", width:"70%"}]}>
+                        Address: {item.address}
+                      </Text>
                     </View>
 
                     <View style={styles.labelRow}>
-                      <Feather name="dollar-sign" size={16} color={COLORS.primary} />
-                      <Text style={styles.labelText}>Estimated Price: {item.total_price}</Text>
+                      <Feather
+                        name="dollar-sign"
+                        size={16}
+                        color={COLORS.primary}
+                      />
+                      <Text style={styles.labelText}>
+                        Estimated Price: {item.total_price}
+                      </Text>
                     </View>
 
                     <View style={styles.labelRow}>
-                      <Feather name="credit-card" size={16} color={COLORS.primary} />
-                      <Text style={styles.labelText}>Payment method: {item.payment_method}</Text>
+                      <Feather
+                        name="credit-card"
+                        size={16}
+                        color={COLORS.primary}
+                      />
+                      <Text style={styles.labelText}>
+                        Payment method: {item.payment_method}
+                      </Text>
                     </View>
 
                     <View style={styles.labelRow}>
                       <Feather name="clock" size={16} color={COLORS.primary} />
-                      <Text style={styles.labelText}>Estimated time: {item.estimated_time} hours</Text>
+                      <Text style={styles.labelText}>
+                        Estimated time: {item.estimated_time} hours
+                      </Text>
                     </View>
-
 
                     {item.notes && (
                       <View style={styles.labelRow}>
-                        <Feather name="file-text" size={16} color={COLORS.primary} />
-                        <Text style={styles.labelText}>Notes: {item.notes}</Text>
+                        <Feather
+                          name="file-text"
+                          size={16}
+                          color={COLORS.primary}
+                        />
+                        <Text style={styles.labelText}>
+                          Notes: {item.notes}
+                        </Text>
                       </View>
                     )}
                   </View>
                 </TouchableOpacity>
               </View>
-
             )}
           />
         )}
       </ScrollView>
-    </View >
+    </View>
   );
 }
 
 /* ================= STYLES ================= */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, backgroundColor: COLORS.background, marginBottom: 70 },
 
   calendarWrapper: {
     backgroundColor: COLORS.calendarBg,
     padding: 12,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    marginTop: 50,
   },
 
   pickersRow: {
