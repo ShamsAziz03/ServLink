@@ -234,7 +234,7 @@ exports.completeBooking = async (req, res) => {
       hourly_rate,
       provider_earned: providerShare,
       app_earned: payment_method === "card" ? commission : 0,
-      provider_debt: payment_method === "Cash" ? commission : 0,
+      provider_debt: payment_method === "cash" ? commission : 0,
     });
   } catch (err) {
     console.error(err);

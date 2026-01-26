@@ -27,7 +27,7 @@ const Payment = () => {
     explainEstimateTime,
     setCurrentProviderInfo,
   } = useContext(AppContext);
-  const [selectedOption, setSelectedOption] = useState("cache");
+  const [selectedOption, setSelectedOption] = useState("cash");
   const [confirmed, setConfirmed] = useState(false);
   const ip = process.env.EXPO_PUBLIC_IP;
   const API_URL = `http://${ip}:5000`;
@@ -72,7 +72,7 @@ const Payment = () => {
         expectedTime: bookingObject.expectedTime,
         serviceDate: bookingObject.serviceDate,
         serviceTime: bookingObject.serviceTime,
-        typeOfPayment: "cache",
+        typeOfPayment: "cash",
         userId: loggedUser.user_id,
         serviceId: currentService.service_id,
         location: userCurrentLocation.display_name,
@@ -197,10 +197,10 @@ const Payment = () => {
                   borderRadius: 10,
                   width: "45%",
                 },
-                selectedOption !== "cache" && styles.notSelectedButton,
+                selectedOption !== "cash" && styles.notSelectedButton,
               ]}
               onPress={() => {
-                setSelectedOption("cache");
+                setSelectedOption("cash");
               }}
             >
               <Text
@@ -211,7 +211,7 @@ const Payment = () => {
                     fontWeight: "700",
                     textAlign: "center",
                   },
-                  selectedOption !== "cache" && { color: "#561062ff" },
+                  selectedOption !== "cash" && { color: "#561062ff" },
                 ]}
               >
                 Cash
@@ -269,7 +269,7 @@ const Payment = () => {
                 explainEstimateTime}
             </Text>
           ) : null}
-          {selectedOption === "cache" && !confirmed && (
+          {selectedOption === "cash" && !confirmed && (
             <View
               style={{
                 flexDirection: "column",
@@ -298,7 +298,7 @@ const Payment = () => {
             </View>
           )}
 
-          {selectedOption === "cache" && confirmed && (
+          {selectedOption === "cash" && confirmed && (
             <View style={styles.successContainer}>
               <Text style={styles.check}>✓</Text>
 

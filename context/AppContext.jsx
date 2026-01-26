@@ -22,7 +22,7 @@ const AppProvider = ({ children }) => {
     serviceTime: "10:00:00",
     bookingId: 20,
     walletId: 10,
-    typeOfPayment: "cache",
+    typeOfPayment: "cash",
   });
   const [selected_from_searchPage, setSelected_from_searchPage] =
     useState(null);

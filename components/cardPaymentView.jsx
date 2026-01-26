@@ -136,6 +136,7 @@ const CardPayment = () => {
     const answersResult = await fetchStoreAnswers(bookingId);
     if (bookingId && answersResult) {
       console.log("add new book and answers success");
+      await pay(bookingId);
     } else {
       console.error("Booking, transaction, or answers failed");
     }
@@ -171,7 +172,7 @@ const CardPayment = () => {
     const result = await response.json();
     return result;
   };
-  const pay = async () => {
+  const pay = async (bookingId) => {
     const response = await fetch(
       `${API_URL}/payment/getUserWallet?userId=${loggedUser.user_id}`,
       {
@@ -198,7 +199,7 @@ const CardPayment = () => {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 wallet_id: walletId,
-                booking_id: bookingObject.bookingId,
+                booking_id: bookingId,
                 type: bookingObject.typeOfPayment,
                 amount: bookingObject.hourlyRate * bookingObject.expectedTime,
               }),
@@ -268,7 +269,6 @@ const CardPayment = () => {
       if (result.success) {
         await addBookAndAnswers();
         // alert("Success, ", result.message);
-        await pay();
       } else {
         alert("Bad not Success, ", result.message);
       }
