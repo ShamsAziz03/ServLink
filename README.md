@@ -1,5 +1,7 @@
 # 🚀 ServLink — Your Smart Service Connection App
 
+### This is Software Graduation project in computer engineering department at An-Najah National University
+
 ServLink is a comprehensive **mobile-first ecosystem** designed to bridge the gap between customers and trusted local professionals. Whether it's home maintenance, cleaning, IT support, or tutoring, ServLink simplifies the entire process:
 
 **Search 🔍 → Book 📅 → Get the job done ⚡**
