@@ -1,115 +1,125 @@
-# 🚀 **ServLink — Your Smart Service Connection App**
+# 🚀 ServLink — Your Smart Service Connection App
+
+ServLink is a comprehensive **mobile-first ecosystem** designed to bridge the gap between customers and trusted local professionals. Whether it's home maintenance, cleaning, IT support, or tutoring, ServLink simplifies the entire process:
+
+**Search 🔍 → Book 📅 → Get the job done ⚡**
 
 ---
 
-## 🧩 **Overview**
+## 🧩 Overview
 
-ServLink is a **mobile-first application** built to **connect customers with trusted local service providers** — from home maintenance and cleaning to IT support, tutoring, and more.  
-We designed it to **simplify the service process**:  
-**search 🔍 → book 📅 → get the job done ⚡.**
+Built for speed, clarity, and real-world usability, ServLink transforms traditional service hunting into a seamless digital experience. Unlike niche apps, ServLink connects all service types under one unified ecosystem, empowering both customers and service providers through data-driven decisions.
 
-> 💡 **Built for speed, clarity, and real usability.**
+---
+## 💡 Technology Stack
+
+### 📱 Frontend & Mobile
+
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+![React](https://img.shields.io/badge/React.js-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![React Native Paper](https://img.shields.io/badge/React_Native_Paper-6200EE?style=for-the-badge&logo=react&logoColor=white)
+
+### ⚙️ Backend & AI
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq_SDK-F55036?style=for-the-badge&logo=groq&logoColor=white)
+
+### 🔌 Integrations & Libraries
+
+![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![Google Maps](https://img.shields.io/badge/Google_Maps_API-4285F4?style=for-the-badge&logo=googlemaps&logoColor=white)
+![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-7EBC6F?style=for-the-badge&logo=openstreetmap&logoColor=white)
+![Expo Notifications](https://img.shields.io/badge/Expo_Notifications-000020?style=for-the-badge&logo=expo&logoColor=white)
+![Fuse.js](https://img.shields.io/badge/Fuse.js-000000?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 
 ---
 
-## 🎯 **Why We Built This App**
 
-In today’s digital world, people expect **services on demand — anytime, anywhere, from their phone.**  
-Existing apps usually focus on one niche (like cleaning or moving). **ServLink** is different:  
-we connect **all service types under one ecosystem**, empowering both **customers and providers.**
+## 🎯 Key Problem Solved
 
-We built **ServLink** as a **mobile-first app (not a website only)** because:
+Finding verified professionals with real-time availability is often fragmented and frustrating. ServLink solves this by providing:
 
-- 📱 **Most users request home or field services on-the-go.**  
-- 🧭 **Providers use their phones to accept jobs and navigate to clients.**  
-- 🔔 **Real-time notifications and location-based services work better natively on mobile.**  
-- 💬 **Booking, and feedback flows feel faster and more natural in a mobile UX.**
+- **Unified Platform** — All service categories in one place.
+- **Mobile-First Design** — Optimized for on-the-go requests and real-time navigation for providers.
+- **AI-Driven Reliability** — Smart matching and automated fallback systems to ensure services are never interrupted.
 
 ---
 
-## 💡 **Technology Stack**
+## 🧠 AI Core: The Intelligence of ServLink
 
-The project includes a **mobile application developed using React Native** and a **web interface built using React** for the frontend,  
-and **Node.js** for the backend with **MySQL** for the database.  
-It serves **three main user types:**  
-👉 *Customer*, *Service Provider*, and *Administrator.*
+The project integrates advanced Large Language Models (LLMs) like **Llama 4**, **Llama 3.1**, and **GPT-OSS** via the **Groq SDK** to power its most innovative features:
 
----
-
-## 👥 **User Roles & Core Features**
-
----
-
-### 🧑‍💼 **Customer (User)**  
-> *The one who needs a service.*
-
-**Features:**
-
-- 📝 **Register & manage personal profile**  
-- 🔍 **Search services by category or keyword**  
-- 🧩 **Filter by price, rating, or location**  
-- 📅 **Book service & pick provider based on ratings**  
-- 💰 **Pay through card or cash**  
-- ⭐ **Rate service & write feedback**  
-- ❤️ **Save favorite providers**  
-- 🔔 **Receive live notifications for booking status**  
-- 🚫 **Cancel / finish bookings**
+- 🤖 **AI Service Provider Matcher** — Analyzes natural language descriptions from users to find the best provider based on a multi-dimensional matrix (Specialization, Price, Location, and Availability).
+- 🔄 **Automated Re-booking Backup** — If a provider cancels an accepted booking, the AI triggers a 5-phase semantic match to automatically find and book a replacement, ensuring the customer is never left stranded.
+- ⏱️ **AI Task Duration Estimator** — Predicts the required hours for a task based on user answers to context-specific questions and historical data.
+- 💡 **Smart Recommendation Engine** — Builds a user persona from booking history and interests to suggest the top 5 services they are most likely to need next.
+- 📊 **Provider Performance Insights** — Offers data-backed advice to professionals, suggesting price adjustments or geographic expansions based on market trends.
 
 ---
 
-### 🛠️ **Service Provider**  
-> *The professional offering the service.*
+## 👥 User Roles & Detailed Features
 
-**Features:**
+### 🧑‍💼 Customer (User)
 
-- 🧾 **Register with ID, certifications, and sample work**  
-- 🧭 **Define service areas, pricing, and availability calendar**  
-- 📩 **Receive job requests & accept or decline**  
-- 📊 **See stats: revenue, completed jobs, feedback**  
-- 🧠 **Manage portfolio and update services anytime**  
----
+- **Smart Search & Filter** — Find services by category, keyword, price, or rating.
+- **Interactive Booking** — Select dates and times via a real-time calendar that syncs with provider availability.
+- **Multi-Mode Payments** — Secure transactions via Stripe API or traditional Cash.
+- **Feedback System** — Rate services and write reviews to maintain platform quality.
 
-### 🧑‍💻 **Admin**  
-> *The platform controller.*
+### 🛠️ Service Provider
 
-**Features:**
+- **Professional Portfolio** — Manage certifications, work photos, and service areas.
+- **Availability Management** — Set weekly working hours and mark "Unavailable Dates" (holidays/emergencies) to prevent conflicts.
+- **In-App Wallet** — Track earnings, platform commissions, and manage debts for cash transactions.
+- **Booking Timer** — A real-time timer to track actual work duration for accurate billing.
 
-- 📊 **Dashboard with global metrics (users, providers, revenue, bookings)**  
-- 🧾 **Manage all user & provider accounts**  
-- 🧰 **Approve / reject provider registrations**  
-- ⚙️ **Manage categories**  
-- 💵 **Track financial operations and commissions**  
-- 🚨 **Handle complaints, disputes, and refunds**  
+### 🧑‍💻 Administrator
+
+- **Web Dashboard** — Monitor global metrics including total users, active providers, revenue, and bookings.
+- **Provider Verification** — Review and approve/reject professional registrations.
+- **AI Content Tools** — Generate smart category descriptions and professional provider summaries.
 
 ---
 
-## 🧭 **Booking Flow (Simplified)**
+## 🚀 Setup and Installation
 
-1. **User searches** for a service (e.g., Cleaning 🧼, Electrical ⚡, Moving 🚚)  
-2. **App asks context-specific questions** (like number of rooms or car type)  
-3. **Matching engine suggests top providers** (based on location, rating, price)  
-4. **User books & pays** — provider accepts or rejects  
-5. **After completion**, user rates the service  
-6. **Provider’s dashboard updates stats and earnings automatically**
+### Prerequisites
+
+- Node.js 
+- Expo CLI
+- MySQL Server
+
+### Backend Setup
+
+```bash
+cd backend
+npm install
+# Create a .env file with your DB credentials, Stripe keys, and Groq API key
+npm run dev
+```
+
+### App Setup
+
+```bash
+cd root
+npm install
+npx expo start
+```
 
 ---
 
-## 💡 **Key Highlights**
+## 📅 Future Enhancements
 
-- 🏷️ **Multi-category system** (Home, Tech, Care, Education, etc.)  
-- 🔔 **Push notifications for updates**  
-- 🧾 **Smart recommendation engine** (based on interests + booking history)  
-- 💳 **In-app wallet for secure payments and refunds**  
-- 🌐 **Dual interface** (App for users, provider and admins, Web for admin)  
-- 📆 **Provider calendar to avoid booking conflicts**  
-  
+- 🌐 **Multi-language Support** — Full localization for Arabic and English.
+- 💬 **Real-time Chat** — Direct in-app messaging between users and providers.
+- 🔍 **Enhanced Verification** — Advanced background checks for providers.
+
 ---
 
-## 📅 **Future Enhancements**
-- 🌍 **Multi-language support (Arabic / English)**  *  
----
+## ❤️ Final Note
 
-## ❤️ **Final Note**
-
-> **ServLink** isn’t just an app — it’s a bridge between people who *need help* and those who *can provide it.*  
-> Built to make daily life simpler, faster, and more reliable. ⚡
+ServLink is more than an app; it is a **smart infrastructure for the local labor market**, built to make daily life simpler, faster, and more reliable. ⚡
